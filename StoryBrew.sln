@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew", "StoryBrew\StoryBrew.csproj", "{C23B3F4C-239D-4428-B59F-D9AC621E6542}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Common", "StoryBrew.Common\StoryBrew.Common.csproj", "{68047D76-DD88-40BD-952E-E0DA89D917FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Desktop", "StoryBrew.Desktop\StoryBrew.Desktop.csproj", "{EB1C518C-1CF2-484D-85ED-B36D7E1305BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Game", "StoryBrew.Game\StoryBrew.Game.csproj", "{C88B22F2-09C2-4364-AB27-A1D5ED9B87F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Game.Tests", "StoryBrew.Game.Tests\StoryBrew.Game.Tests.csproj", "{AAFD59AA-0613-47A5-8F3F-B5EB84DFB24B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Resources", "StoryBrew.Resources\StoryBrew.Resources.csproj", "{CB702F47-55D4-405F-A77F-62E01912DD73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Scripts", "StoryBrew.Scripts\StoryBrew.Scripts.csproj", "{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C23B3F4C-239D-4428-B59F-D9AC621E6542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C23B3F4C-239D-4428-B59F-D9AC621E6542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C23B3F4C-239D-4428-B59F-D9AC621E6542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C23B3F4C-239D-4428-B59F-D9AC621E6542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68047D76-DD88-40BD-952E-E0DA89D917FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68047D76-DD88-40BD-952E-E0DA89D917FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68047D76-DD88-40BD-952E-E0DA89D917FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68047D76-DD88-40BD-952E-E0DA89D917FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB1C518C-1CF2-484D-85ED-B36D7E1305BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB1C518C-1CF2-484D-85ED-B36D7E1305BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB1C518C-1CF2-484D-85ED-B36D7E1305BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB1C518C-1CF2-484D-85ED-B36D7E1305BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C88B22F2-09C2-4364-AB27-A1D5ED9B87F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C88B22F2-09C2-4364-AB27-A1D5ED9B87F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C88B22F2-09C2-4364-AB27-A1D5ED9B87F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C88B22F2-09C2-4364-AB27-A1D5ED9B87F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AAFD59AA-0613-47A5-8F3F-B5EB84DFB24B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAFD59AA-0613-47A5-8F3F-B5EB84DFB24B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAFD59AA-0613-47A5-8F3F-B5EB84DFB24B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAFD59AA-0613-47A5-8F3F-B5EB84DFB24B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB702F47-55D4-405F-A77F-62E01912DD73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB702F47-55D4-405F-A77F-62E01912DD73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB702F47-55D4-405F-A77F-62E01912DD73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB702F47-55D4-405F-A77F-62E01912DD73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

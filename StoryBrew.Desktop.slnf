@@ -1,0 +1,11 @@
+﻿{
+  "solution": {
+    "path": "StoryBrew.sln",
+    "projects": [
+      "StoryBrew.Desktop\\StoryBrew.Desktop.csproj",
+      "StoryBrew.Game\\StoryBrew.Game.csproj",
+      "StoryBrew.Game.Tests\\StoryBrew.Game.Tests.csproj",
+      "StoryBrew.Resources\\StoryBrew.Resources.csproj"
+    ]
+  }
+}
