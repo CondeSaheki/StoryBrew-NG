@@ -28,15 +28,14 @@ For more detailed **documentation and tutorials** refer to the StoryBrew **Wiki*
 
 ## Dependencies
 This project do not relies anymore on **BrewLib** and depends on the following packages:
-- **OpenTK**: `4.9.3`
+- **Newtonsoft.Json**: `13.0.3`
+- **OpenTK.Mathematics**: `4.9.3`
 - **SkiaSharp**: `3.116.1`
 - **ppy.osu.Framework**: `2024.1224.0`
 - **ppy.osu.Game**: `2024.1224.1`
-- **Damnae.Tiny**: `1.2.0`
-- **ManagedBass**: `3.1.1`
-- **Microsoft.CodeAnalysis.Common**: `4.11.0`
+- **Damnae.Tiny**: `1.2.0` (to be removed)
+- **ManagedBass**: `3.1.1` (to be removed)
 - **Microsoft.CodeAnalysis.CSharp**: `4.11.0`
-- **Microsoft.Net.Compilers.Toolset**: `4.11.0`
 - **Microsoft.NET.Test.Sdk**: `17.0.0`
 - **NUnit3TestAdapter**: `4.4.2`
 
