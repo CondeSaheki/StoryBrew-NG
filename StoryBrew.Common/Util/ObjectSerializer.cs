@@ -11,7 +11,6 @@ internal abstract class ObjectSerializer
     public abstract string ToString(object value);
     public abstract object FromString(string value);
 
-    private static readonly System.Drawing.ColorConverter colorConverter = new System.Drawing.ColorConverter();
     private static readonly List<ObjectSerializer> serializers = new List<ObjectSerializer>()
         {
             new SimpleObjectSerializer<int>(r => r.ReadInt32(), (w, v) => w.Write((int)v), v => int.Parse(v, CultureInfo.InvariantCulture), v => ((int)v).ToString(CultureInfo.InvariantCulture)),
@@ -114,10 +113,7 @@ internal abstract class ObjectSerializer
         if (typeName == string.Empty)
             return null;
 
-        var serializer = GetSerializer(typeName);
-        if (serializer == null)
-            throw new NotSupportedException($"Cannot read objects of type {typeName}");
-
+        var serializer = GetSerializer(typeName) ?? throw new NotSupportedException($"Cannot read objects of type {typeName}");
         return serializer.ReadValue(reader);
     }
 
@@ -131,10 +127,7 @@ internal abstract class ObjectSerializer
 
         var typeName = value.GetType().FullName ?? throw new Exception();
 
-        var serializer = GetSerializer(typeName);
-        if (serializer == null)
-            throw new NotSupportedException($"Cannot write objects of type {typeName}");
-
+        var serializer = GetSerializer(typeName) ?? throw new NotSupportedException($"Cannot write objects of type {typeName}");
         writer.Write(typeName);
         serializer.WriteValue(writer, value);
     }
@@ -144,10 +137,7 @@ internal abstract class ObjectSerializer
         if (typeName == string.Empty)
             return null;
 
-        var serializer = GetSerializer(typeName);
-        if (serializer == null)
-            throw new NotSupportedException($"Cannot read objects of type {typeName}");
-
+        var serializer = GetSerializer(typeName) ?? throw new NotSupportedException($"Cannot read objects of type {typeName}");
         return serializer.FromString(value);
     }
 
@@ -158,10 +148,7 @@ internal abstract class ObjectSerializer
 
         var typeName = value.GetType().FullName ?? throw new Exception();
 
-        var serializer = GetSerializer(typeName);
-        if (serializer == null)
-            throw new NotSupportedException($"Cannot write objects of type {typeName}");
-
+        var serializer = GetSerializer(typeName) ?? throw new NotSupportedException($"Cannot write objects of type {typeName}");
         return serializer.ToString(value);
     }
 

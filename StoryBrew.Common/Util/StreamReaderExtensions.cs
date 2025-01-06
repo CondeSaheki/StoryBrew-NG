@@ -10,7 +10,7 @@ internal static class StreamReaderExtensions
             line = line.Trim();
             if (line.StartsWith("[") && line.EndsWith("]"))
             {
-                var sectionName = line.Substring(1, line.Length - 2);
+                var sectionName = line[1..^1];
                 action(sectionName);
             }
         }
@@ -42,7 +42,7 @@ internal static class StreamReaderExtensions
             var separatorIndex = line.IndexOf(":");
             if (separatorIndex == -1) throw new InvalidDataException($"{line} is not a key/value");
 
-            var key = line.Substring(0, separatorIndex).Trim();
+            var key = line[..separatorIndex].Trim();
             var value = line.Substring(separatorIndex + 1, line.Length - 1 - separatorIndex).Trim();
 
             action(key, value);

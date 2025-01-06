@@ -4,7 +4,7 @@ namespace StoryBrew.Common.Util;
 
 internal struct Affine2 : IEquatable<Affine2>
 {
-    public static readonly Affine2 Identity = new Affine2(Vector3.UnitX, Vector3.UnitY);
+    public static readonly Affine2 IDENTITY = new(Vector3.UnitX, Vector3.UnitY);
 
     public Vector3 Row0;
     public Vector3 Row1;
