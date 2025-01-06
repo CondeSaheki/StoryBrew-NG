@@ -50,7 +50,7 @@ public class RadialSpectrum : StoryboardObjectGenerator
         for (var i = 0; i < BarCount; i++)
             positionKeyframes[i] = new KeyframedValue<Vector2>((a, b, c) => Vector2.Zero, Vector2.Zero);
 
-        var fftTimeStep = Beatmap.GetTimingPointAt(StartTime).BeatDuration / BeatDivisor;
+        var fftTimeStep = (Beatmap?.GetTimingPointAt(StartTime)?.BeatDuration ?? throw new Exception()) / BeatDivisor;
         var fftOffset = fftTimeStep * 0.2;
         for (var time = (double)StartTime; time < EndTime; time += fftTimeStep)
         {

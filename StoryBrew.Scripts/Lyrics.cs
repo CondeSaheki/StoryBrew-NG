@@ -91,27 +91,27 @@ public class Lyrics : StoryboardObjectGenerator
                 Radius = GlowRadius,
                 // Color = GlowColor,
             });
-            generateLyrics(glowFont, subtitles, "glow", true);
+            GenerateLyrics(glowFont, subtitles, "glow", true);
         }
-        generateLyrics(font, subtitles, "", false);
+        GenerateLyrics(font, subtitles, "", false);
     }
 
-    public void generateLyrics(FontGenerator font, SubtitleSet subtitles, string layerName, bool additive)
+    public void GenerateLyrics(FontGenerator font, SubtitleSet subtitles, string layerName, bool additive)
     {
         var layer = GetLayer(layerName);
-        if (PerCharacter) generatePerCharacter(font, subtitles, layer, additive);
-        else generatePerLine(font, subtitles, layer, additive);
+        if (PerCharacter) GeneratePerCharacter(font, subtitles, layer, additive);
+        else GeneratePerLine(font, subtitles, layer, additive);
     }
 
-    public void generatePerLine(FontGenerator font, SubtitleSet subtitles, StoryboardLayer layer, bool additive)
+    public void GeneratePerLine(FontGenerator font, SubtitleSet subtitles, StoryboardLayer layer, bool additive)
     {
         foreach (var line in subtitles.Lines)
         {
-            var texture = font.GetTexture(line.Text);
+            var texture = font.GetTexture(line.Text) ?? throw new Exception($"Failed to generate texture for {line.Text}");
             var position = new Vector2(320 - texture.BaseWidth * FontScale * 0.5f, SubtitleY)
                 + texture.OffsetFor(Origin) * FontScale;
 
-            var sprite = layer.CreateSprite(texture.Path, Origin, position);
+            var sprite = layer.CreateSprite(texture.Path ?? throw new Exception(), Origin, position);
             sprite.Scale(line.StartTime, FontScale);
             sprite.Fade(line.StartTime - 200, line.StartTime, 0, 1);
             sprite.Fade(line.EndTime - 200, line.EndTime, 1, 0);
@@ -119,7 +119,7 @@ public class Lyrics : StoryboardObjectGenerator
         }
     }
 
-    public void generatePerCharacter(FontGenerator font, SubtitleSet subtitles, StoryboardLayer layer, bool additive)
+    public void GeneratePerCharacter(FontGenerator font, SubtitleSet subtitles, StoryboardLayer layer, bool additive)
     {
         foreach (var subtitleLine in subtitles.Lines)
         {
@@ -130,7 +130,7 @@ public class Lyrics : StoryboardObjectGenerator
                 var lineHeight = 0f;
                 foreach (var letter in line)
                 {
-                    var texture = font.GetTexture(letter.ToString());
+                    var texture = font.GetTexture(letter.ToString()) ?? throw new Exception();
                     lineWidth += texture.BaseWidth * FontScale;
                     lineHeight = Math.Max(lineHeight, texture.BaseHeight * FontScale);
                 }
@@ -138,13 +138,13 @@ public class Lyrics : StoryboardObjectGenerator
                 var letterX = 320 - lineWidth * 0.5f;
                 foreach (var letter in line)
                 {
-                    var texture = font.GetTexture(letter.ToString());
+                    var texture = font.GetTexture(letter.ToString()) ?? throw new Exception();
                     if (!texture.IsEmpty)
                     {
                         var position = new Vector2(letterX, letterY)
                             + texture.OffsetFor(Origin) * FontScale;
 
-                        var sprite = layer.CreateSprite(texture.Path, Origin, position);
+                        var sprite = layer.CreateSprite(texture.Path ?? throw new Exception(), Origin, position);
                         sprite.Scale(subtitleLine.StartTime, FontScale);
                         sprite.Fade(subtitleLine.StartTime - 200, subtitleLine.StartTime, 0, 1);
                         sprite.Fade(subtitleLine.EndTime - 200, subtitleLine.EndTime, 1, 0);

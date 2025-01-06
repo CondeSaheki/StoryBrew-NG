@@ -38,9 +38,9 @@ public class Jigoku : StoryboardObjectGenerator
     public double BgScaling = 480.0 / 768;
     public double DegToRad = Math.PI / 180;
 
-    private StoryboardLayer bgLayer;
-    private StoryboardLayer mainLayer;
-    private OsbSpritePools spritePools;
+    private StoryboardLayer bgLayer = null!;
+    private StoryboardLayer mainLayer = null!;
+    private OsbSpritePools spritePools = null!;
 
     public override void Generate()
     {
@@ -49,7 +49,7 @@ public class Jigoku : StoryboardObjectGenerator
 
         using (spritePools = new OsbSpritePools(mainLayer))
         {
-            Intro(TimeIntro, TimePart1);
+            intro(TimeIntro, TimePart1);
 
             // Background
             var bg = bgLayer.CreateSprite("bg.jpg", OsbOrigin.Centre);
@@ -65,22 +65,22 @@ public class Jigoku : StoryboardObjectGenerator
             bg.Fade(OsbEasing.Out, TimePart6, TimePart7, 0, 1);
             bg.Fade(OsbEasing.In, TimePart10 - BeatDuration * 4, TimePart10, 1, 0);
 
-            Part1(TimePart1, TimePart2);
-            Part2(TimePart2, TimePart3);
-            Part3(TimePart3, TimePart4);
-            Part4(TimePart4, TimePart5);
-            Part5(TimePart5, TimePart6);
-            Part6(TimePart6, TimePart7);
-            Part7(TimePart7, TimePart8);
-            Part8(TimePart8, TimePart9);
-            Part9(TimePart9, TimePart10);
-            Part10(TimePart10, TimePart11);
-            Part11(TimePart11, TimeEnd);
-            Outro(TimeEnd, TimeSbEnd);
+            part1(TimePart1, TimePart2);
+            part2(TimePart2, TimePart3);
+            part3(TimePart3, TimePart4);
+            part4(TimePart4, TimePart5);
+            part5(TimePart5, TimePart6);
+            part6(TimePart6, TimePart7);
+            part7(TimePart7, TimePart8);
+            part8(TimePart8, TimePart9);
+            part9(TimePart9, TimePart10);
+            part10(TimePart10, TimePart11);
+            part11(TimePart11, TimeEnd);
+            outro(TimeEnd, TimeSbEnd);
         }
     }
 
-    private void Intro(int tStart, int tEnd)
+    private void intro(int tStart, int tEnd)
     {
         var bg = bgLayer.CreateSprite("sb/bgg.png", OsbOrigin.BottomCentre);
         bg.Scale(TimeSbStart, BgScaling);
@@ -94,16 +94,16 @@ public class Jigoku : StoryboardObjectGenerator
         {
             var t = times[i];
             var x = xs[i];
-            MakeNote(t + Offset, x, 370, -Math.PI / 2, 0, 400, 2000);
+            makeNote(t + Offset, x, 370, -Math.PI / 2, 0, 400, 2000);
         }
 
         for (var i = 0; i < 10; ++i)
         {
             var angle = -Math.PI * 2 / 6 + -Math.PI * i / 16;
-            MakeNote(8671 + Offset + i * BeatDuration / 32, 100 + i * 50, 370, angle, 0, 400, 2000);
+            makeNote(8671 + Offset + i * BeatDuration / 32, 100 + i * 50, 370, angle, 0, 400, 2000);
         }
     }
-    private void Part1(int tStart, int tEnd)
+    private void part1(int tStart, int tEnd)
     {
         // Piano
         var x = -100;
@@ -112,37 +112,37 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 3; ++i)
         {
             var angle = -Math.PI / 16 - Math.PI * i / 16;
-            MakeNote(11363 + Offset + BeatDuration * i / 4, x, y, angle, distance);
+            makeNote(11363 + Offset + BeatDuration * i / 4, x, y, angle, distance);
         }
         distance += 50;
         for (var i = 0; i < 4; ++i)
         {
             var angle = -Math.PI / 2 + Math.PI * (i + 1) / 16;
-            MakeNote(11627 + Offset + BeatDuration * i / 4, x, y, angle, distance);
+            makeNote(11627 + Offset + BeatDuration * i / 4, x, y, angle, distance);
         }
         distance += 50;
         for (var i = 0; i < 4; ++i)
         {
             var angle = -Math.PI / 16 - Math.PI * (i + 1) / 17;
-            MakeNote(11980 + Offset + BeatDuration * i / 4, x, y, angle, distance);
+            makeNote(11980 + Offset + BeatDuration * i / 4, x, y, angle, distance);
         }
         distance += 50;
         for (var i = 0; i < 4; ++i)
         {
             var angle = -Math.PI / 4 + Math.PI * (i + 1) / 17;
-            MakeNote(12377 + Offset + BeatDuration * i / 4, x, y, angle, distance);
+            makeNote(12377 + Offset + BeatDuration * i / 4, x, y, angle, distance);
         }
         distance += 50;
         for (var i = 0; i < 4; ++i)
         {
             var angle = -Math.PI / 16 - Math.PI * (i + 1) / 17;
-            MakeNote(12730 + Offset + BeatDuration * i / 4, x, y, angle, distance);
+            makeNote(12730 + Offset + BeatDuration * i / 4, x, y, angle, distance);
         }
         distance += 50;
         for (var i = 0; i < 5; ++i)
         {
             var angle = -Math.PI / 2 + Math.PI * (i + 5) / 19;
-            MakeNote(13083 + Offset + BeatDuration * i / 4, x, y, angle, distance);
+            makeNote(13083 + Offset + BeatDuration * i / 4, x, y, angle, distance);
         }
 
         // Drums
@@ -152,8 +152,8 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 4; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(13480 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
-            MakeNote(13480 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
+            makeNote(13480 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
+            makeNote(13480 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
         }
 
         // Piano (far)
@@ -161,7 +161,7 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 24; ++i)
         {
             var angle = -Math.PI + Math.PI * i / 6;
-            MakeNote(14186 + Offset + BeatDuration * i / 4, angle, distance);
+            makeNote(14186 + Offset + BeatDuration * i / 4, angle, distance);
         }
 
         // Drums
@@ -169,8 +169,8 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 4; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(16304 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle, distance, 400, 2000);
-            MakeNote(16304 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle + Math.PI, distance, 400, 2000);
+            makeNote(16304 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle, distance, 400, 2000);
+            makeNote(16304 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle + Math.PI, distance, 400, 2000);
         }
 
         // Piano
@@ -178,7 +178,7 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 8; ++i)
         {
             var angle = -Math.PI + Math.PI * i / 8;
-            MakeNote(17010 + Offset + BeatDuration * i / 4, angle, distance);
+            makeNote(17010 + Offset + BeatDuration * i / 4, angle, distance);
         }
 
         // Drums
@@ -186,20 +186,20 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(17715 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle, distance, 400, 2000);
-            MakeNote(17715 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle + Math.PI, distance, 400, 2000);
+            makeNote(17715 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle, distance, 400, 2000);
+            makeNote(17715 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle + Math.PI, distance, 400, 2000);
         }
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(18421 + Offset + BeatDuration * i * 3 / 4, 255, 240, angle, distance, 400, 2000);
-            MakeNote(18421 + Offset + BeatDuration * i * 3 / 4, 255, 240, angle + Math.PI, distance, 400, 2000);
+            makeNote(18421 + Offset + BeatDuration * i * 3 / 4, 255, 240, angle, distance, 400, 2000);
+            makeNote(18421 + Offset + BeatDuration * i * 3 / 4, 255, 240, angle + Math.PI, distance, 400, 2000);
         }
         for (var i = 0; i < 4; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(19127 + Offset + BeatDuration * i * 3 / 4, 120, 120, angle, distance, 400, 2000);
-            MakeNote(19127 + Offset + BeatDuration * i * 3 / 4, 120, 120, angle + Math.PI, distance, 400, 2000);
+            makeNote(19127 + Offset + BeatDuration * i * 3 / 4, 120, 120, angle, distance, 400, 2000);
+            makeNote(19127 + Offset + BeatDuration * i * 3 / 4, 120, 120, angle + Math.PI, distance, 400, 2000);
         }
 
         // Piano
@@ -209,27 +209,27 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 9; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * (i - 9) / 8;
-            MakeNote(19833 + Offset + BeatDuration * i / 3, x, y, angle, distance);
+            makeNote(19833 + Offset + BeatDuration * i / 3, x, y, angle, distance);
         }
         x = 130;
         y = 330;
         for (var i = 0; i < 6; ++i)
         {
             var angle = -Math.PI / 2 + Math.PI * i / 6;
-            MakeNote(20892 + Offset + BeatDuration * i / 6, x, y, angle, distance);
+            makeNote(20892 + Offset + BeatDuration * i / 6, x, y, angle, distance);
         }
         for (var i = 0; i < 110; ++i)
         {
             var angle = Math.PI * i / 8;
-            MakeNote(21245 + Offset + BeatDuration * i / 32, x, y, angle, distance * (1.2 - i * 0.01), 200, 260);
+            makeNote(21245 + Offset + BeatDuration * i / 32, x, y, angle, distance * (1.2 - i * 0.01), 200, 260);
         }
     }
 
-    private void Part2(int tStart, int tEnd)
+    private void part2(int tStart, int tEnd)
     {
     }
 
-    private void Part3(int tStart, int tEnd)
+    private void part3(int tStart, int tEnd)
     {
         for (var i = 0; i < 4; ++i)
         {
@@ -242,7 +242,7 @@ public class Jigoku : StoryboardObjectGenerator
         }
     }
 
-    private void Part4(int tStart, int tEnd)
+    private void part4(int tStart, int tEnd)
     {
         // Piano
         var x = -0.0;
@@ -251,42 +251,42 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 3; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * i / 16;
-            MakeNote(45245 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(45245 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x += 150;
         y += 350;
         for (var i = 0; i < 4; ++i)
         {
             var angle = -Math.PI / 2 - Math.PI * (i - 2) / 16;
-            MakeNote(45510 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(45510 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x += 270;
         y -= 450;
         for (var i = 0; i < 4; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * (i - 2) / 16;
-            MakeNote(45862 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(45862 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x += 170;
         y += 550;
         for (var i = 0; i < 4; ++i)
         {
             var angle = -Math.PI / 2 - Math.PI * (i - 2) / 16;
-            MakeNote(46215 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(46215 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x -= 150;
         y -= 450;
         for (var i = 0; i < 4; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * (i - 2) / 16;
-            MakeNote(46568 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(46568 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x -= 270;
         y += 450;
         for (var i = 0; i < 5; ++i)
         {
             var angle = -Math.PI / 2 - Math.PI * (i - 2) / 16;
-            MakeNote(46921 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(46921 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
 
         // Orchestra
@@ -296,8 +296,8 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(47362 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
-            MakeNote(47362 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
+            makeNote(47362 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
+            makeNote(47362 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
         }
 
         // Piano
@@ -307,37 +307,37 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 3; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * i / 13;
-            MakeNote(48068 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(48068 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x -= 150;
         for (var i = 0; i < 4; ++i)
         {
             var angle = -Math.PI / 2 - Math.PI * (i - 2) / 13;
-            MakeNote(48333 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(48333 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x -= 170;
         for (var i = 0; i < 4; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * (i - 3) / 13;
-            MakeNote(48686 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(48686 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x -= 170;
         for (var i = 0; i < 4; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * (i + 4) / 13;
-            MakeNote(49039 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(49039 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x += 150;
         for (var i = 0; i < 4; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * (i - 5) / 13;
-            MakeNote(49392 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(49392 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x += 270;
         for (var i = 0; i < 5; ++i)
         {
             var angle = -Math.PI / 2 - Math.PI * (i - 6) / 13;
-            MakeNote(49745 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(49745 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
 
         // Drums
@@ -345,10 +345,10 @@ public class Jigoku : StoryboardObjectGenerator
         y -= 20;
         for (var i = 0; i < 5; ++i)
         {
-            MakeNote(50186 + Offset + BeatDuration * i / 2, x - i * 128, y, -Math.PI / 2, distance, 500, 2000);
+            makeNote(50186 + Offset + BeatDuration * i / 2, x - i * 128, y, -Math.PI / 2, distance, 500, 2000);
         }
-        MakeNote(50892 + Offset, 64 + 16, y - distance, -Math.PI / 2 - Math.PI / 16, 0, 200, 600);
-        MakeNote(50892 + Offset, 64 - 16, y - distance, -Math.PI / 2 + Math.PI / 16, 0, 200, 600);
+        makeNote(50892 + Offset, 64 + 16, y - distance, -Math.PI / 2 - Math.PI / 16, 0, 200, 600);
+        makeNote(50892 + Offset, 64 - 16, y - distance, -Math.PI / 2 + Math.PI / 16, 0, 200, 600);
 
         // Piano
         x = 64.0;
@@ -357,42 +357,42 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 3; ++i)
         {
             var angle = Math.PI / 2 + Math.PI * (i + 1) / 16;
-            MakeNote(50892 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(50892 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x -= 250;
         y += 0;
         for (var i = 0; i < 4; ++i)
         {
             var angle = -Math.PI / 2 + Math.PI * (i + 5) / 16;
-            MakeNote(51157 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(51157 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x += 470;
         y -= 200;
         for (var i = 0; i < 4; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * (i - 4) / 16;
-            MakeNote(51510 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(51510 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x += 170;
         y += 550;
         for (var i = 0; i < 4; ++i)
         {
             var angle = -Math.PI / 2 - Math.PI * (i - 2) / 16;
-            MakeNote(51862 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(51862 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x -= 150;
         y -= 450;
         for (var i = 0; i < 4; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * (i - 2) / 16;
-            MakeNote(52215 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(52215 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
         x += 270;
         y += 250;
         for (var i = 0; i < 5; ++i)
         {
             var angle = -Math.PI / 2 - Math.PI * (i - 2) / 16;
-            MakeNote(52568 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
+            makeNote(52568 + Offset + BeatDuration * i / 4, x, y, angle, distance, 200, 600);
         }
 
         // Orchestra
@@ -402,111 +402,111 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(53010 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
-            MakeNote(53010 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
+            makeNote(53010 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
+            makeNote(53010 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
         }
         x -= 100;
         y -= 140;
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(53715 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
-            MakeNote(53715 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
+            makeNote(53715 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
+            makeNote(53715 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
         }
         x -= 100;
         y += 280;
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(54421 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
-            MakeNote(54421 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
+            makeNote(54421 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
+            makeNote(54421 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
         }
         x -= 200;
         y -= 140;
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(55127 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
-            MakeNote(55127 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
+            makeNote(55127 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
+            makeNote(55127 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
         }
         x -= 100;
         y -= 140;
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(55833 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
-            MakeNote(55833 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
+            makeNote(55833 + Offset + BeatDuration * i * 3 / 4, x, y, angle, distance, 400, 2000);
+            makeNote(55833 + Offset + BeatDuration * i * 3 / 4, x, y, angle + Math.PI, distance, 400, 2000);
         }
         x += 200;
         y += 60;
         {
             var angle = Random(-Math.PI);
-            MakeNote(56010 + Offset, x, y, angle, distance, 400, 2000);
-            MakeNote(56010 + Offset, x, y, angle + Math.PI, distance, 400, 1000);
+            makeNote(56010 + Offset, x, y, angle, distance, 400, 2000);
+            makeNote(56010 + Offset, x, y, angle + Math.PI, distance, 400, 1000);
         }
         x -= 100;
         y += 180;
         {
             var angle = Random(-Math.PI);
-            MakeNote(56186 + Offset, x, y, angle, distance, 400, 2000);
-            MakeNote(56186 + Offset, x, y, angle + Math.PI, distance, 400, 1000);
+            makeNote(56186 + Offset, x, y, angle, distance, 400, 2000);
+            makeNote(56186 + Offset, x, y, angle + Math.PI, distance, 400, 1000);
         }
         x += 300;
         y -= 140;
         {
             var angle = Random(-Math.PI);
-            MakeNote(56362 + Offset, x, y, angle, distance, 400, 1000);
-            MakeNote(56362 + Offset, x, y, angle + Math.PI, distance, 400, 1000);
+            makeNote(56362 + Offset, x, y, angle, distance, 400, 1000);
+            makeNote(56362 + Offset, x, y, angle + Math.PI, distance, 400, 1000);
         }
         x += 200;
         y += 140;
         {
             var angle = Random(-Math.PI);
-            MakeNote(56539 + Offset, x, y, angle, distance, 400, 2000);
-            MakeNote(56539 + Offset, x, y, angle + Math.PI, distance, 400, 2000);
+            makeNote(56539 + Offset, x, y, angle, distance, 400, 2000);
+            makeNote(56539 + Offset, x, y, angle + Math.PI, distance, 400, 2000);
         }
     }
 
-    private void Part5(int tStart, int tEnd)
+    private void part5(int tStart, int tEnd)
     {
-        MakeCharacters(56539 + Offset, 1.0);
-        MakeCharacters(59362 + Offset, 61833 + Offset, 1.05);
-        MakeCharacters(62186 + Offset, 1.1);
-        MakeCharacters(65010 + Offset, 1.15);
+        makeCharacters(56539 + Offset, 1.0);
+        makeCharacters(59362 + Offset, 61833 + Offset, 1.05);
+        makeCharacters(62186 + Offset, 1.1);
+        makeCharacters(65010 + Offset, 1.15);
     }
 
-    private void Part6(int tStart, int tEnd)
-    {
-    }
-
-    private void Part7(int tStart, int tEnd)
+    private void part6(int tStart, int tEnd)
     {
     }
 
-    private void Part8(int tStart, int tEnd)
+    private void part7(int tStart, int tEnd)
     {
-        var x = 0.0;
-        var y = 80.0;
+    }
+
+    private void part8(int tStart, int tEnd)
+    {
+        double x; // 0.0
+        double y; // 80.0
         var distance = 0;
 
         // Drums
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(91127 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle, distance, 400, 2000);
-            MakeNote(91127 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle + Math.PI, distance, 400, 2000);
+            makeNote(91127 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle, distance, 400, 2000);
+            makeNote(91127 + Offset + BeatDuration * i * 3 / 4, 140, 340, angle + Math.PI, distance, 400, 2000);
         }
         for (var i = 0; i < 3; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(91833 + Offset + BeatDuration * i * 3 / 4, 255, 240, angle, distance, 400, 2000);
-            MakeNote(91833 + Offset + BeatDuration * i * 3 / 4, 255, 240, angle + Math.PI, distance, 400, 2000);
+            makeNote(91833 + Offset + BeatDuration * i * 3 / 4, 255, 240, angle, distance, 400, 2000);
+            makeNote(91833 + Offset + BeatDuration * i * 3 / 4, 255, 240, angle + Math.PI, distance, 400, 2000);
         }
         for (var i = 0; i < 4; ++i)
         {
             var angle = Random(-Math.PI);
-            MakeNote(92539 + Offset + BeatDuration * i * 3 / 4, 120, 120, angle, distance, 400, 2000);
-            MakeNote(92539 + Offset + BeatDuration * i * 3 / 4, 120, 120, angle + Math.PI, distance, 400, 2000);
+            makeNote(92539 + Offset + BeatDuration * i * 3 / 4, 120, 120, angle, distance, 400, 2000);
+            makeNote(92539 + Offset + BeatDuration * i * 3 / 4, 120, 120, angle + Math.PI, distance, 400, 2000);
         }
 
         // Piano
@@ -516,59 +516,59 @@ public class Jigoku : StoryboardObjectGenerator
         for (var i = 0; i < 9; ++i)
         {
             var angle = Math.PI / 2 - Math.PI * (i - 9) / 8;
-            MakeNote(93245 + Offset + BeatDuration * i / 3, x, y, angle, distance);
+            makeNote(93245 + Offset + BeatDuration * i / 3, x, y, angle, distance);
         }
         x = 130;
         y = 330;
         for (var i = 0; i < 6; ++i)
         {
             var angle = -Math.PI / 2 + Math.PI * i / 6;
-            MakeNote(94304 + Offset + BeatDuration * i / 6, x, y, angle, distance);
+            makeNote(94304 + Offset + BeatDuration * i / 6, x, y, angle, distance);
         }
         for (var i = 0; i < 64; ++i)
         {
             var angle = Math.PI * i / 8;
-            MakeNote(94657 + Offset + BeatDuration * i / 32, x, y, angle, distance * (1.2 - i * 0.01), 200, 260);
+            makeNote(94657 + Offset + BeatDuration * i / 32, x, y, angle, distance * (1.2 - i * 0.01), 200, 260);
         }
         for (var i = 0; i < 64; ++i)
         {
             var angle = Math.PI * i / 8;
-            MakeNote(95362 + Offset + BeatDuration * i / 32, x, y, angle, distance * (1.2 + i * 0.01), 200, 260);
+            makeNote(95362 + Offset + BeatDuration * i / 32, x, y, angle, distance * (1.2 + i * 0.01), 200, 260);
         }
     }
 
-    private void Part9(int tStart, int tEnd)
+    private void part9(int tStart, int tEnd)
     {
     }
 
-    private void Part10(int tStart, int tEnd)
+    private void part10(int tStart, int tEnd)
     {
     }
 
-    private void Part11(int tStart, int tEnd)
+    private void part11(int tStart, int tEnd)
     {
     }
 
-    private void Outro(int tStart, int tEnd)
+    private void outro(int tStart, int tEnd)
     {
     }
 
-    private void MakeNote(int time, double angle, double distance)
+    private void makeNote(int time, double angle, double distance)
     {
-        MakeNote(time, 140, 340, angle, distance);
+        makeNote(time, 140, 340, angle, distance);
     }
 
-    private void MakeNote(int time, double x, double y, double angle, double distance)
+    private void makeNote(int time, double x, double y, double angle, double distance)
     {
-        MakeNote(time, x, y, angle, distance, 200, 250);
+        makeNote(time, x, y, angle, distance, 200, 250);
     }
 
-    private void MakeNote(int time, double x, double y, double angle, double distance, int inTime, int outTime)
+    private void makeNote(int time, double x, double y, double angle, double distance, int inTime, int outTime)
     {
         var fallDistance = 400;
 
         var t0 = time - inTime;
-        var t1 = time - inTime * 2 / 5;
+        // var t1 = time - inTime * 2 / 5;
         var t1b = time - Math.Min(200, inTime * 2 / 5);
         var t2 = time;
         var t3 = time + outTime / 5;
@@ -610,10 +610,10 @@ public class Jigoku : StoryboardObjectGenerator
         light.ColorHsb(t2, outTime >= 260 ? hue1 : hue2, 0.4, 1);
 
         if (outTime >= 260)
-            MakeNoteParticles(t2, x1, y1, angle, outTime / 1000.0);
+            makeNoteParticles(t2, x1, y1, angle, outTime / 1000.0);
     }
 
-    private void MakeNoteParticles(int t, double x, double y, double angle, double effectStrengh)
+    private void makeNoteParticles(int t, double x, double y, double angle, double effectStrengh)
     {
         int particleCount = 3 + (int)(Random(4, 12) * (effectStrengh * 0.8));
         for (var i = 0; i < particleCount; ++i)
@@ -666,12 +666,12 @@ public class Jigoku : StoryboardObjectGenerator
         }
     }
 
-    private void MakeCharacters(int t, double baseScale)
+    private void makeCharacters(int t, double baseScale)
     {
-        MakeCharacters(t, -1, baseScale);
+        makeCharacters(t, -1, baseScale);
     }
 
-    private void MakeCharacters(int t, int interruptTime, double baseScale)
+    private void makeCharacters(int t, int interruptTime, double baseScale)
     {
         var t0 = t;
         var t1 = t0 + BeatDuration * 3 / 2;

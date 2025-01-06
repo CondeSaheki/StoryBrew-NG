@@ -49,7 +49,7 @@ public class Spectrum : StoryboardObjectGenerator
         for (var i = 0; i < BarCount; i++)
             heightKeyframes[i] = new KeyframedValue<float>((a, b, c) => 0, 0);
 
-        var fftTimeStep = Beatmap.GetTimingPointAt(StartTime).BeatDuration / BeatDivisor;
+        var fftTimeStep = (Beatmap?.GetTimingPointAt(StartTime)?.BeatDuration ?? throw new Exception()) / BeatDivisor;
         var fftOffset = fftTimeStep * 0.2;
         for (var time = (double)StartTime; time < EndTime; time += fftTimeStep)
         {

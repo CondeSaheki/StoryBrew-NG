@@ -91,12 +91,12 @@ public class Karaoke : StoryboardObjectGenerator
                 Radius = GlowRadius,
                 // Color = GlowColor,
             });
-            generateLyrics(glowFont, subtitles, "glow", true);
+            GenerateLyrics(glowFont, subtitles, "glow", true);
         }
-        generateLyrics(font, subtitles, "", false);
+        GenerateLyrics(font, subtitles, "", false);
     }
 
-    public void generateLyrics(FontGenerator font, SubtitleSet subtitles, string layerName, bool additive)
+    public void GenerateLyrics(FontGenerator font, SubtitleSet subtitles, string layerName, bool additive)
     {
         var regex = new Regex(@"({\\k(\d+)})?([^{]+)");
 
@@ -115,7 +115,7 @@ public class Karaoke : StoryboardObjectGenerator
                     var text = match.Groups[3].Value;
                     foreach (var letter in text)
                     {
-                        var texture = font.GetTexture(letter.ToString());
+                        var texture = font.GetTexture(letter.ToString()) ?? throw new Exception();
                         lineWidth += texture.BaseWidth * FontScale;
                         lineHeight = Math.Max(lineHeight, texture.BaseHeight * FontScale);
                     }
@@ -133,13 +133,12 @@ public class Karaoke : StoryboardObjectGenerator
 
                     foreach (var letter in text)
                     {
-                        var texture = font.GetTexture(letter.ToString());
+                        var texture = font.GetTexture(letter.ToString()) ?? throw new Exception();
                         if (!texture.IsEmpty)
                         {
-                            var position = new Vector2(letterX, letterY)
-                                + texture.OffsetFor(Origin) * FontScale;
+                            var position = new Vector2(letterX, letterY) + texture.OffsetFor(Origin) * FontScale;
 
-                            var sprite = layer.CreateSprite(texture.Path, Origin, position);
+                            var sprite = layer.CreateSprite(texture.Path ?? throw new Exception(), Origin, position);
                             sprite.Scale(subtitleLine.StartTime, FontScale);
                             sprite.Fade(subtitleLine.StartTime - 200, subtitleLine.StartTime, 0, 1);
                             sprite.Fade(subtitleLine.EndTime - 200, subtitleLine.EndTime, 1, 0);

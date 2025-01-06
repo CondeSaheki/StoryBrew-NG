@@ -1,5 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using StoryBrew.Common.Mapset;
 using StoryBrew.Common.Scripting;
 using StoryBrew.Common.Storyboarding;
 
@@ -36,16 +35,17 @@ public class Tetris : StoryboardObjectGenerator
         public int X;
         public int Y;
 
-        public OsbSprite Sprite;
-        public OsbSprite Shadow;
+        public OsbSprite? Sprite;
+        public OsbSprite? Shadow;
 
-        public bool HasSprite { get { return Sprite != null; } }
+        public bool HasSprite => Sprite != null;
     }
-    private Cell[,] cells;
+
+    private Cell[,] cells = null!;
 
     public override void Generate()
     {
-        var beatDuration = Beatmap.GetTimingPointAt(0).BeatDuration;
+        var beatDuration = Beatmap?.GetTimingPointAt(0)?.BeatDuration ?? throw new Exception("Beat duration not found");
         var timestep = beatDuration / BeatDivisor;
 
         cells = new Cell[GridWidth, GridHeight];
@@ -189,10 +189,10 @@ public class Tetris : StoryboardObjectGenerator
         cells[dropX, dropY].Sprite = null;
         cells[dropX, dropY].Shadow = null;
 
-        sprite.Scale(startTime, endTime, SpriteScale, 0);
-        sprite.Color(startTime, Color);
+        sprite?.Scale(startTime, endTime, SpriteScale, 0);
+        sprite?.Color(startTime, Color);
 
-        shadow.Scale(startTime, endTime, SpriteScale, 0);
+        shadow?.Scale(startTime, endTime, SpriteScale, 0);
     }
 
     private void dropCell(double startTime, double endTime, int dropX, int dropY, int dropHeight)
@@ -209,8 +209,8 @@ public class Tetris : StoryboardObjectGenerator
         var targetPosition = new Vector2(dropX * CellSize, (dropY + dropHeight) * CellSize);
         var startPosition = new Vector2(targetPosition.X, dropY * CellSize);
 
-        sprite.Move(OsbEasing.In, startTime, endTime, transform(startPosition), transform(targetPosition));
-        shadow.Move(OsbEasing.In, startTime, endTime, transform(startPosition) + ShadowOffset, transform(targetPosition) + ShadowOffset);
+        sprite?.Move(OsbEasing.In, startTime, endTime, transform(startPosition), transform(targetPosition));
+        shadow?.Move(OsbEasing.In, startTime, endTime, transform(startPosition) + ShadowOffset, transform(targetPosition) + ShadowOffset);
     }
 
     private Vector2 transform(Vector2 position)
