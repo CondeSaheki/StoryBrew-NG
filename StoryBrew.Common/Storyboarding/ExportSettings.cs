@@ -4,7 +4,7 @@ namespace StoryBrew.Common.Storyboarding;
 
 public class ExportSettings
 {
-    public static readonly ExportSettings Default = new ExportSettings();
+    public static readonly ExportSettings DEFAULT = new();
 
     /// <summary>
     /// Not compatible with Fallback!

@@ -27,32 +27,23 @@ public struct CommandDecimal : CommandValue, IEquatable<CommandDecimal>
     public override int GetHashCode()
         => value.GetHashCode();
 
-    public override string ToString() => ToOsbString(ExportSettings.Default);
+    public override string ToString() => ToOsbString(ExportSettings.DEFAULT);
 
-    public float DistanceFrom(object obj)
-        => (float)Math.Abs(value - ((CommandDecimal)obj).value);
+    public float DistanceFrom(object obj) => (float)Math.Abs(value - ((CommandDecimal)obj).value);
 
-    public string ToOsbString(ExportSettings exportSettings)
-        => ((float)value).ToString(exportSettings.NumberFormat);
+    public string ToOsbString(ExportSettings exportSettings) => ((float)value).ToString(exportSettings.NumberFormat);
 
-    public static CommandDecimal operator -(CommandDecimal left, CommandDecimal right)
-        => new CommandDecimal(left.value - right.value);
+    public static CommandDecimal operator -(CommandDecimal left, CommandDecimal right) => new(left.value - right.value);
 
-    public static CommandDecimal operator +(CommandDecimal left, CommandDecimal right)
-        => new CommandDecimal(left.value + right.value);
+    public static CommandDecimal operator +(CommandDecimal left, CommandDecimal right) => new(left.value + right.value);
 
-    public static bool operator ==(CommandDecimal left, CommandDecimal right)
-        => left.Equals(right);
+    public static bool operator ==(CommandDecimal left, CommandDecimal right) => left.Equals(right);
 
-    public static bool operator !=(CommandDecimal left, CommandDecimal right)
-        => !left.Equals(right);
+    public static bool operator !=(CommandDecimal left, CommandDecimal right) => !left.Equals(right);
 
-    public static implicit operator CommandDecimal(double value)
-        => new CommandDecimal(value);
+    public static implicit operator CommandDecimal(double value) => new CommandDecimal(value);
 
-    public static implicit operator double(CommandDecimal obj)
-        => obj.value;
+    public static implicit operator double(CommandDecimal obj) => obj.value;
 
-    public static implicit operator float(CommandDecimal obj)
-        => (float)obj.value;
+    public static implicit operator float(CommandDecimal obj) => (float)obj.value;
 }

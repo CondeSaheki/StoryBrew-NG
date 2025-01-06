@@ -9,10 +9,10 @@ namespace StoryBrew.Common.Storyboarding3d;
 
 public class Object3d
 {
-    private readonly List<Object3d> children = new List<Object3d>();
+    private readonly List<Object3d> children = [];
 
-    public readonly KeyframedValue<CommandColor> Coloring = new KeyframedValue<CommandColor>(InterpolatingFunctions.CommandColor, CommandColor.White);
-    public readonly KeyframedValue<float> Opacity = new KeyframedValue<float>(InterpolatingFunctions.Float, 1);
+    public readonly KeyframedValue<CommandColor> Coloring = new(InterpolatingFunctions.CommandColor, CommandColor.WHITE);
+    public readonly KeyframedValue<float> Opacity = new(InterpolatingFunctions.Float, 1);
     public required StoryboardSegment Segment;
 
     public bool DrawBelowParent = false;
@@ -50,11 +50,11 @@ public class Object3d
         => GenerateTreeStates(time, camera.StateAt(time), parent3dState);
     public void GenerateTreeStates(double time, CameraState cameraState, Object3dState? parent3dState = null)
     {
-        parent3dState = parent3dState ?? Object3dState.InitialState;
+        parent3dState ??= Object3dState.INITIAL_STATE;
 
         var object3dState = new Object3dState(
             WorldTransformAt(time) * parent3dState.WorldTransform,
-            Coloring.ValueAt(time) * (InheritsColor ? parent3dState.Color : CommandColor.White),
+            Coloring.ValueAt(time) * (InheritsColor ? parent3dState.Color : CommandColor.WHITE),
             Opacity.ValueAt(time) * (InheritsOpacity ? parent3dState.Opacity : 1));
 
         GenerateStates(time, cameraState, object3dState);

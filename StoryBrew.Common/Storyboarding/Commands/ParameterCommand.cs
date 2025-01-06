@@ -10,15 +10,13 @@ public class ParameterCommand : Command<CommandParameter>
     public ParameterCommand(OsbEasing easing, double startTime, double endTime, CommandParameter value)
         : base("P", easing, startTime, endTime, value, value)
     {
-        if (value == CommandParameter.None)
+        if (value == CommandParameter.NONE)
             throw new InvalidOperationException($"Parameter command cannot be None");
     }
 
-    public override CommandParameter ValueAtProgress(double progress)
-        => StartValue;
+    public override CommandParameter ValueAtProgress(double progress) => StartValue;
 
-    public override CommandParameter Midpoint(Command<CommandParameter> endCommand, double progress)
-        => StartValue;
+    public override CommandParameter Midpoint(Command<CommandParameter> endCommand, double progress) => StartValue;
 
     public override IFragmentableCommand GetFragment(double startTime, double endTime)
     {

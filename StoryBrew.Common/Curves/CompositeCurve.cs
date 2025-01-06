@@ -9,7 +9,7 @@ public class CompositeCurve : ICurve
     public IReadOnlyList<ICurve> Curves => curves;
 
     public Vector2 StartPosition => curves[0].StartPosition;
-    public Vector2 EndPosition => curves[curves.Count - 1].EndPosition;
+    public Vector2 EndPosition => curves[^1].EndPosition;
 
     public double Length
     {
@@ -24,7 +24,7 @@ public class CompositeCurve : ICurve
 
     public CompositeCurve(List<ICurve> curves)
     {
-        this.curves = new List<ICurve>(curves);
+        this.curves = [.. curves];
     }
 
     public Vector2 PositionAtDistance(double distance)
@@ -36,7 +36,7 @@ public class CompositeCurve : ICurve
 
             distance -= curve.Length;
         }
-        return curves[curves.Count - 1].EndPosition;
+        return curves[^1].EndPosition;
     }
 
     public Vector2 PositionAtDelta(double delta)

@@ -8,7 +8,7 @@ public abstract class Script
     private string? identifier;
     public string? Identifier
     {
-        get { return identifier; }
+        get => identifier;
         set
         {
             if (identifier != null) throw new InvalidOperationException("This script already has an identifier");

@@ -6,15 +6,15 @@ namespace StoryBrew.Common.Storyboarding.CommandValues;
 [Serializable]
 public struct CommandColor : CommandValue, IEquatable<CommandColor>
 {
-    public static readonly CommandColor White = new CommandColor(1, 1, 1);
+    public static readonly CommandColor WHITE = new(1, 1, 1);
 
     private readonly double r;
     private readonly double g;
     private readonly double b;
 
-    public byte R => toByte(r);
-    public byte G => toByte(g);
-    public byte B => toByte(b);
+    public readonly byte R => toByte(r);
+    public readonly byte G => toByte(g);
+    public readonly byte B => toByte(b);
 
     public CommandColor(double r, double g, double b)
     {
@@ -64,46 +64,33 @@ public struct CommandColor : CommandValue, IEquatable<CommandColor>
     public string ToOsbString(ExportSettings exportSettings)
         => $"{R},{G},{B}";
 
-    public override string ToString() => ToOsbString(ExportSettings.Default);
+    public override string ToString() => ToOsbString(ExportSettings.DEFAULT);
 
-    public static bool operator ==(CommandColor left, CommandColor right)
-        => left.Equals(right);
+    public static bool operator ==(CommandColor left, CommandColor right) => left.Equals(right);
 
-    public static bool operator !=(CommandColor left, CommandColor right)
-        => !left.Equals(right);
+    public static bool operator !=(CommandColor left, CommandColor right) => !left.Equals(right);
 
-    public static CommandColor operator +(CommandColor left, CommandColor right)
-        => new CommandColor(left.r + right.r, left.g + right.g, left.b + right.b);
+    public static CommandColor operator +(CommandColor left, CommandColor right) => new(left.r + right.r, left.g + right.g, left.b + right.b);
 
-    public static CommandColor operator -(CommandColor left, CommandColor right)
-        => new CommandColor(left.r - right.r, left.g - right.g, left.b - right.b);
+    public static CommandColor operator -(CommandColor left, CommandColor right) => new(left.r - right.r, left.g - right.g, left.b - right.b);
 
-    public static CommandColor operator *(CommandColor left, CommandColor right)
-        => new CommandColor(left.r * right.r, left.g * right.g, left.b * right.b);
+    public static CommandColor operator *(CommandColor left, CommandColor right) => new(left.r * right.r, left.g * right.g, left.b * right.b);
 
-    public static CommandColor operator *(CommandColor left, double right)
-        => new CommandColor(left.r * right, left.g * right, left.b * right);
+    public static CommandColor operator *(CommandColor left, double right) => new(left.r * right, left.g * right, left.b * right);
 
-    public static CommandColor operator *(double left, CommandColor right)
-        => right * left;
+    public static CommandColor operator *(double left, CommandColor right) => right * left;
 
-    public static CommandColor operator /(CommandColor left, double right)
-        => new CommandColor(left.r / right, left.g / right, left.b / right);
+    public static CommandColor operator /(CommandColor left, double right) => new(left.r / right, left.g / right, left.b / right);
 
-    public static implicit operator Color4(CommandColor obj)
-        => new Color4(obj.R, obj.G, obj.B, 255);
+    public static implicit operator Color4(CommandColor obj) => new(obj.R, obj.G, obj.B, 255);
 
-    public static implicit operator CommandColor(Color4 obj)
-        => new CommandColor(obj.R, obj.G, obj.B);
+    public static implicit operator CommandColor(Color4 obj) => new(obj.R, obj.G, obj.B);
 
-    public static implicit operator CommandColor(Color obj)
-        => new CommandColor(obj.R / 255.0, obj.G / 255.0, obj.B / 255.0);
+    public static implicit operator CommandColor(Color obj) => new(obj.R / 255.0, obj.G / 255.0, obj.B / 255.0);
 
-    public static implicit operator CommandColor(string hexCode)
-        => FromHtml(hexCode);
+    public static implicit operator CommandColor(string hexCode) => FromHtml(hexCode);
 
-    public static CommandColor FromRgb(byte r, byte g, byte b)
-        => new CommandColor(r / 255.0, g / 255.0, b / 255.0);
+    public static CommandColor FromRgb(byte r, byte g, byte b) => new(r / 255.0, g / 255.0, b / 255.0);
 
     public static CommandColor FromHsb(double hue, double saturation, double brightness)
     {
@@ -125,8 +112,8 @@ public struct CommandColor : CommandValue, IEquatable<CommandColor>
 
     public static CommandColor FromHtml(string htmlColor)
     {
-        if (!htmlColor.StartsWith("#"))
-            htmlColor = "#" + htmlColor;
+        if (!htmlColor.StartsWith('#'))
+            htmlColor = '#' + htmlColor;
 
         var color = ColorTranslator.FromHtml(htmlColor);
         return new CommandColor(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);

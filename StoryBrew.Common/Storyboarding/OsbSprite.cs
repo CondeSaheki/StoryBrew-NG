@@ -9,9 +9,9 @@ namespace StoryBrew.Common.Storyboarding;
 
 public class OsbSprite : StoryboardObject
 {
-    public static readonly Vector2 DefaultPosition = new Vector2(320, 240);
+    public static readonly Vector2 DEFAULT_POSITION = new(320, 240);
 
-    private readonly List<ICommand> commands = new List<ICommand>();
+    private readonly List<ICommand> commands = [];
     private CommandGroup? currentCommandGroup = null;
     public bool InGroup => currentCommandGroup != null;
 
@@ -24,7 +24,7 @@ public class OsbSprite : StoryboardObject
     private string texturePath = "";
     public string TexturePath
     {
-        get { return texturePath; }
+        get => texturePath;
         set
         {
             if (texturePath == value) return;
@@ -40,7 +40,7 @@ public class OsbSprite : StoryboardObject
     private Vector2 initialPosition;
     public Vector2 InitialPosition
     {
-        get { return initialPosition; }
+        get => initialPosition;
         set
         {
             if (initialPosition == value) return;
@@ -119,7 +119,7 @@ public class OsbSprite : StoryboardObject
     public OsbSprite()
     {
         initializeDisplayValueBuilders();
-        InitialPosition = DefaultPosition;
+        InitialPosition = DEFAULT_POSITION;
     }
 
     public void Move(OsbEasing easing, double startTime, double endTime, CommandPosition startPosition, CommandPosition endPosition) => addCommand(new MoveCommand(easing, startTime, endTime, startPosition, endPosition));
@@ -176,11 +176,11 @@ public class OsbSprite : StoryboardObject
     public void ColorHsb(double time, double hue, double saturation, double brightness) => ColorHsb(OsbEasing.None, time, time, hue, saturation, brightness, hue, saturation, brightness);
 
     public void Parameter(OsbEasing easing, double startTime, double endTime, CommandParameter parameter) => addCommand(new ParameterCommand(easing, startTime, endTime, parameter));
-    public void FlipH(double startTime, double endTime) => Parameter(OsbEasing.None, startTime, endTime, CommandParameter.FlipHorizontal);
+    public void FlipH(double startTime, double endTime) => Parameter(OsbEasing.None, startTime, endTime, CommandParameter.FLIP_HORIZONTAL);
     public void FlipH(double time) => FlipH(time, time);
-    public void FlipV(double startTime, double endTime) => Parameter(OsbEasing.None, startTime, endTime, CommandParameter.FlipVertical);
+    public void FlipV(double startTime, double endTime) => Parameter(OsbEasing.None, startTime, endTime, CommandParameter.FLIP_VERTICAL);
     public void FlipV(double time) => FlipV(time, time);
-    public void Additive(double startTime, double endTime) => Parameter(OsbEasing.None, startTime, endTime, CommandParameter.AdditiveBlending);
+    public void Additive(double startTime, double endTime) => Parameter(OsbEasing.None, startTime, endTime, CommandParameter.ADDITIVE_BLENDING);
     public void Additive(double time) => Additive(time, time);
 
     public LoopCommand StartLoopGroup(double startTime, int loopCount)
@@ -209,8 +209,7 @@ public class OsbSprite : StoryboardObject
 
     private void addCommand(ICommand command)
     {
-        var commandGroup = command as CommandGroup;
-        if (commandGroup != null)
+        if (command is CommandGroup commandGroup)
         {
             currentCommandGroup = commandGroup;
             commands.Add(commandGroup);
@@ -263,24 +262,24 @@ public class OsbSprite : StoryboardObject
         else throw new NotSupportedException($"Failed to add command: No support for adding command of type {command.GetType().FullName}");
     }
 
-    #region Display 
+    #region Display
 
     private readonly List<KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>> displayValueBuilders = new List<KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>>();
 
-    private readonly AnimatedValue<CommandPosition> moveTimeline = new AnimatedValue<CommandPosition>(Vector2.Zero);
-    private readonly AnimatedValue<CommandDecimal> moveXTimeline = new AnimatedValue<CommandDecimal>(0);
-    private readonly AnimatedValue<CommandDecimal> moveYTimeline = new AnimatedValue<CommandDecimal>(0);
-    private readonly AnimatedValue<CommandDecimal> scaleTimeline = new AnimatedValue<CommandDecimal>(1);
-    private readonly AnimatedValue<CommandScale> scaleVecTimeline = new AnimatedValue<CommandScale>(Vector2.One);
-    private readonly AnimatedValue<CommandDecimal> rotateTimeline = new AnimatedValue<CommandDecimal>(0);
-    private readonly AnimatedValue<CommandDecimal> fadeTimeline = new AnimatedValue<CommandDecimal>(1);
-    private readonly AnimatedValue<CommandColor> colorTimeline = new AnimatedValue<CommandColor>(CommandColor.FromRgb(255, 255, 255));
-    private readonly AnimatedValue<CommandParameter> additiveTimeline = new AnimatedValue<CommandParameter>(CommandParameter.None);
-    private readonly AnimatedValue<CommandParameter> flipHTimeline = new AnimatedValue<CommandParameter>(CommandParameter.None);
-    private readonly AnimatedValue<CommandParameter> flipVTimeline = new AnimatedValue<CommandParameter>(CommandParameter.None);
+    private readonly AnimatedValue<CommandPosition> moveTimeline = new(Vector2.Zero);
+    private readonly AnimatedValue<CommandDecimal> moveXTimeline = new(0);
+    private readonly AnimatedValue<CommandDecimal> moveYTimeline = new(0);
+    private readonly AnimatedValue<CommandDecimal> scaleTimeline = new(1);
+    private readonly AnimatedValue<CommandScale> scaleVecTimeline = new(Vector2.One);
+    private readonly AnimatedValue<CommandDecimal> rotateTimeline = new(0);
+    private readonly AnimatedValue<CommandDecimal> fadeTimeline = new(1);
+    private readonly AnimatedValue<CommandColor> colorTimeline = new(CommandColor.FromRgb(255, 255, 255));
+    private readonly AnimatedValue<CommandParameter> additiveTimeline = new(CommandParameter.NONE);
+    private readonly AnimatedValue<CommandParameter> flipHTimeline = new(CommandParameter.NONE);
+    private readonly AnimatedValue<CommandParameter> flipVTimeline = new(CommandParameter.NONE);
 
-    public CommandPosition PositionAt(double time) => moveTimeline.HasCommands ? moveTimeline.ValueAtTime(time) : new CommandPosition(moveXTimeline.ValueAtTime(time), moveYTimeline.ValueAtTime(time));
-    public CommandScale ScaleAt(double time) => scaleVecTimeline.HasCommands ? scaleVecTimeline.ValueAtTime(time) : new CommandScale(scaleTimeline.ValueAtTime(time));
+    public CommandPosition PositionAt(double time) => moveTimeline.HasCommands ? moveTimeline.ValueAtTime(time) : new(moveXTimeline.ValueAtTime(time), moveYTimeline.ValueAtTime(time));
+    public CommandScale ScaleAt(double time) => scaleVecTimeline.HasCommands ? scaleVecTimeline.ValueAtTime(time) : new(scaleTimeline.ValueAtTime(time));
     public CommandDecimal RotationAt(double time) => rotateTimeline.ValueAtTime(time);
     public CommandDecimal OpacityAt(double time) => fadeTimeline.ValueAtTime(time);
     public CommandColor ColorAt(double time) => colorTimeline.ValueAtTime(time);
@@ -298,9 +297,9 @@ public class OsbSprite : StoryboardObject
         displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is RotateCommand, new AnimatedValueBuilder<CommandDecimal>(rotateTimeline)));
         displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is FadeCommand, new AnimatedValueBuilder<CommandDecimal>(fadeTimeline)));
         displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is ColorCommand, new AnimatedValueBuilder<CommandColor>(colorTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => (c as ParameterCommand)?.StartValue.Type == ParameterType.AdditiveBlending, new AnimatedValueBuilder<CommandParameter>(additiveTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => (c as ParameterCommand)?.StartValue.Type == ParameterType.FlipHorizontal, new AnimatedValueBuilder<CommandParameter>(flipHTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => (c as ParameterCommand)?.StartValue.Type == ParameterType.FlipVertical, new AnimatedValueBuilder<CommandParameter>(flipVTimeline)));
+        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is ParameterCommand { StartValue.Type: ParameterType.AdditiveBlending }, new AnimatedValueBuilder<CommandParameter>(additiveTimeline)));
+        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is ParameterCommand { StartValue.Type: ParameterType.FlipHorizontal }, new AnimatedValueBuilder<CommandParameter>(flipHTimeline)));
+        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is ParameterCommand { StartValue.Type: ParameterType.FlipVertical }, new AnimatedValueBuilder<CommandParameter>(flipVTimeline)));
     }
 
     private void addDisplayCommand(ICommand command)
@@ -336,7 +335,7 @@ public class OsbSprite : StoryboardObject
     public override double StartTime => CommandsStartTime;
     public override double EndTime => CommandsEndTime;
 
-    public override void WriteOsb(TextWriter writer, ExportSettings exportSettings, OsbLayer layer, StoryboardTransform transform)
+    public override void WriteOsb(TextWriter writer, ExportSettings exportSettings, OsbLayer layer, StoryboardTransform? transform)
     {
         if (CommandCount == 0)
             return;
@@ -350,12 +349,12 @@ public class OsbSprite : StoryboardObject
                                                                   fadeTimeline,
                                                                   colorTimeline,
                                                                   writer, exportSettings, layer);
-        osbSpriteWriter.WriteOsb(transform);
+        osbSpriteWriter.WriteOsb(transform ?? throw new ArgumentNullException(nameof(transform)));
     }
 
     public static bool InScreenBounds(Vector2 position, Vector2 size, float rotation, Vector2 origin)
         => new OrientedBoundingBox(position, origin, size.X, size.Y, rotation)
-            .Intersects(OsuHitObject.WidescreenStoryboardBounds);
+            .Intersects(OsuHitObject.WIDESCREEN_STORYBOARD_BOUNDS);
 
     public static Vector2 GetOriginVector(OsbOrigin origin, float width, float height)
     {

@@ -13,7 +13,7 @@ public class OsbAnimation : OsbSprite
         var dotIndex = TexturePath.LastIndexOf('.');
         if (dotIndex < 0) return TexturePath + GetFrameAt(time);
 
-        return TexturePath.Substring(0, dotIndex) + GetFrameAt(time) + TexturePath.Substring(dotIndex, TexturePath.Length - dotIndex);
+        return TexturePath[..dotIndex] + GetFrameAt(time) + TexturePath[dotIndex..];
     }
 
     public int GetFrameAt(double time)

@@ -6,21 +6,21 @@ namespace StoryBrew.Common.Mapset;
 [Serializable]
 public class OsuHitObject
 {
-    public static readonly Vector2 PlayfieldSize = new Vector2(512, 384);
-    public static readonly Vector2 StoryboardSize = new Vector2(640, 480);
-    public static readonly int StoryboardArea = (int)(StoryboardSize.X * StoryboardSize.Y);
-    public static readonly Vector2 PlayfieldToStoryboardOffset = new Vector2((StoryboardSize.X - PlayfieldSize.X) * 0.5f, (StoryboardSize.Y - PlayfieldSize.Y) * 0.75f - 16);
-    public static readonly Vector2 WidescreenStoryboardSize = new Vector2(StoryboardSize.Y * 16f / 9, StoryboardSize.Y);
-    public static readonly int WidescreenStoryboardArea = (int)(WidescreenStoryboardSize.X * WidescreenStoryboardSize.Y);
+    public static readonly Vector2 PLAYFIELD_SIZE = new(512, 384);
+    public static readonly Vector2 STORYBOARD_SIZE = new(640, 480);
+    public static readonly int STORYBOARD_AREA = (int)(STORYBOARD_SIZE.X * STORYBOARD_SIZE.Y);
+    public static readonly Vector2 PLAYFIELD_TO_STORYBOARD_OFFSET = new((STORYBOARD_SIZE.X - PLAYFIELD_SIZE.X) * 0.5f, (STORYBOARD_SIZE.Y - PLAYFIELD_SIZE.Y) * 0.75f - 16);
+    public static readonly Vector2 WIDESCREEN_STORYBOARD_SIZE = new(STORYBOARD_SIZE.Y * 16f / 9, STORYBOARD_SIZE.Y);
+    public static readonly int WIDESCREEN_STORYBOARD_AREA = (int)(WIDESCREEN_STORYBOARD_SIZE.X * WIDESCREEN_STORYBOARD_SIZE.Y);
 
-    public static readonly Box2 StoryboardBounds = new Box2(Vector2.Zero, StoryboardSize);
-    public static readonly Box2 WidescreenStoryboardBounds = new Box2((StoryboardSize.X - WidescreenStoryboardSize.X) / 2, 0, StoryboardSize.X + (WidescreenStoryboardSize.X - StoryboardSize.X) / 2, 480);
+    public static readonly Box2 STORYBOARD_BOUNDS = new(Vector2.Zero, STORYBOARD_SIZE);
+    public static readonly Box2 WIDESCREEN_STORYBOARD_BOUNDS = new((STORYBOARD_SIZE.X - WIDESCREEN_STORYBOARD_SIZE.X) / 2, 0, STORYBOARD_SIZE.X + (WIDESCREEN_STORYBOARD_SIZE.X - STORYBOARD_SIZE.X) / 2, 480);
 
     public Vector2 PlayfieldPosition;
-    public Vector2 Position => PlayfieldPosition + PlayfieldToStoryboardOffset;
+    public Vector2 Position => PlayfieldPosition + PLAYFIELD_TO_STORYBOARD_OFFSET;
 
     public virtual Vector2 PlayfieldEndPosition => PlayfieldPositionAtTime(EndTime);
-    public Vector2 EndPosition => PlayfieldEndPosition + PlayfieldToStoryboardOffset;
+    public Vector2 EndPosition => PlayfieldEndPosition + PLAYFIELD_TO_STORYBOARD_OFFSET;
 
     public double StartTime;
     public virtual double EndTime => StartTime;
@@ -44,7 +44,7 @@ public class OsuHitObject
     public Vector2 StackOffset;
 
     public virtual Vector2 PlayfieldPositionAtTime(double time) => PlayfieldPosition;
-    public Vector2 PositionAtTime(double time) => PlayfieldPositionAtTime(time) + PlayfieldToStoryboardOffset;
+    public Vector2 PositionAtTime(double time) => PlayfieldPositionAtTime(time) + PLAYFIELD_TO_STORYBOARD_OFFSET;
 
     public override string ToString()
         => $"{(int)StartTime}, {Flags}";

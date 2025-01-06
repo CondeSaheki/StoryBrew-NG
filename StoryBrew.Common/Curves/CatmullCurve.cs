@@ -9,7 +9,7 @@ public class CatmullCurve : BaseCurve
     private readonly int precision;
 
     public override Vector2 StartPosition => points[0];
-    public override Vector2 EndPosition => points[points.Count - 1];
+    public override Vector2 EndPosition => points[^1];
     public bool IsLinear => points.Count < 3;
 
     public CatmullCurve(List<Vector2> points, int precision)

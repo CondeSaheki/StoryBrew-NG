@@ -12,11 +12,10 @@ public class VScaleCommand : Command<CommandScale>
     public override CommandScale GetTransformedStartValue(StoryboardTransform transform) => transform.ApplyToScale(StartValue);
     public override CommandScale GetTransformedEndValue(StoryboardTransform transform) => transform.ApplyToScale(EndValue);
 
-    public override CommandScale ValueAtProgress(double progress)
-        => StartValue + (EndValue - StartValue) * progress;
+    public override CommandScale ValueAtProgress(double progress) => StartValue + (EndValue - StartValue) * progress;
 
     public override CommandScale Midpoint(Command<CommandScale> endCommand, double progress)
-        => new CommandScale(StartValue.X + (endCommand.EndValue.X - StartValue.X) * progress, StartValue.Y + (endCommand.EndValue.Y - StartValue.Y) * progress);
+        => new(StartValue.X + (endCommand.EndValue.X - StartValue.X) * progress, StartValue.Y + (endCommand.EndValue.Y - StartValue.Y) * progress);
 
     public override IFragmentableCommand GetFragment(double startTime, double endTime)
     {

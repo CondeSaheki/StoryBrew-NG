@@ -21,7 +21,7 @@ public static class BeatmapExtensions
                     timingPoint = nextTimingPoint;
                     continue;
                 }
-                if (timingPoint != leftTimingPoint && endTime + Beatmap.ControlPointLeniency < timingPoint.Offset) break;
+                if (timingPoint != leftTimingPoint && endTime + Beatmap.CONTROL_POINT_LENIENCY < timingPoint.Offset) break;
 
                 int tickCount = 0, beatCount = 0;
                 var step = Math.Max(1, timingPoint.BeatDuration / snapDivisor);
@@ -36,7 +36,7 @@ public static class BeatmapExtensions
                             beatCount--;
                     }
 
-                for (var time = sectionStartTime; time < sectionEndTime + Beatmap.ControlPointLeniency; time += step)
+                for (var time = sectionStartTime; time < sectionEndTime + Beatmap.CONTROL_POINT_LENIENCY; time += step)
                 {
                     if (startTime < time)
                         tickAction(timingPoint, time, beatCount, tickCount);
@@ -53,6 +53,7 @@ public static class BeatmapExtensions
     public static void AsSliderNodes(this IEnumerable<OsuHitObject> hitobjects, Action<OsuSliderNode, OsuHitObject> action)
     {
         foreach (var hitobject in hitobjects)
+        {
             switch (hitobject)
             {
                 case OsuCircle circle:
@@ -84,5 +85,6 @@ public static class BeatmapExtensions
                     }, hitobject);
                     break;
             }
+        }
     }
 }

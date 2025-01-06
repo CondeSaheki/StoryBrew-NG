@@ -41,7 +41,7 @@ public struct CommandPosition : CommandValue, IEquatable<CommandPosition>
             $"{X.ToOsbString(exportSettings)},{Y.ToOsbString(exportSettings)}" :
             $"{(int)Math.Round(X)},{(int)Math.Round(Y)}";
 
-    public override string ToString() => ToOsbString(ExportSettings.Default);
+    public override string ToString() => ToOsbString(ExportSettings.DEFAULT);
 
     public float DistanceFrom(object obj)
         => Distance(this, (CommandPosition)obj);
@@ -53,33 +53,23 @@ public struct CommandPosition : CommandValue, IEquatable<CommandPosition>
         return (float)Math.Sqrt((diffX * diffX) + (diffY * diffY));
     }
 
-    public static CommandPosition operator +(CommandPosition left, CommandPosition right)
-        => new(left.X + right.X, left.Y + right.Y);
+    public static CommandPosition operator +(CommandPosition left, CommandPosition right) => new(left.X + right.X, left.Y + right.Y);
 
-    public static CommandPosition operator -(CommandPosition left, CommandPosition right)
-        => new(left.X - right.X, left.Y - right.Y);
+    public static CommandPosition operator -(CommandPosition left, CommandPosition right) => new(left.X - right.X, left.Y - right.Y);
 
-    public static CommandPosition operator *(CommandPosition left, CommandPosition right)
-        => new(left.X * right.X, left.Y * right.Y);
+    public static CommandPosition operator *(CommandPosition left, CommandPosition right) => new(left.X * right.X, left.Y * right.Y);
 
-    public static CommandPosition operator *(CommandPosition left, double right)
-        => new(left.X * right, left.Y * right);
+    public static CommandPosition operator *(CommandPosition left, double right) => new(left.X * right, left.Y * right);
 
-    public static CommandPosition operator *(double left, CommandPosition right)
-        => right * left;
+    public static CommandPosition operator *(double left, CommandPosition right) => right * left;
 
-    public static CommandPosition operator /(CommandPosition left, double right)
-        => new(left.X / right, left.Y / right);
+    public static CommandPosition operator /(CommandPosition left, double right) => new(left.X / right, left.Y / right);
 
-    public static bool operator ==(CommandPosition left, CommandPosition right)
-        => left.Equals(right);
+    public static bool operator ==(CommandPosition left, CommandPosition right) => left.Equals(right);
 
-    public static bool operator !=(CommandPosition left, CommandPosition right)
-        => !left.Equals(right);
+    public static bool operator !=(CommandPosition left, CommandPosition right) => !left.Equals(right);
 
-    public static implicit operator Vector2(CommandPosition position)
-        => new(position.X, position.Y);
+    public static implicit operator Vector2(CommandPosition position) => new(position.X, position.Y);
 
-    public static implicit operator CommandPosition(Vector2 vector)
-        => new(vector.X, vector.Y);
+    public static implicit operator CommandPosition(Vector2 vector) => new(vector.X, vector.Y);
 }

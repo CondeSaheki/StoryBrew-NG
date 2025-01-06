@@ -9,17 +9,17 @@ public class AnimatedValue<TValue>
 {
     public TValue DefaultValue;
 
-    private readonly List<ITypedCommand<TValue>> commands = new List<ITypedCommand<TValue>>();
+    private readonly List<ITypedCommand<TValue>> commands = [];
     public IEnumerable<ITypedCommand<TValue>> Commands => commands;
     public bool HasCommands => commands.Count > 0;
 
     public bool HasOverlap { get; private set; }
 
     public double StartTime => commands.Count > 0 ? commands[0].StartTime : 0;
-    public double EndTime => commands.Count > 0 ? commands[commands.Count - 1].EndTime : 0;
+    public double EndTime => commands.Count > 0 ? commands[^1].EndTime : 0;
     public double Duration => EndTime - StartTime;
     public TValue StartValue => commands.Count > 0 ? commands[0].StartValue : DefaultValue;
-    public TValue EndValue => commands.Count > 0 ? commands[commands.Count - 1].EndValue : DefaultValue;
+    public TValue EndValue => commands.Count > 0 ? commands[^1].EndValue : DefaultValue;
 
     public AnimatedValue(TValue defaultValue)
     {
@@ -28,8 +28,7 @@ public class AnimatedValue<TValue>
 
     public void Add(ITypedCommand<TValue> command)
     {
-        var triggerable = command as TriggerDecorator<TValue>;
-        if (triggerable == null)
+        if (command is not TriggerDecorator<TValue> triggerable)
         {
             if (command.EndTime < command.StartTime)
                 Debug.Print($"'{command}' ends before it starts");
@@ -53,8 +52,7 @@ public class AnimatedValue<TValue>
 
     public void Remove(ITypedCommand<TValue> command)
     {
-        var triggerable = command as TriggerDecorator<TValue>;
-        if (triggerable == null)
+        if (command is not TriggerDecorator<TValue> triggerable)
             commands.Remove(command);
         else triggerable.OnStateChanged -= triggerable_OnStateChanged;
     }

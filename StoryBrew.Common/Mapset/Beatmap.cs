@@ -7,7 +7,7 @@ public abstract class Beatmap
     /// <summary>
     /// In milliseconds
     /// </summary>
-    public const int ControlPointLeniency = 5;
+    public const int CONTROL_POINT_LENIENCY = 5;
 
     /// <summary>
     /// This beatmap diff name, also called version.
@@ -61,10 +61,8 @@ public abstract class Beatmap
 
     public static double GetDifficultyRange(double difficulty, double min, double mid, double max)
     {
-        if (difficulty > 5)
-            return mid + (max - mid) * (difficulty - 5) / 5;
-        if (difficulty < 5)
-            return mid - (mid - min) * (5 - difficulty) / 5;
+        if (difficulty > 5) return mid + (max - mid) * (difficulty - 5) / 5;
+        if (difficulty < 5) return mid - (mid - min) * (5 - difficulty) / 5;
         return mid;
     }
 }

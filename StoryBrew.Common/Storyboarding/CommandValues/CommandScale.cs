@@ -5,13 +5,13 @@ namespace StoryBrew.Common.Storyboarding.CommandValues;
 [Serializable]
 public struct CommandScale : CommandValue, IEquatable<CommandScale>
 {
-    public static CommandScale One = new CommandScale(1, 1);
+    public static CommandScale One = new(1, 1);
 
     private readonly CommandDecimal x;
     private readonly CommandDecimal y;
 
-    public CommandDecimal X => x;
-    public CommandDecimal Y => y;
+    public readonly CommandDecimal X => x;
+    public readonly CommandDecimal Y => y;
 
     public CommandScale(CommandDecimal x, CommandDecimal y)
     {
@@ -46,7 +46,7 @@ public struct CommandScale : CommandValue, IEquatable<CommandScale>
     public string ToOsbString(ExportSettings exportSettings)
         => $"{X.ToOsbString(exportSettings)},{Y.ToOsbString(exportSettings)}";
 
-    public override string ToString() => ToOsbString(ExportSettings.Default);
+    public override string ToString() => ToOsbString(ExportSettings.DEFAULT);
 
     public float DistanceFrom(object obj)
     {
@@ -56,33 +56,23 @@ public struct CommandScale : CommandValue, IEquatable<CommandScale>
         return (float)Math.Sqrt((diffX * diffX) + (diffY * diffY));
     }
 
-    public static CommandScale operator +(CommandScale left, CommandScale right)
-        => new CommandScale(left.X + right.X, left.Y + right.Y);
+    public static CommandScale operator +(CommandScale left, CommandScale right) => new(left.X + right.X, left.Y + right.Y);
 
-    public static CommandScale operator -(CommandScale left, CommandScale right)
-        => new CommandScale(left.X - right.X, left.Y - right.Y);
+    public static CommandScale operator -(CommandScale left, CommandScale right) => new(left.X - right.X, left.Y - right.Y);
 
-    public static CommandScale operator *(CommandScale left, CommandScale right)
-        => new CommandScale(left.X * right.X, left.Y * right.Y);
+    public static CommandScale operator *(CommandScale left, CommandScale right) => new(left.X * right.X, left.Y * right.Y);
 
-    public static CommandScale operator *(CommandScale left, double right)
-        => new CommandScale(left.X * right, left.Y * right);
+    public static CommandScale operator *(CommandScale left, double right) => new(left.X * right, left.Y * right);
 
-    public static CommandScale operator *(double left, CommandScale right)
-        => right * left;
+    public static CommandScale operator *(double left, CommandScale right) => right * left;
 
-    public static CommandScale operator /(CommandScale left, double right)
-        => new CommandScale(left.X / right, left.Y / right);
+    public static CommandScale operator /(CommandScale left, double right) => new(left.X / right, left.Y / right);
 
-    public static bool operator ==(CommandScale left, CommandScale right)
-        => left.Equals(right);
+    public static bool operator ==(CommandScale left, CommandScale right) => left.Equals(right);
 
-    public static bool operator !=(CommandScale left, CommandScale right)
-        => !left.Equals(right);
+    public static bool operator !=(CommandScale left, CommandScale right) => !left.Equals(right);
 
-    public static implicit operator CommandScale(Vector2 vector)
-        => new CommandScale(vector);
+    public static implicit operator CommandScale(Vector2 vector) => new(vector);
 
-    public static implicit operator Vector2(CommandScale obj)
-        => new Vector2(obj.x, obj.y);
+    public static implicit operator Vector2(CommandScale obj) => new(obj.x, obj.y);
 }

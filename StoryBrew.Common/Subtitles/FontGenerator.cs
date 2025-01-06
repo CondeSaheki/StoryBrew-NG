@@ -159,7 +159,7 @@ public class FontGenerator
 
                     if (description.TrimTransparency)
                     {
-                        var bounds = BitmapHelper.FindTransparencyBounds(bitmap); // Adapt or reimplement for SKBitmap
+                        var bounds = findTransparencyBounds(bitmap);
                         if (bounds != null && bounds != new SKRectI(0, 0, bitmap.Width, bitmap.Height))
                         {
                             offsetX += bounds.Value.Left;
@@ -172,19 +172,48 @@ public class FontGenerator
                                 using (var canvas = new SKCanvas(trimmedBitmap))
                                     canvas.DrawBitmap(bitmap, new SKRectI((int)bounds.Value.Left, (int)bounds.Value.Top, (int)bounds.Value.Right, (int)bounds.Value.Bottom),
                                         new SKRectI(0, 0, width, height));
-                                SaveBitmap(trimmedBitmap, bitmapPath);
+                                saveBitmap(trimmedBitmap, bitmapPath);
                             }
                         }
-                        else SaveBitmap(bitmap, bitmapPath);
+                        else saveBitmap(bitmap, bitmapPath);
                     }
-                    else SaveBitmap(bitmap, bitmapPath);
+                    else saveBitmap(bitmap, bitmapPath);
                 }
             }
         }
         return new FontTexture(Path.Combine(Directory, filename), offsetX, offsetY, baseWidth, baseHeight, width, height);
     }
 
-    private void SaveBitmap(SKBitmap bitmap, string path)
+    private static SKRect? findTransparencyBounds(SKBitmap source)
+    {
+        int xMin = int.MaxValue, xMax = int.MinValue, yMin = int.MaxValue, yMax = int.MinValue;
+        bool foundPixel = false;
+
+        using (var pixmap = source.PeekPixels())
+        {
+            for (int y = 0; y < source.Height; y++)
+            {
+                for (int x = 0; x < source.Width; x++)
+                {
+                    var pixel = pixmap.GetPixelColorF(x, y);
+                    if (pixel.Alpha != 0)
+                    {
+                        foundPixel = true;
+                        xMin = Math.Min(xMin, x);
+                        xMax = Math.Max(xMax, x);
+                        yMin = Math.Min(yMin, y);
+                        yMax = Math.Max(yMax, y);
+                    }
+                }
+            }
+        }
+
+        if (!foundPixel) return null;
+
+        return new SKRect(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
+    }
+
+    private void saveBitmap(SKBitmap bitmap, string path)
     {
         using var image = SKImage.FromBitmap(bitmap);
         using var data = image.Encode(SKEncodedImageFormat.Png, 100);
@@ -231,12 +260,12 @@ public class FontGenerator
     {
         if (cachedFontRoot.Value<string>("FontPath") == description.FontPath &&
             cachedFontRoot.Value<int>("FontSize") == description.FontSize &&
-            MathUtil.FloatEquals(cachedFontRoot.Value<float>("ColorR"), description.Color.R, 0.00001f) &&
-            MathUtil.FloatEquals(cachedFontRoot.Value<float>("ColorG"), description.Color.G, 0.00001f) &&
-            MathUtil.FloatEquals(cachedFontRoot.Value<float>("ColorB"), description.Color.B, 0.00001f) &&
-            MathUtil.FloatEquals(cachedFontRoot.Value<float>("ColorA"), description.Color.A, 0.00001f) &&
-            MathUtil.FloatEquals(cachedFontRoot.Value<float>("PaddingX"), description.Padding.X, 0.00001f) &&
-            MathUtil.FloatEquals(cachedFontRoot.Value<float>("PaddingY"), description.Padding.Y, 0.00001f) &&
+            floatEquals(cachedFontRoot.Value<float>("ColorR"), description.Color.R, 0.00001f) &&
+            floatEquals(cachedFontRoot.Value<float>("ColorG"), description.Color.G, 0.00001f) &&
+            floatEquals(cachedFontRoot.Value<float>("ColorB"), description.Color.B, 0.00001f) &&
+            floatEquals(cachedFontRoot.Value<float>("ColorA"), description.Color.A, 0.00001f) &&
+            floatEquals(cachedFontRoot.Value<float>("PaddingX"), description.Padding.X, 0.00001f) &&
+            floatEquals(cachedFontRoot.Value<float>("PaddingY"), description.Padding.Y, 0.00001f) &&
             // cachedFontRoot.Value<FontStyle>("FontStyle") == description.FontStyle &&
             cachedFontRoot.Value<bool>("TrimTransparency") == description.TrimTransparency &&
             cachedFontRoot.Value<bool>("EffectsOnly") == description.EffectsOnly &&
@@ -267,35 +296,35 @@ public class FontGenerator
             if (fieldType == typeof(Color4))
             {
                 var color = (Color4?)field.GetValue(fontEffect) ?? throw new Exception();
-                if (!MathUtil.FloatEquals(cache.Value<float>($"{field.Name}R"), color.R, 0.00001f) ||
-                    !MathUtil.FloatEquals(cache.Value<float>($"{field.Name}G"), color.G, 0.00001f) ||
-                    !MathUtil.FloatEquals(cache.Value<float>($"{field.Name}B"), color.B, 0.00001f) ||
-                    !MathUtil.FloatEquals(cache.Value<float>($"{field.Name}A"), color.A, 0.00001f))
+                if (!floatEquals(cache.Value<float>($"{field.Name}R"), color.R, 0.00001f) ||
+                    !floatEquals(cache.Value<float>($"{field.Name}G"), color.G, 0.00001f) ||
+                    !floatEquals(cache.Value<float>($"{field.Name}B"), color.B, 0.00001f) ||
+                    !floatEquals(cache.Value<float>($"{field.Name}A"), color.A, 0.00001f))
                     return false;
             }
             else if (fieldType == typeof(Vector3))
             {
                 var vector = (Vector3?)field.GetValue(fontEffect) ?? throw new Exception();
-                if (!MathUtil.FloatEquals(cache.Value<float>($"{field.Name}X"), vector.X, 0.00001f) ||
-                    !MathUtil.FloatEquals(cache.Value<float>($"{field.Name}Y"), vector.Y, 0.00001f) ||
-                    !MathUtil.FloatEquals(cache.Value<float>($"{field.Name}Z"), vector.Z, 0.00001f))
+                if (!floatEquals(cache.Value<float>($"{field.Name}X"), vector.X, 0.00001f) ||
+                    !floatEquals(cache.Value<float>($"{field.Name}Y"), vector.Y, 0.00001f) ||
+                    !floatEquals(cache.Value<float>($"{field.Name}Z"), vector.Z, 0.00001f))
                     return false;
             }
             else if (fieldType == typeof(Vector2))
             {
                 var vector = (Vector2?)field.GetValue(fontEffect) ?? throw new Exception();
-                if (!MathUtil.FloatEquals(cache.Value<float>($"{field.Name}X"), vector.X, 0.00001f) ||
-                    !MathUtil.FloatEquals(cache.Value<float>($"{field.Name}Y"), vector.Y, 0.00001f))
+                if (!floatEquals(cache.Value<float>($"{field.Name}X"), vector.X, 0.00001f) ||
+                    !floatEquals(cache.Value<float>($"{field.Name}Y"), vector.Y, 0.00001f))
                     return false;
             }
             else if (fieldType == typeof(double))
             {
-                if (!MathUtil.DoubleEquals(cache.Value<double>(field.Name), (double?)field.GetValue(fontEffect) ?? throw new Exception(), 0.00001))
+                if (!(Math.Abs(cache.Value<double>(field.Name) - (double?)field.GetValue(fontEffect) ?? throw new Exception()) < 0.00001))
                     return false;
             }
             else if (fieldType == typeof(float))
             {
-                if (!MathUtil.FloatEquals(cache.Value<float>(field.Name), (float?)field.GetValue(fontEffect) ?? throw new Exception(), 0.00001f))
+                if (!floatEquals(cache.Value<float>(field.Name), (float?)field.GetValue(fontEffect) ?? throw new Exception(), 0.00001f))
                     return false;
             }
             else if (fieldType == typeof(int) || fieldType.IsEnum)
@@ -313,9 +342,12 @@ public class FontGenerator
         return true;
     }
 
+    private static bool floatEquals(float a, float b, float epsilon)
+        => Math.Abs(a - b) < epsilon;
+
     internal TinyObject ToTinyObject() => new TinyObject
         {
-            { "FontPath", PathHelper.WithStandardSeparators(description.FontPath) },
+            { "FontPath", withStandardSeparators(description.FontPath) },
             { "FontSize", description.FontSize },
             { "ColorR", description.Color.R },
             { "ColorG", description.Color.G },
@@ -334,7 +366,7 @@ public class FontGenerator
     private TinyObject letterToTinyObject(KeyValuePair<string, FontTexture> letterEntry) => new TinyObject
         {
             { "Text", letterEntry.Key },
-            { "Path", PathHelper.WithStandardSeparators(letterEntry.Value.Path ?? throw new Exception()) },
+            { "Path", withStandardSeparators(letterEntry.Value.Path ?? throw new Exception()) },
             { "Hash", HashHelper.GetFileMd5(Path.Combine(assetDirectory, letterEntry.Value.Path)) },
             { "OffsetX", letterEntry.Value.OffsetX },
             { "OffsetY", letterEntry.Value.OffsetY },
@@ -388,5 +420,18 @@ public class FontGenerator
         }
 
         return cache;
+    }
+
+    /// <summary>
+    /// Replaces directory separator by a StandardDirectorySeparator
+    /// </summary>
+    private static string withStandardSeparators(string path)
+    {
+        const char standard_directory_separator = '/';
+
+        if (Path.DirectorySeparatorChar != standard_directory_separator)
+            path = path.Replace(Path.DirectorySeparatorChar, standard_directory_separator);
+        path = path.Replace('\\', standard_directory_separator);
+        return path;
     }
 }

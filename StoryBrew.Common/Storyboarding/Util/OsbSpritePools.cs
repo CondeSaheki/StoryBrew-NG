@@ -9,7 +9,7 @@ public class OsbSpritePools : IDisposable
     private int maxPoolDuration = 60000;
     public int MaxPoolDuration
     {
-        get { return maxPoolDuration; }
+        get => maxPoolDuration;
         set
         {
             if (maxPoolDuration == value) return;

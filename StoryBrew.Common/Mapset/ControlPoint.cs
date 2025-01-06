@@ -5,7 +5,7 @@ namespace StoryBrew.Common.Mapset;
 [Serializable]
 public class ControlPoint : IComparable<ControlPoint>
 {
-    public static readonly ControlPoint Default = new ControlPoint();
+    public static readonly ControlPoint DEFAULT = new();
 
     public double Offset;
     public int BeatPerMeasure = 4;

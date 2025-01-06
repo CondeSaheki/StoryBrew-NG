@@ -5,19 +5,19 @@ namespace StoryBrew.Common.Storyboarding3d;
 
 public class PerspectiveCamera : Camera
 {
-    public readonly KeyframedValue<float> PositionX = new KeyframedValue<float>(InterpolatingFunctions.Float, 0);
-    public readonly KeyframedValue<float> PositionY = new KeyframedValue<float>(InterpolatingFunctions.Float, 0);
-    public readonly KeyframedValue<float> PositionZ = new KeyframedValue<float>(InterpolatingFunctions.Float, 0);
-    public readonly KeyframedValue<Vector3> TargetPosition = new KeyframedValue<Vector3>(InterpolatingFunctions.Vector3, Vector3.Zero);
-    public readonly KeyframedValue<Vector3> Up = new KeyframedValue<Vector3>(InterpolatingFunctions.Vector3, new Vector3(0, 1, 0));
+    public readonly KeyframedValue<float> PositionX = new(InterpolatingFunctions.Float, 0);
+    public readonly KeyframedValue<float> PositionY = new(InterpolatingFunctions.Float, 0);
+    public readonly KeyframedValue<float> PositionZ = new(InterpolatingFunctions.Float, 0);
+    public readonly KeyframedValue<Vector3> TargetPosition = new(InterpolatingFunctions.Vector3, Vector3.Zero);
+    public readonly KeyframedValue<Vector3> Up = new(InterpolatingFunctions.Vector3, new(0, 1, 0));
 
-    public readonly KeyframedValue<float> NearClip = new KeyframedValue<float>(InterpolatingFunctions.Float, 0);
-    public readonly KeyframedValue<float> NearFade = new KeyframedValue<float>(InterpolatingFunctions.Float, 0);
-    public readonly KeyframedValue<float> FarFade = new KeyframedValue<float>(InterpolatingFunctions.Float, 0);
-    public readonly KeyframedValue<float> FarClip = new KeyframedValue<float>(InterpolatingFunctions.Float, 0);
+    public readonly KeyframedValue<float> NearClip = new(InterpolatingFunctions.Float, 0);
+    public readonly KeyframedValue<float> NearFade = new(InterpolatingFunctions.Float, 0);
+    public readonly KeyframedValue<float> FarFade = new(InterpolatingFunctions.Float, 0);
+    public readonly KeyframedValue<float> FarClip = new(InterpolatingFunctions.Float, 0);
 
-    public readonly KeyframedValue<float> HorizontalFov = new KeyframedValue<float>(InterpolatingFunctions.Float, 0);
-    public readonly KeyframedValue<float> VerticalFov = new KeyframedValue<float>(InterpolatingFunctions.Float, 0);
+    public readonly KeyframedValue<float> HorizontalFov = new(InterpolatingFunctions.Float, 0);
+    public readonly KeyframedValue<float> VerticalFov = new(InterpolatingFunctions.Float, 0);
 
     public override CameraState StateAt(double time)
     {

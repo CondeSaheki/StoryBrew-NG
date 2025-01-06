@@ -28,7 +28,7 @@ public class CommandGenerator
     private readonly KeyframedValue<bool> additive = new(InterpolatingFunctions.BoolFrom, false);
 
     public State? StartState => states.Count == 0 ? null : states[0];
-    public State? EndState => states.Count == 0 ? null : states[states.Count - 1];
+    public State? EndState => states.Count == 0 ? null : states[^1];
 
     public double PositionTolerance = 1;
     public double ScaleTolerance = 0.1;
@@ -45,7 +45,7 @@ public class CommandGenerator
 
     public void Add(State state, bool before = false)
     {
-        if (states.Count == 0 || states[states.Count - 1].Time < state.Time)
+        if (states.Count == 0 || states[^1].Time < state.Time)
             states.Add(state);
         else
         {
@@ -65,7 +65,7 @@ public class CommandGenerator
         => states.Clear();
 
     public bool GenerateCommands(OsbSprite sprite, Action<Action, OsbSprite>? action = null, double? startTime = null, double? endTime = null, double timeOffset = 0, bool loopable = false)
-        => GenerateCommands(sprite, OsuHitObject.WidescreenStoryboardBounds, action, startTime, endTime, timeOffset, loopable);
+        => GenerateCommands(sprite, OsuHitObject.WIDESCREEN_STORYBOARD_BOUNDS, action, startTime, endTime, timeOffset, loopable);
 
     public bool GenerateCommands(OsbSprite sprite, Box2 bounds, Action<Action, OsbSprite>? action = null, double? startTime = null, double? endTime = null, double timeOffset = 0, bool loopable = false)
     {
@@ -159,7 +159,7 @@ public class CommandGenerator
         }, Vector2.One, s => new Vector2((float)Math.Round(s.X, ScaleDecimals), (float)Math.Round(s.Y, ScaleDecimals)), startStateTime, loopable: loopable);
         finalRotations.ForEachPair((start, end) => sprite.Rotate(start.Time, end.Time, start.Value, end.Value), 0,
             r => (float)Math.Round(r, RotationDecimals), startStateTime, loopable: loopable);
-        finalColors.ForEachPair((start, end) => sprite.Color(start.Time, end.Time, start.Value, end.Value), CommandColor.White,
+        finalColors.ForEachPair((start, end) => sprite.Color(start.Time, end.Time, start.Value, end.Value), CommandColor.WHITE,
             c => CommandColor.FromRgb(c.R, c.G, c.B), startStateTime, loopable: loopable);
         finalOpacities.ForEachPair((start, end) => sprite.Fade(start.Time, end.Time, start.Value, end.Value), -1,
             o => (float)Math.Round(o, OpacityDecimals), startStateTime, endStateTime, loopable: loopable);
@@ -199,7 +199,7 @@ public class CommandGenerator
         public Vector2 Position = new Vector2(320, 240);
         public Vector2 Scale = new Vector2(1, 1);
         public double Rotation = 0;
-        public CommandColor Color = CommandColor.White;
+        public CommandColor Color = CommandColor.WHITE;
         public double Opacity = 1;
         public bool FlipH;
         public bool FlipV;

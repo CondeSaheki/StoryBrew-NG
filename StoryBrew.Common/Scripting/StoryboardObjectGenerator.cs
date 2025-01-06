@@ -66,14 +66,13 @@ public abstract class StoryboardObjectGenerator : Script
 
     #region File loading
 
-    private readonly Dictionary<string, SKBitmap> bitmaps = new Dictionary<string, SKBitmap>();
+    private readonly Dictionary<string, SKBitmap> bitmaps = [];
 
     /// <summary>
     /// Returns a SKBitmap from the project's directory.
     /// Do not call Dispose, it will be disposed automatically when the script ends.
     /// </summary>
-    public SKBitmap GetProjectBitmap(string path, bool watch = true)
-        => getBitmap(Path.Combine(context?.ProjectPath ?? throw new Exception(), path), null, watch);
+    public SKBitmap GetProjectBitmap(string path, bool watch = true) => getBitmap(Path.Combine(context?.ProjectPath ?? throw new Exception(), path), null, watch);
 
     /// <summary>
     /// Returns a SKBitmap from the mapset's directory.
@@ -97,7 +96,7 @@ public abstract class StoryboardObjectGenerator : Script
 
                 try
                 {
-                    bitmap = LoadSKBitmap(alternatePath);
+                    bitmap = loadSKBitmap(alternatePath);
                     bitmaps.Add(path, bitmap);
                 }
                 catch (FileNotFoundException e)
@@ -107,14 +106,14 @@ public abstract class StoryboardObjectGenerator : Script
             }
             else
             {
-                bitmap = LoadSKBitmap(path);
+                bitmap = loadSKBitmap(path);
                 bitmaps.Add(path, bitmap);
             }
         }
         return bitmap;
     }
 
-    private SKBitmap LoadSKBitmap(string filePath)
+    private static SKBitmap loadSKBitmap(string filePath)
     {
         using var stream = File.OpenRead(filePath);
         return SKBitmap.Decode(stream) ?? throw new InvalidOperationException($"Failed to decode bitmap from {filePath}");
@@ -125,15 +124,13 @@ public abstract class StoryboardObjectGenerator : Script
     /// Opens a project file in read-only mode.
     /// You are responsible for disposing it.
     /// </summary>
-    public Stream OpenProjectFile(string path, bool watch = true)
-        => openFile(Path.Combine(context?.ProjectPath ?? throw new Exception(), path), watch);
+    public Stream OpenProjectFile(string path, bool watch = true) => openFile(Path.Combine(context?.ProjectPath ?? throw new Exception(), path), watch);
 
     /// <summary>
     /// Opens a mapset file in read-only mode.
     /// You are responsible for disposing it.
     /// </summary>
-    public Stream OpenMapsetFile(string path, bool watch = true)
-        => openFile(Path.Combine(context?.MapsetPath ?? throw new Exception(), path), watch);
+    public Stream OpenMapsetFile(string path, bool watch = true) => openFile(Path.Combine(context?.MapsetPath ?? throw new Exception(), path), watch);
 
     private Stream openFile(string path, bool watch)
     {
@@ -209,12 +206,12 @@ public abstract class StoryboardObjectGenerator : Script
 
     #region Subtitles
 
-    private readonly SrtParser srtParser = new SrtParser();
-    private readonly AssParser assParser = new AssParser();
-    private readonly SbvParser sbvParser = new SbvParser();
+    private readonly SrtParser srtParser = new();
+    private readonly AssParser assParser = new();
+    private readonly SbvParser sbvParser = new();
 
-    private readonly HashSet<string> fontDirectories = new HashSet<string>();
-    private readonly List<FontGenerator> fontGenerators = new List<FontGenerator>();
+    private readonly HashSet<string> fontDirectories = [];
+    private readonly List<FontGenerator> fontGenerators = [];
 
     private string fontCacheDirectory => Path.Combine(context?.ProjectPath ?? throw new Exception(), ".cache", "font");
 

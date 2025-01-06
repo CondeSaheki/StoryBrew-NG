@@ -43,17 +43,17 @@ public class Line3dEx : Node3d, HasOsbSprites
     public bool OrientedCaps;
     public float CapOverlap = 0.2f;
 
-    public readonly KeyframedValue<Vector3> StartPosition = new KeyframedValue<Vector3>(InterpolatingFunctions.Vector3, Vector3.Zero);
-    public readonly KeyframedValue<Vector3> EndPosition = new KeyframedValue<Vector3>(InterpolatingFunctions.Vector3, Vector3.Zero);
-    public readonly KeyframedValue<float> Thickness = new KeyframedValue<float>(InterpolatingFunctions.Float, 1);
-    public readonly KeyframedValue<float> StartThickness = new KeyframedValue<float>(InterpolatingFunctions.Float, 1);
-    public readonly KeyframedValue<float> EndThickness = new KeyframedValue<float>(InterpolatingFunctions.Float, 1);
+    public readonly KeyframedValue<Vector3> StartPosition = new(InterpolatingFunctions.Vector3, Vector3.Zero);
+    public readonly KeyframedValue<Vector3> EndPosition = new(InterpolatingFunctions.Vector3, Vector3.Zero);
+    public readonly KeyframedValue<float> Thickness = new(InterpolatingFunctions.Float, 1);
+    public readonly KeyframedValue<float> StartThickness = new(InterpolatingFunctions.Float, 1);
+    public readonly KeyframedValue<float> EndThickness = new(InterpolatingFunctions.Float, 1);
 
-    public readonly CommandGenerator GeneratorBody = new CommandGenerator();
-    public readonly CommandGenerator GeneratorTopEdge = new CommandGenerator();
-    public readonly CommandGenerator GeneratorBottomEdge = new CommandGenerator();
-    public readonly CommandGenerator GeneratorStartCap = new CommandGenerator();
-    public readonly CommandGenerator GeneratorEndCap = new CommandGenerator();
+    public readonly CommandGenerator GeneratorBody = new();
+    public readonly CommandGenerator GeneratorTopEdge = new();
+    public readonly CommandGenerator GeneratorBottomEdge = new();
+    public readonly CommandGenerator GeneratorStartCap = new();
+    public readonly CommandGenerator GeneratorEndCap = new();
     public override IEnumerable<CommandGenerator> CommandGenerators
     {
         get
@@ -68,16 +68,16 @@ public class Line3dEx : Node3d, HasOsbSprites
 
     public override void GenerateSprite(StoryboardSegment segment)
     {
-        spriteBody = spriteBody ?? segment.CreateSprite(SpritePathBody, OsbOrigin.Centre);
+        spriteBody ??= segment.CreateSprite(SpritePathBody, OsbOrigin.Centre);
         if (SpritePathEdge != null)
         {
-            spriteTopEdge = spriteTopEdge ?? segment.CreateSprite(SpritePathEdge, OsbOrigin.BottomCentre);
-            spriteBottomEdge = spriteBottomEdge ?? segment.CreateSprite(SpritePathEdge, OsbOrigin.TopCentre);
+            spriteTopEdge ??= segment.CreateSprite(SpritePathEdge, OsbOrigin.BottomCentre);
+            spriteBottomEdge ??= segment.CreateSprite(SpritePathEdge, OsbOrigin.TopCentre);
         }
         if (SpritePathCap != null)
         {
-            spriteStartCap = spriteStartCap ?? segment.CreateSprite(SpritePathCap, OrientedCaps ? OsbOrigin.CentreLeft : OsbOrigin.Centre);
-            spriteEndCapEnd = spriteEndCapEnd ?? segment.CreateSprite(SpritePathCap, OrientedCaps ? OsbOrigin.CentreRight : OsbOrigin.Centre);
+            spriteStartCap ??= segment.CreateSprite(SpritePathCap, OrientedCaps ? OsbOrigin.CentreLeft : OsbOrigin.Centre);
+            spriteEndCapEnd ??= segment.CreateSprite(SpritePathCap, OrientedCaps ? OsbOrigin.CentreRight : OsbOrigin.Centre);
         }
     }
 

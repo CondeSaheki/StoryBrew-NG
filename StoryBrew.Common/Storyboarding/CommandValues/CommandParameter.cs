@@ -3,10 +3,10 @@
 [Serializable]
 public struct CommandParameter : CommandValue
 {
-    public static readonly CommandParameter None = new(ParameterType.None);
-    public static readonly CommandParameter FlipHorizontal = new(ParameterType.FlipHorizontal);
-    public static readonly CommandParameter FlipVertical = new(ParameterType.FlipVertical);
-    public static readonly CommandParameter AdditiveBlending = new(ParameterType.AdditiveBlending);
+    public static readonly CommandParameter NONE = new(ParameterType.None);
+    public static readonly CommandParameter FLIP_HORIZONTAL = new(ParameterType.FlipHorizontal);
+    public static readonly CommandParameter FLIP_VERTICAL = new(ParameterType.FlipVertical);
+    public static readonly CommandParameter ADDITIVE_BLENDING = new(ParameterType.AdditiveBlending);
 
     public readonly ParameterType Type;
 
@@ -26,7 +26,7 @@ public struct CommandParameter : CommandValue
         }
     }
 
-    public override string ToString() => ToOsbString(ExportSettings.Default);
+    public override string ToString() => ToOsbString(ExportSettings.DEFAULT);
 
     public float DistanceFrom(object obj)
     {

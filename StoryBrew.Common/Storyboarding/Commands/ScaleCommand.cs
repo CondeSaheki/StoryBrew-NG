@@ -13,11 +13,9 @@ public class ScaleCommand : Command<CommandDecimal>
     public override CommandDecimal GetTransformedEndValue(StoryboardTransform transform) => transform.ApplyToScale(EndValue);
 
     // Scale commands cannot return a negative size
-    public override CommandDecimal ValueAtProgress(double progress)
-        => Math.Max(0, StartValue + (EndValue - StartValue) * progress);
+    public override CommandDecimal ValueAtProgress(double progress) => Math.Max(0, StartValue + (EndValue - StartValue) * progress);
 
-    public override CommandDecimal Midpoint(Command<CommandDecimal> endCommand, double progress)
-        => StartValue + (endCommand.EndValue - StartValue) * progress;
+    public override CommandDecimal Midpoint(Command<CommandDecimal> endCommand, double progress) => StartValue + (endCommand.EndValue - StartValue) * progress;
 
     public override IFragmentableCommand GetFragment(double startTime, double endTime)
     {

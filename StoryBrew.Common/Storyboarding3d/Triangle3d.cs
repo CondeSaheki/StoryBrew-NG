@@ -8,20 +8,20 @@ namespace StoryBrew.Common.Storyboarding3d;
 
 public class Triangle3d : Node3d, HasOsbSprites
 {
-    public OsbSprite sprite0 = new();
-    public OsbSprite sprite1 = new();
-    public IEnumerable<OsbSprite> Sprites { get { yield return sprite0; yield return sprite1; } }
+    public OsbSprite Sprite0 = new();
+    public OsbSprite Sprite1 = new();
+    public IEnumerable<OsbSprite> Sprites { get { yield return Sprite0; yield return Sprite1; } }
 
     public string SpritePath = string.Empty;
     public bool Additive;
     public bool UseDistanceFade = true;
 
-    public readonly KeyframedValue<Vector3> Position0 = new KeyframedValue<Vector3>(InterpolatingFunctions.Vector3, Vector3.Zero);
-    public readonly KeyframedValue<Vector3> Position1 = new KeyframedValue<Vector3>(InterpolatingFunctions.Vector3, Vector3.Zero);
-    public readonly KeyframedValue<Vector3> Position2 = new KeyframedValue<Vector3>(InterpolatingFunctions.Vector3, Vector3.Zero);
+    public readonly KeyframedValue<Vector3> Position0 = new(InterpolatingFunctions.Vector3, Vector3.Zero);
+    public readonly KeyframedValue<Vector3> Position1 = new(InterpolatingFunctions.Vector3, Vector3.Zero);
+    public readonly KeyframedValue<Vector3> Position2 = new(InterpolatingFunctions.Vector3, Vector3.Zero);
 
-    public readonly CommandGenerator Generator0 = new CommandGenerator();
-    public readonly CommandGenerator Generator1 = new CommandGenerator();
+    public readonly CommandGenerator Generator0 = new();
+    public readonly CommandGenerator Generator1 = new();
     public override IEnumerable<CommandGenerator> CommandGenerators { get { yield return Generator0; yield return Generator1; } }
 
     private int edgeIndex = 0;
@@ -29,8 +29,8 @@ public class Triangle3d : Node3d, HasOsbSprites
 
     public override void GenerateSprite(StoryboardSegment segment)
     {
-        sprite0 = sprite0 ?? segment.CreateSprite(SpritePath, OsbOrigin.BottomLeft);
-        sprite1 = sprite1 ?? segment.CreateSprite(SpritePath, OsbOrigin.BottomRight);
+        Sprite0 ??= segment.CreateSprite(SpritePath, OsbOrigin.BottomLeft);
+        Sprite1 ??= segment.CreateSprite(SpritePath, OsbOrigin.BottomRight);
     }
 
     public override void GenerateStates(double time, CameraState cameraState, Object3dState object3dState)
@@ -71,7 +71,7 @@ public class Triangle3d : Node3d, HasOsbSprites
             return;
         }
 
-        var bitmap = StoryboardObjectGenerator.Current?.GetMapsetBitmap(sprite0.GetTexturePathAt(time)) ?? throw new Exception();
+        var bitmap = StoryboardObjectGenerator.Current?.GetMapsetBitmap(Sprite0.GetTexturePathAt(time)) ?? throw new Exception();
 
         var switchedEdge = false;
         for (var i = 0; i < 3; i++)
@@ -144,8 +144,8 @@ public class Triangle3d : Node3d, HasOsbSprites
 
     public override void GenerateCommands(Action<Action, OsbSprite>? action, double? startTime, double? endTime, double timeOffset, bool loopable)
     {
-        Generator0.GenerateCommands(sprite0, action, startTime, endTime, timeOffset, loopable);
-        Generator1.GenerateCommands(sprite1, action, startTime, endTime, timeOffset, loopable);
+        Generator0.GenerateCommands(Sprite0, action, startTime, endTime, timeOffset, loopable);
+        Generator1.GenerateCommands(Sprite1, action, startTime, endTime, timeOffset, loopable);
     }
 
     private static Vector2 project(Vector2 line1, Vector2 line2, Vector2 toProject)

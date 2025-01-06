@@ -8,11 +8,9 @@ public class FadeCommand : Command<CommandDecimal>
     {
     }
 
-    public override CommandDecimal ValueAtProgress(double progress)
-        => StartValue + (EndValue - StartValue) * progress;
+    public override CommandDecimal ValueAtProgress(double progress) => StartValue + (EndValue - StartValue) * progress;
 
-    public override CommandDecimal Midpoint(Command<CommandDecimal> endCommand, double progress)
-        => StartValue + (endCommand.EndValue - StartValue) * progress;
+    public override CommandDecimal Midpoint(Command<CommandDecimal> endCommand, double progress) => StartValue + (endCommand.EndValue - StartValue) * progress;
 
     public override IFragmentableCommand GetFragment(double startTime, double endTime)
     {

@@ -9,7 +9,7 @@ public abstract class CommandGroup : ICommand
     public virtual bool Active => true;
     public int Cost => commands.Sum(c => c.Cost);
 
-    private readonly List<ICommand> commands = new List<ICommand>();
+    private readonly List<ICommand> commands = [];
     public IEnumerable<ICommand> Commands => commands;
 
     public double CommandsStartTime
@@ -62,8 +62,7 @@ public abstract class CommandGroup : ICommand
         ended = true;
     }
 
-    public int CompareTo(ICommand? other)
-        => CommandComparer.CompareCommands(this, other);
+    public int CompareTo(ICommand? other) => CommandComparer.CompareCommands(this, other);
 
     public void WriteOsb(TextWriter writer, ExportSettings exportSettings, StoryboardTransform transform, int indentation)
     {
@@ -77,6 +76,5 @@ public abstract class CommandGroup : ICommand
 
     protected abstract string GetCommandGroupHeader(ExportSettings exportSettings);
 
-    public override string ToString()
-        => $"{GetCommandGroupHeader(ExportSettings.Default)} ({commands.Count} commands)";
+    public override string ToString() => $"{GetCommandGroupHeader(ExportSettings.DEFAULT)} ({commands.Count} commands)";
 }

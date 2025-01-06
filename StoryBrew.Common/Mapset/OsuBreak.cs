@@ -6,8 +6,7 @@ public class OsuBreak
     public double StartTime;
     public double EndTime;
 
-    public override string ToString()
-        => $"Break from {StartTime}ms to {EndTime}ms";
+    public override string ToString() => $"Break from {StartTime}ms to {EndTime}ms";
 
     public static OsuBreak Parse(Beatmap beatmap, string line)
     {

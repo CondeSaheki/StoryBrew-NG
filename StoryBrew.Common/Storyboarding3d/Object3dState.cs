@@ -5,7 +5,7 @@ namespace StoryBrew.Common.Storyboarding3d;
 
 public class Object3dState
 {
-    public static readonly Object3dState InitialState = new Object3dState(Matrix4.Identity, CommandColor.White, 1);
+    public static readonly Object3dState INITIAL_STATE = new(Matrix4.Identity, CommandColor.WHITE, 1);
 
     public readonly Matrix4 WorldTransform;
     public readonly CommandColor Color;

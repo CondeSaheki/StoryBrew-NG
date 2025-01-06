@@ -22,7 +22,7 @@ public abstract class BaseCurve : ICurve
 
     private void initialize()
     {
-        distancePosition = new List<ValueTuple<float, Vector2>>();
+        distancePosition = [];
         Initialize(distancePosition, out length);
     }
 
@@ -63,6 +63,5 @@ public abstract class BaseCurve : ICurve
         return previousPosition + previousToNext * (float)delta;
     }
 
-    public Vector2 PositionAtDelta(double delta)
-        => PositionAtDistance(delta * Length);
+    public Vector2 PositionAtDelta(double delta) => PositionAtDistance(delta * Length);
 }

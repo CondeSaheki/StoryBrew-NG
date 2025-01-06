@@ -37,7 +37,7 @@ public class OsuSlider : OsuHitObject
         }
     }
 
-    public Vector2 TipPosition => PlayfieldTipPosition + PlayfieldToStoryboardOffset;
+    public Vector2 TipPosition => PlayfieldTipPosition + PLAYFIELD_TO_STORYBOARD_OFFSET;
 
     /// <summary>
     /// The total distance the slider ball travels, in osu!pixels.
@@ -166,8 +166,10 @@ public class OsuSlider : OsuHitObject
 
     private ICurve generateCatmullCurve()
     {
-        List<Vector2> curvePoints = new List<Vector2>(controlPoints.Count + 1);
-        curvePoints.Add(PlayfieldPosition);
+        List<Vector2> curvePoints = new(controlPoints.Count + 1)
+        {
+            PlayfieldPosition
+        };
         foreach (var controlPoint in controlPoints)
             curvePoints.Add(controlPoint.PlayfieldPosition);
 
@@ -182,11 +184,11 @@ public class OsuSlider : OsuHitObject
         var previousPoint = PlayfieldPosition;
         foreach (var controlPoint in controlPoints)
         {
-            curves.Add(new Curves.BezierCurve(new List<Vector2>()
-                {
-                    previousPoint,
-                    controlPoint.PlayfieldPosition,
-                }, 0));
+            curves.Add(new Curves.BezierCurve(
+            [
+                previousPoint,
+                controlPoint.PlayfieldPosition,
+            ], 0));
             previousPoint = controlPoint.PlayfieldPosition;
         }
         return new CompositeCurve(curves);
@@ -338,7 +340,7 @@ public class OsuSliderNode
 public struct OsuSliderControlPoint
 {
     public Vector2 PlayfieldPosition;
-    public Vector2 Position => PlayfieldPosition + OsuHitObject.PlayfieldToStoryboardOffset;
+    public Vector2 Position => PlayfieldPosition + OsuHitObject.PLAYFIELD_TO_STORYBOARD_OFFSET;
 
     public static implicit operator OsuSliderControlPoint(Vector2 vector2)
         => new OsuSliderControlPoint() { PlayfieldPosition = vector2, };

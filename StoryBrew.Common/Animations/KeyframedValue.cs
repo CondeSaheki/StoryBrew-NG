@@ -10,9 +10,9 @@ public class KeyframedValue<TValue> : IEnumerable<Keyframe<TValue>>
     private readonly TValue defaultValue;
 
     public double StartTime => keyframes.Count == 0 ? 0 : keyframes[0].Time;
-    public double EndTime => keyframes.Count == 0 ? 0 : keyframes[keyframes.Count - 1].Time;
+    public double EndTime => keyframes.Count == 0 ? 0 : keyframes[^1].Time;
     public TValue StartValue => keyframes.Count == 0 ? defaultValue : keyframes[0].Value;
-    public TValue EndValue => keyframes.Count == 0 ? defaultValue : keyframes[keyframes.Count - 1].Value;
+    public TValue EndValue => keyframes.Count == 0 ? defaultValue : keyframes[^1].Value;
     public int Count => keyframes.Count;
 
     public KeyframedValue(Func<TValue, TValue, double, TValue> interpolate, TValue defaultValue)
@@ -23,7 +23,7 @@ public class KeyframedValue<TValue> : IEnumerable<Keyframe<TValue>>
 
     public KeyframedValue<TValue> Add(Keyframe<TValue> keyframe, bool before = false)
     {
-        if (keyframes.Count == 0 || keyframes[keyframes.Count - 1].Time < keyframe.Time)
+        if (keyframes.Count == 0 || keyframes[^1].Time < keyframe.Time)
             keyframes.Add(keyframe);
         else keyframes.Insert(indexFor(keyframe, before), keyframe);
         return this;
@@ -72,7 +72,7 @@ public class KeyframedValue<TValue> : IEnumerable<Keyframe<TValue>>
         if (index == 0)
             return keyframes[0].Value;
         else if (index == keyframes.Count)
-            return keyframes[keyframes.Count - 1].Value;
+            return keyframes[^1].Value;
         else
         {
             var from = keyframes[index - 1];
@@ -92,7 +92,7 @@ public class KeyframedValue<TValue> : IEnumerable<Keyframe<TValue>>
             return;
 
         var startTime = explicitStartTime ?? keyframes[0].Time;
-        var endTime = explicitEndTime ?? keyframes[keyframes.Count - 1].Time;
+        var endTime = explicitEndTime ?? keyframes[^1].Time;
 
         var hasPair = false;
         var forceNextFlat = loopable;
@@ -230,7 +230,7 @@ public class KeyframedValue<TValue> : IEnumerable<Keyframe<TValue>>
             }
             previousKeyframe = keyframe;
         }
-        var endTime = keyframes[keyframes.Count - 1].Time;
+        var endTime = keyframes[^1].Time;
         linearKeyframes.Add(new Keyframe<TValue>(endTime, ValueAt(endTime)));
 
         linearKeyframes.TrimExcess();
@@ -288,7 +288,7 @@ public class KeyframedValue<TValue> : IEnumerable<Keyframe<TValue>>
 
             var startToMiddle = middle - start;
             var startToEnd = end - start;
-            return (startToMiddle - (Vector3.Dot(startToMiddle, startToEnd) / Vector3.Dot(startToEnd, startToEnd)) * startToEnd).Length;
+            return (startToMiddle - Vector3.Dot(startToMiddle, startToEnd) / Vector3.Dot(startToEnd, startToEnd) * startToEnd).Length;
         });
 
     public void Simplify3dKeyframes(double tolerance, Func<TValue, Vector3> getComponent)
@@ -304,7 +304,7 @@ public class KeyframedValue<TValue> : IEnumerable<Keyframe<TValue>>
 
             var startToMiddle = middle - start;
             var startToEnd = end - start;
-            return (startToMiddle - (Vector4.Dot(startToMiddle, startToEnd) / Vector4.Dot(startToEnd, startToEnd)) * startToEnd).Length;
+            return (startToMiddle - Vector4.Dot(startToMiddle, startToEnd) / Vector4.Dot(startToEnd, startToEnd) * startToEnd).Length;
         });
 
     public void SimplifyKeyframes(double tolerance, Func<Keyframe<TValue>, Keyframe<TValue>, Keyframe<TValue>, double> getDistance)

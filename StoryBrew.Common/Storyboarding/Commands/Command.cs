@@ -63,8 +63,7 @@ namespace StoryBrew.Common.Storyboarding.Commands;
             return nonFragmentableTimes;
         }
 
-        public int CompareTo(ICommand? other)
-            => CommandComparer.CompareCommands(this, other);
+        public int CompareTo(ICommand? other)  => CommandComparer.CompareCommands(this, other);
 
         public virtual string ToOsbString(ExportSettings exportSettings, StoryboardTransform? transform)
         {
@@ -95,6 +94,5 @@ namespace StoryBrew.Common.Storyboarding.Commands;
         public virtual void WriteOsb(TextWriter writer, ExportSettings exportSettings, StoryboardTransform transform, int indentation)
             => writer.WriteLine(new string(' ', indentation) + ToOsbString(exportSettings, transform));
 
-        public override string ToString()
-            => ToOsbString(ExportSettings.Default, null);
+        public override string ToString() => ToOsbString(ExportSettings.DEFAULT, null);
     }

@@ -12,11 +12,10 @@ public class MoveCommand : Command<CommandPosition>
     public override CommandPosition GetTransformedStartValue(StoryboardTransform transform) => transform.ApplyToPosition(StartValue);
     public override CommandPosition GetTransformedEndValue(StoryboardTransform transform) => transform.ApplyToPosition(EndValue);
 
-    public override CommandPosition ValueAtProgress(double progress)
-        => StartValue + (EndValue - StartValue) * progress;
+    public override CommandPosition ValueAtProgress(double progress) => StartValue + (EndValue - StartValue) * progress;
 
     public override CommandPosition Midpoint(Command<CommandPosition> endCommand, double progress)
-        => new CommandPosition(StartValue.X + (endCommand.EndValue.X - StartValue.X) * progress, StartValue.Y + (endCommand.EndValue.Y - StartValue.Y) * progress);
+        => new(StartValue.X + (endCommand.EndValue.X - StartValue.X) * progress, StartValue.Y + (endCommand.EndValue.Y - StartValue.Y) * progress);
 
     public override IFragmentableCommand GetFragment(double startTime, double endTime)
     {

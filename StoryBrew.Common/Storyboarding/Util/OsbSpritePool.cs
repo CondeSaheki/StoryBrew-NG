@@ -7,7 +7,7 @@ public class OsbSpritePool : IDisposable
     private readonly OsbOrigin origin;
     private readonly Action<OsbSprite, double, double>? finalizeSprite;
 
-    private readonly List<PooledSprite> pooledSprites = new List<PooledSprite>();
+    private readonly List<PooledSprite> pooledSprites = [];
 
     public int MaxPoolDuration = 60000;
 

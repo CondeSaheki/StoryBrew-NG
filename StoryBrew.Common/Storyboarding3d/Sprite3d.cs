@@ -16,15 +16,15 @@ public class Sprite3d : Node3d, HasOsbSprites
     public RotationMode RotationMode = RotationMode.UnitY;
     public bool UseDistanceFade = true;
 
-    public readonly KeyframedValue<Vector2> SpriteScale = new KeyframedValue<Vector2>(InterpolatingFunctions.Vector2, Vector2.One);
-    public readonly KeyframedValue<double> SpriteRotation = new KeyframedValue<double>(InterpolatingFunctions.DoubleAngle, 0);
+    public readonly KeyframedValue<Vector2> SpriteScale = new(InterpolatingFunctions.Vector2, Vector2.One);
+    public readonly KeyframedValue<double> SpriteRotation = new(InterpolatingFunctions.DoubleAngle, 0);
 
-    public readonly CommandGenerator Generator = new CommandGenerator();
+    public readonly CommandGenerator Generator = new();
     public override IEnumerable<CommandGenerator> CommandGenerators { get { yield return Generator; } }
 
     public override void GenerateSprite(StoryboardSegment segment)
     {
-        sprite = sprite ?? segment.CreateSprite(SpritePath, SpriteOrigin);
+        sprite ??= segment.CreateSprite(SpritePath, SpriteOrigin);
     }
 
     public override void GenerateStates(double time, CameraState cameraState, Object3dState object3dState)

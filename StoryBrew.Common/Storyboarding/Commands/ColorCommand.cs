@@ -9,11 +9,9 @@ public class ColorCommand : Command<CommandColor>
     {
     }
 
-    public override CommandColor ValueAtProgress(double progress)
-        => StartValue + (EndValue - StartValue) * progress;
+    public override CommandColor ValueAtProgress(double progress) => StartValue + (EndValue - StartValue) * progress;
 
-    public override CommandColor Midpoint(Command<CommandColor> endCommand, double progress)
-        => StartValue + (endCommand.EndValue - StartValue) * progress;
+    public override CommandColor Midpoint(Command<CommandColor> endCommand, double progress) => StartValue + (endCommand.EndValue - StartValue) * progress;
 
     public override IFragmentableCommand GetFragment(double startTime, double endTime)
     {

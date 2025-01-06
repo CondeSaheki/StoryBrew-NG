@@ -5,14 +5,8 @@ public class LoopCommand : CommandGroup, IFragmentableCommand
     public int LoopCount { get; set; }
     public override double EndTime
     {
-        get
-        {
-            return StartTime + (CommandsEndTime * LoopCount);
-        }
-        set
-        {
-            LoopCount = (int)Math.Floor((value - StartTime) / CommandsEndTime);
-        }
+        get => StartTime + (CommandsEndTime * LoopCount);
+        set => LoopCount = (int)Math.Floor((value - StartTime) / CommandsEndTime);
     }
 
     public LoopCommand(double startTime, int loopCount)

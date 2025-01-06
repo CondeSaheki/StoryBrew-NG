@@ -6,8 +6,8 @@ namespace StoryBrew.Common.Storyboarding3d;
 public abstract class Camera
 {
     public Vector2 Resolution = new(1366, 768);
-    public double ResolutionScale { get { return OsuHitObject.StoryboardSize.Y / Resolution.Y; } }
-    public double AspectRatio { get { return Resolution.X / Resolution.Y; } }
+    public double ResolutionScale => OsuHitObject.STORYBOARD_SIZE.Y / Resolution.Y;
+    public double AspectRatio => Resolution.X / Resolution.Y;
 
     public float DistanceForHorizontalFov(double fov)
     {

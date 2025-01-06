@@ -11,7 +11,7 @@ public class StoryboardTransform
 
     public StoryboardTransform(StoryboardTransform? parent, Vector2 origin, Vector2 position, double rotation, float scale)
     {
-        transform = parent?.transform ?? Affine2.Identity;
+        transform = parent?.transform ?? Affine2.IDENTITY;
         if (position != Vector2.Zero)
             transform.Translate(position.X, position.Y);
         if (rotation != 0)
