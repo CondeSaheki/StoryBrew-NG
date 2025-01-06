@@ -114,7 +114,7 @@ namespace osu.Game.StoryboardsNG.Drawables
             passing.BindValueChanged(_ => updateLayerVisibility(), true);
         }
 
-        protected virtual IResourceStore<byte[]> CreateResourceLookupStore() => new StoryboardResourceLookupStoreRE(host, MapsetPath);
+        protected virtual IResourceStore<byte[]> CreateResourceLookupStore() => new StorageBackedResourceStoreTest(MapsetPath);
 
         protected override void Update()
         {
@@ -155,6 +155,43 @@ namespace osu.Game.StoryboardsNG.Drawables
 
             public Stream GetStream(string name)
                 => store.GetStream(name.Split('$').Last().Replace("\\", "/"));
+        }
+
+        private class StorageBackedResourceStoreTest : IResourceStore<byte[]>
+        {
+            private readonly string basePath;
+
+            public StorageBackedResourceStoreTest(string basePath)
+            {
+                if (!Directory.Exists(basePath))
+                    throw new DirectoryNotFoundException($"The folder {basePath} does not exist.");
+
+                this.basePath = basePath;
+            }
+
+            public void Dispose() { } // store.Dispose()
+
+            public byte[] Get(string name)
+            {
+                string filePath = Path.Combine(basePath, name);
+                return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null!;
+            }
+
+            public Stream? GetStream(string name)
+            {
+                string filePath = Path.Combine(basePath, name);
+                return File.Exists(filePath) ? File.OpenRead(filePath) : null;
+            }
+
+            public Task<byte[]> GetAsync(string name, CancellationToken cancellationToken = default)
+            {
+                string filePath = Path.Combine(basePath, name);
+                return File.Exists(filePath) ? Task.FromResult(File.ReadAllBytes(filePath)) : Task.FromResult<byte[]>(null!);
+            }
+
+            public IEnumerable<string> GetAvailableResources() =>
+                Directory.EnumerateFiles(basePath).Select(path => Path.GetFileName(path) ?? string.Empty);
+
         }
 
         // private class StoryboardResourceLookupStore : IResourceStore<byte[]>
