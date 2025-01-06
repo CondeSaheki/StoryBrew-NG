@@ -1,5 +1,3 @@
-using StoryBrew.Storyboarding;
-
 namespace StoryBrew;
 
 public static class Program
@@ -10,29 +8,32 @@ public static class Program
         {
             Console.WriteLine("Usage:");
             Console.WriteLine("StoryBrew new <name> <mapset_path>");
-            
             Console.WriteLine("StoryBrew build <path>");
+            Console.WriteLine("StoryBrew run <path>");
             Console.WriteLine("StoryBrew clean <path>");
+            Console.WriteLine("StoryBrew add <path> <name>");
             Console.WriteLine("StoryBrew version");
             return;
         }
 
-        Action handle = args[0].ToLower() switch
+        Action handler = args[0].ToLower() switch
         {
             "new" when args.Length == 3 => () => New(args[1], args[2]),
             "build" when args.Length == 2 => () => Build(args[1]),
-            "version" => Version,
+            "run" when args.Length == 2 => () => Build(args[1]),
             "clean" => () => Clean(args[1]),
+            "add" when args.Length == 3 => () => New(args[1], args[2]),
+            "version" => Version,
             _ => () => Console.WriteLine("Invalid command or arguments.")
         };
-        handle();
+        handler();
     }
 
     public static void New(string name, string path)
     {
         try
         {
-            Project.Create(name, path);
+            Project.New(name, path);
             Console.WriteLine($"Project '{name}' created successfully at '{path}'.");
         }
         catch (Exception ex)
@@ -45,9 +46,8 @@ public static class Program
     {
         try
         {
-            var project = Project.Load(path);
-            project.ExportToOsb();
-            Console.WriteLine($"Project at '{path}' built successfully.");
+            var project = new Project(path);
+            project.Build();
         }
         catch (Exception ex)
         {
@@ -55,29 +55,47 @@ public static class Program
         }
     }
 
-    public static void Version()
+    public static void Run(string path)
     {
         try
         {
-            var assembly = typeof(Program).Assembly;
-            var assemblyName = assembly.GetName();
-            Console.WriteLine($"{assemblyName.Name} {assemblyName.Version}");
+            var project = new Project(path);
+            project.Run();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Failed get version: {ex}");
+            Console.WriteLine($"Failed to run project: {ex}");
         }
     }
-    
+
     public static void Clean(string path)
     {
         try
         {
-            // TODO: similar to dotnet clean ?
+            var project = new Project(path);
+            project.Clean();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to Clean roject: {ex}");
         }
+    }
+
+    public static void Add(string path, string name)
+    {
+        try
+        {
+            // TODO: adds a script template to the project
+            throw new NotImplementedException();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to Add an script to the project: {ex}");
+        }
+    }
+
+    public static void Version()
+    {
+        Console.WriteLine($"StoryBrew version 1.0.0");
     }
 }
