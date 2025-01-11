@@ -1,49 +1,101 @@
 using System.Reflection;
-using StoryBrew.Common.Scripting;
+using System.Text;
+using StoryBrew.Files;
 
 namespace StoryBrew;
 
 public partial class Project
 {
-    public void Run()
+    /// <summary>
+    /// Runs all the scripts in the project. If a script fails it will be skipped.
+    /// </summary>
+    /// <param name="log">The log of the build process.</param>
+    /// <returns><c>true</c> if the run was successful, <c>false</c> otherwise.</returns>
+    public bool Run(out string log)
     {
-        Build();
+        StringBuilder logBuilder = new();
 
-        void runLayer(List<string> list)
+        var buildStatus = Build(out var buildLog);
+        logBuilder.AppendLine("Build:");
+        logBuilder.AppendLine(buildLog);
+
+        if(!buildStatus)
         {
-            foreach (var key in list)
-            {
-                if (!configuration.Instances.TryGetValue(key, out Script? instance)) throw new Exception($"Failed to find instance for {key}");
+            log = logBuilder.ToString();
+            return false;
+        }
 
-                Run(instance.ScriptFile, instance.Configurations);
+        string assemblyFilePath = Path.Combine(CacheDirectoryPath, Name + ".dll");
+        var assembly = Assembly.Load(File.ReadAllBytes(assemblyFilePath));
+        var scriptTypes = assembly.GetTypes()
+                              .Where(type => typeof(Script).IsAssignableFrom(type))
+                              .ToDictionary(type => type.FullName ?? throw new Exception("Unable to get script FullName."));
+
+        var beatmaps = getBeatmaps();
+
+        void runLayer(object layer, List<ScriptConfiguration> scripts)
+        {
+            foreach (var script in scripts)
+            {
+                try
+                {
+                    if (!scriptTypes.TryGetValue(script.FullName, out var type)) throw new Exception($"Script {script.FullName} not found.");
+
+                    object instance = Activator.CreateInstance(type) ?? throw new Exception($"Failed to create instantiate for {script.FullName}.");
+
+                    if (instance is Script scriptInstance)
+                    {
+                        scriptInstance.Init(layer, this);
+
+                        foreach (var configurable in script.Configurables)
+                        {
+                            if (configurable.Default == configurable.Value) continue;
+
+                            var field = type.GetField(configurable.Name, BindingFlags.Public | BindingFlags.Instance)
+                                ?? throw new Exception($"Failed to find field {configurable.Name} in {type.FullName}");
+
+                            if (field.GetType() != configurable.Type)
+                                throw new Exception($"Field {configurable.Name} in {type.FullName} is not of type {configurable.Type}");
+
+                            field.SetValue(instance, configurable.Value);
+                        }
+
+                        var osb = scriptInstance.Collect();
+
+                        foreach (var beatmap in beatmaps)
+                        {
+                            var osu = scriptInstance.Collect();
+                        }
+
+                        // TODO: process osb and osu
+                    }
+                }
+                catch(Exception ex)
+                {
+                    logBuilder.AppendLine($"Failed to run {script.FullName}: {ex}");
+                }
             }
         }
 
-        runLayer(configuration.Background);
-        runLayer(configuration.Fail);
-        runLayer(configuration.Pass);
-        runLayer(configuration.Foreground);
-        runLayer(configuration.Overlay);
-        runLayer(configuration.Video);
+        logBuilder.AppendLine($"Running Background scripts");
+        runLayer("Background", configuration.Background);
+        logBuilder.AppendLine($"Running Fail scripts");
+        runLayer("Fail", configuration.Fail);
+        logBuilder.AppendLine($"Running Pass scripts");
+        runLayer("Pass", configuration.Pass);
+        logBuilder.AppendLine($"Running Foreground scripts");
+        runLayer("Foreground", configuration.Foreground);
+        logBuilder.AppendLine($"Running Overlay scripts");
+        runLayer("Overlay", configuration.Overlay);
+        logBuilder.AppendLine($"Running Video scripts");
+        runLayer("Video", configuration.Video);
+
+        log = logBuilder.ToString();
+        return true;
     }
 
-    public static void Run(string script, object args)
+    private object[] getBeatmaps()
     {
-        var instance = instantiate<StoryboardObjectGenerator>(script);
-        instance.Generate();
-
-        // File.WriteAllText(script, "");
-    }
-
-    private static T instantiate<T>(string filePath) where T : class
-    {
-        var name = Path.GetFileNameWithoutExtension(filePath);
-
-        var assembly = Assembly.LoadFrom(filePath);
-        var type = assembly.GetType(name) ?? throw new Exception($"Class {name} do not exists in assembly.");
-
-        if (type is not T) throw new Exception($"Class {name} is not a {nameof(T)}.");
-
-        return (T?)Activator.CreateInstance(type) ?? throw new Exception($"Failed to instantiate {nameof(T)} from assembly {filePath}.");
+        return Directory.GetFiles(configuration.MapsetDirectoryPath, "*.osu").Select(file => file).ToArray();
     }
 }
