@@ -1,17 +1,20 @@
+using StoryBrew.Files;
+
 namespace StoryBrew;
 
 public partial class Project
 {
-    public readonly string ProjectPath;
-    public string AssetsLibraryPath => Path.Combine(ProjectPath, "AssetsLibrary");
-    public string ScriptsLibraryPath => Path.Combine(ProjectPath, "ScriptsLibrary");
+    public readonly string ProjectDirectoryPath;
 
-    private Configuration configuration;
-    private Hashes hashes;
+    public string Name => new DirectoryInfo(ProjectDirectoryPath).Name.Trim();
+    public string CacheDirectoryPath => Path.Combine(ProjectDirectoryPath, ".cache");
+    public string ConfigFilePath => Path.Combine(ProjectDirectoryPath, Name + ".sbproj");
+    public string BuildInfoFilePath => Path.Combine(CacheDirectoryPath, "BuildInfo");
+    public string AssetsDirectoryPath => Path.Combine(ProjectDirectoryPath, "Assets"); // Maybe remove
+    public string MapsetDirectoryPath => configuration.MapsetDirectoryPath;
 
-    private string cacheDirectoryPath => Path.Combine(ProjectPath, ".cache");
-    private string configFilePath => Path.Combine(ProjectPath, Path.GetDirectoryName(ProjectPath) ?? string.Empty + ".sbproj");
-    private string hashesFilePath => Path.Combine(cacheDirectoryPath, "hashes");
+    private ProjectConfiguration configuration;
+    private BuildInfo buildInfo;
 
     public Project(string projectPath)
     {
@@ -19,38 +22,13 @@ public partial class Project
         {
             throw new ArgumentException("Project path is either null, empty, or does not exist.");
         }
-        ProjectPath = projectPath;
+        ProjectDirectoryPath = projectPath;
 
-        if (!File.Exists(configFilePath)) throw new ArgumentException("Configuration file does not exist.");
+        if (!File.Exists(ConfigFilePath)) throw new ArgumentException("Configuration file does not exist.");
 
-        if (!File.Exists(hashesFilePath)) hashes = Hashes.FromFile(hashesFilePath);
-        else hashes = new();
+        if (!File.Exists(BuildInfoFilePath)) buildInfo = new();
+        else buildInfo = BuildInfo.FromFile(BuildInfoFilePath);
 
-        configuration = Configuration.FromFile(configFilePath);
-    }
-
-    /// <summary>
-    /// Saves the current project configuration to the appropriate files.
-    /// </summary>
-    internal void Save() => configuration.Save(configFilePath);
-
-    internal void Add()
-    {
-        // configuration.Save();
-    }
-
-    /// <summary>
-    /// Cleans the project cache
-    /// </summary>
-    public void Clean()
-    {
-        if (Directory.Exists(cacheDirectoryPath)) Directory.Delete(cacheDirectoryPath, true);
-        hashes = new();
-        hashes.Save(hashesFilePath);
-    }
-
-    private string[] getBeatmaps()
-    {
-        return Directory.GetFiles(configuration.Mapset, "*.osu");
+        configuration = ProjectConfiguration.FromFile(ConfigFilePath);
     }
 }
