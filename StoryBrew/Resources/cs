@@ -1,0 +1,14 @@
+using StoryBrew;
+
+public class {name} : Script
+{
+    public override void Generate()
+    {
+        // Objects registered here will be compiled to the storyboard file
+    }
+
+    public override void Generate(Beatmap beatmap)
+    {
+        // Objects registered here will be compiled to each beatmap in the mapset
+    }
+}
