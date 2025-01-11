@@ -1,9 +1,9 @@
 using Newtonsoft.Json;
 
-namespace StoryBrew;
+namespace StoryBrew.Files;
 
 [JsonConverter(typeof(VersionJsonConverter))]
-public class Version
+internal class Version
 {
     public uint Major { get; init; }
     public uint Minor { get; init; }
@@ -16,7 +16,7 @@ public class Version
         Patch = patch;
     }
 
-    public Version(string? value)
+    public Version(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new ArgumentException("Version string cannot be null or empty.", nameof(value));
@@ -30,16 +30,24 @@ public class Version
         Patch = uint.Parse(slices[2]);
     }
 
+    /// <summary>
+    /// Reads a JSON file from the specified path and deserializes it to a Version object.
+    /// </summary>
+    /// <param name="path">The path to the JSON file containing version information.</param>
+    /// <returns>The deserialized Version object.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the JSON file cannot be deserialized or if the version information is missing.
+    /// </exception>
     public static Version FromJsonFile(string path)
     {
-        var json = JsonConvert.DeserializeObject<Versionedjson>(File.ReadAllText(path))
+        var json = JsonConvert.DeserializeObject<VersionFile>(File.ReadAllText(path))
             ?? throw new InvalidOperationException("Failed to deserialize versioned file.");
-        return json.Version;
+        return json.Version ?? throw new InvalidOperationException("no version");
     }
 
-    private class Versionedjson
+    private class VersionFile
     {
-        public Version Version = new(null);
+        public Version? Version = null;
     }
 
     public override string ToString() => $"{Major}.{Minor}.{Patch}";
@@ -62,15 +70,24 @@ public class Version
 
         return Patch.CompareTo(other.Patch);
     }
+
+    public static bool operator ==(Version? left, Version? right)
+    {
+        if (left is null && right is null) return true;
+        if (left is null || right is null) return false;
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(Version? left, Version? right) => !(left == right);
 }
 
-public class VersionJsonConverter : JsonConverter<Version>
+internal class VersionJsonConverter : JsonConverter<Version>
 {
     public override Version? ReadJson(JsonReader reader, Type objectType, Version? existingValue, bool hasExistingValue, JsonSerializer serializer)
     {
         if (reader.TokenType != JsonToken.String) throw new JsonSerializationException("Expected a string for version.");
 
-        return new Version(reader.Value?.ToString());
+        return reader.Value?.ToString() is string s ? new Version(s) : null;
     }
 
     public override void WriteJson(JsonWriter writer, Version? value, JsonSerializer serializer)
