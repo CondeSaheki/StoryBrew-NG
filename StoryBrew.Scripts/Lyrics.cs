@@ -1,7 +1,7 @@
 using OpenTK.Mathematics;
-using StoryBrew.Common.Scripting;
-using StoryBrew.Common.Storyboarding;
-using StoryBrew.Common.Subtitles;
+using StoryBrew.Scripting;
+using StoryBrew.Storyboarding;
+using StoryBrew.Subtitles;
 
 namespace Storybrew.Scripts;
 

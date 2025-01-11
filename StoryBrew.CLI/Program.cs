@@ -1,4 +1,4 @@
-namespace StoryBrew;
+namespace StoryBrew.CLI;
 
 public static class Program
 {
@@ -41,7 +41,7 @@ public static class Program
     {
         try
         {
-            Project.New(projectPath, mapsetPath);
+            Project.Manager.New(projectPath, mapsetPath);
             Console.WriteLine($"Created project at '{projectPath}' for mapset '{mapsetPath}' successfully.");
         }
         catch (Exception ex)
@@ -54,7 +54,7 @@ public static class Program
     {
         try
         {
-            var project = new Project(path);
+            var project = new Project.Manager(path);
             var result = project.Build(out var log) ? "Success" : "Failed";
             if (!string.IsNullOrEmpty(log)) Console.WriteLine($"{log}");
             Console.WriteLine($"Build {result}.");
@@ -69,7 +69,7 @@ public static class Program
     {
         try
         {
-            var project = new Project(path);
+            var project = new Project.Manager(path);
             var result = project.Run(out var log) ? "Success" : "Failed";
             if (!string.IsNullOrEmpty(log)) Console.WriteLine($"{log}");
             Console.WriteLine($"Run {result}.");
@@ -84,7 +84,7 @@ public static class Program
     {
         try
         {
-            var project = new Project(path);
+            var project = new Project.Manager(path);
             project.Clean();
         }
         catch (Exception ex)
@@ -110,7 +110,7 @@ public static class Program
     {
         try
         {
-            var project = new Project(path);
+            var project = new Project.Manager(path);
             project.Create(name);
             Console.WriteLine($"Created script '{name}' successfully.");
         }

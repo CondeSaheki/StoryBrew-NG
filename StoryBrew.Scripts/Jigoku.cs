@@ -1,6 +1,6 @@
-﻿using StoryBrew.Common.Scripting;
-using StoryBrew.Common.Storyboarding;
-using StoryBrew.Common.Storyboarding.Util;
+﻿using StoryBrew.Scripting;
+using StoryBrew.Storyboarding;
+using StoryBrew.Storyboarding.Util;
 
 namespace Storybrew.Scripts;
 

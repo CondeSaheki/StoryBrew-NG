@@ -1,7 +1,7 @@
 using OpenTK.Mathematics;
-using StoryBrew.Common.Mapset;
-using StoryBrew.Common.Scripting;
-using StoryBrew.Common.Storyboarding;
+using StoryBrew.Mapset;
+using StoryBrew.Scripting;
+using StoryBrew.Storyboarding;
 using SkiaSharp;
 
 namespace Storybrew.Scripts;

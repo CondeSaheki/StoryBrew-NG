@@ -1,7 +1,7 @@
 ﻿using OpenTK.Mathematics;
-using StoryBrew.Common.Animations;
-using StoryBrew.Common.Scripting;
-using StoryBrew.Common.Storyboarding;
+using StoryBrew.Animations;
+using StoryBrew.Scripting;
+using StoryBrew.Storyboarding;
 
 namespace Storybrew.Scripts;
 

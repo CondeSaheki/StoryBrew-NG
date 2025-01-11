@@ -3,9 +3,9 @@
 */
 
 // using OpenTK.Mathematics;
-// using StoryBrew.Common.Scripting;
-// using StoryBrew.Common.Storyboarding;
-// using StoryBrew.Common.Util;
+// using StoryBrew.Scripting;
+// using StoryBrew.Storyboarding;
+// using StoryBrew.Util;
 // using System.Globalization;
 // using System.Text;
 
