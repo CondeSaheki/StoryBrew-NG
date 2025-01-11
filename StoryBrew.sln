@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew", "StoryBrew\StoryBrew.csproj", "{C23B3F4C-239D-4428-B59F-D9AC621E6542}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.CLI", "StoryBrew.CLI\StoryBrew.CLI.csproj", "{C23B3F4C-239D-4428-B59F-D9AC621E6542}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Common", "StoryBrew.Common\StoryBrew.Common.csproj", "{68047D76-DD88-40BD-952E-E0DA89D917FD}"
 EndProject

@@ -48,7 +48,6 @@ public abstract class StoryboardObjectGenerator : Script
         initializeConfigurableFields();
     }
 
-
     public void AddDependency(string path)
         => context?.AddDependency(path);
 
