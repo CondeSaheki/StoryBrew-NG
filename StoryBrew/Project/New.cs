@@ -1,59 +1,55 @@
+using StoryBrew.Files;
+using StoryBrew.Util;
+
 namespace StoryBrew;
 
 public partial class Project
 {
+    /// <summary>
+    /// Creates a new project at the specified path with the necessary directories and files.
+    /// </summary>
+    /// <param name="path">The file system path where the project will be created.</param>
+    /// <param name="mapsetPath">The path to the mapset directory.</param>
+    /// <returns>A new instance of the Project class initialized with the specified path.</returns>
     public static Project New(string path, string mapsetPath)
     {
         /*
-            .vscode
-            .cache
-            bin
-            obj
-            AssetsLibrary
-            ScriptsLibrary
-
-            .gitignore
-            name.csproj
-            name.sbproj
-            name.sln
+            .
+            ├── Assets
+            ├── bin
+            ├── obj
+            ├── .gitignore
+            ├── name.csproj
+            ├── name.sbproj
+            └── name.sln
         */
 
-        var name = new DirectoryInfo(path).Name;
+        var name = new DirectoryInfo(path).Name.Trim();
 
-        var slnPath = Path.Combine(path, name + ".sln");
-        var csprojPath = Path.Combine(path, name + ".csproj");
-        var gitignorePath = Path.Combine(path, name + ".gitignore");
+        var slnFilePath = Path.Combine(path, name + ".sln");
+        var csprojFilePath = Path.Combine(path, name + ".csproj");
+        var gitignoreFilePath = Path.Combine(path, ".gitignore");
+        var configurationFilePath = Path.Combine(path, name + ".sbproj");
 
-        var vsCodePath = Path.Combine(path, ".vscode");
-        var cachePath = Path.Combine(path, ".cache");
-        var assetsLibrary = Path.Combine(path, "AssetsLibrary");
-        var scriptsLibrary = Path.Combine(path, "ScriptsLibrary");
+        var assetsDirectoryPath = Path.Combine(path, "Assets");
 
-        Directory.CreateDirectory(path);
-        Directory.CreateDirectory(vsCodePath);
-        Directory.CreateDirectory(cachePath);
-        Directory.CreateDirectory(assetsLibrary);
-        Directory.CreateDirectory(scriptsLibrary);
+        Directory.CreateDirectory(assetsDirectoryPath);
 
-        File.Copy("", slnPath, overwrite: true);
-        File.Copy("", csprojPath, overwrite: true);
+        string sln = Helper.EmbeddedResource("sln");
+        string gitignore = Helper.EmbeddedResource("gitignore");
+        string csproj = Helper.EmbeddedResource("csproj");
 
-        string gitignore = @"
-        bin/
-        obj/
+        File.WriteAllText(slnFilePath, sln);
+        File.WriteAllText(gitignoreFilePath, gitignore);
+        File.WriteAllText(csprojFilePath, csproj);
 
-        .vs/
-        .idea/
+        ProjectConfiguration config = new()
+        {
+            MapsetDirectoryPath = mapsetPath
+        };
 
-        # StoryBrew cache
-        .cache
-        ";
+        config.Save(configurationFilePath, true);
 
-        File.WriteAllText(gitignorePath, gitignore);
-
-        var project = new Project(path);
-        project.configuration.Mapset = mapsetPath;
-
-        return project;
+        return new Project(path);
     }
 }
