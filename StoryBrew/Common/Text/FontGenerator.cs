@@ -1,75 +1,28 @@
-﻿using StoryBrew.Storyboarding;
-using StoryBrew.Util;
+﻿using StoryBrew.Util;
 using System.Diagnostics;
 using OpenTK.Mathematics;
 using SkiaSharp;
 using Tiny;
 
-namespace StoryBrew.Subtitles;
-
-public class FontTexture
-{
-    public string? Path { get; }
-    public bool IsEmpty => Path == null;
-    public float OffsetX { get; }
-    public float OffsetY { get; }
-    public int BaseWidth { get; }
-    public int BaseHeight { get; }
-    public int Width { get; }
-    public int Height { get; }
-
-    public FontTexture(string? path, float offsetX, float offsetY, int baseWidth, int baseHeight, int width, int height)
-    {
-        Path = path;
-        OffsetX = offsetX;
-        OffsetY = offsetY;
-        BaseWidth = baseWidth;
-        BaseHeight = baseHeight;
-        Width = width;
-        Height = height;
-    }
-
-    public Vector2 OffsetFor(OsbOrigin origin)
-    {
-        switch (origin)
-        {
-            default:
-            case OsbOrigin.TopLeft: return new Vector2(OffsetX, OffsetY);
-            case OsbOrigin.TopCentre: return new Vector2(OffsetX + Width * 0.5f, OffsetY);
-            case OsbOrigin.TopRight: return new Vector2(OffsetX + Width, OffsetY);
-            case OsbOrigin.CentreLeft: return new Vector2(OffsetX, OffsetY + Height * 0.5f);
-            case OsbOrigin.Centre: return new Vector2(OffsetX + Width * 0.5f, OffsetY + Height * 0.5f);
-            case OsbOrigin.CentreRight: return new Vector2(OffsetX + Width, OffsetY + Height * 0.5f);
-            case OsbOrigin.BottomLeft: return new Vector2(OffsetX, OffsetY + Height);
-            case OsbOrigin.BottomCentre: return new Vector2(OffsetX + Width * 0.5f, OffsetY + Height);
-            case OsbOrigin.BottomRight: return new Vector2(OffsetX + Width, OffsetY + Height);
-        }
-    }
-}
-
-public class FontDescription
-{
-    public string FontPath = string.Empty;
-    public int FontSize = 76;
-    public Color4 Color = new Color4(0, 0, 0, 100);
-    public Vector2 Padding = Vector2.Zero;
-    // public FontStyle FontStyle = FontStyle.Regular;
-    public bool TrimTransparency;
-    public bool EffectsOnly;
-    public bool Debug;
-}
+namespace StoryBrew.Common.Text;
 
 public class FontGenerator
 {
     public string Directory { get; }
     private readonly FontDescription description;
-    private readonly FontEffect[] effects;
+    private readonly IFontEffect[] effects;
     private readonly string projectDirectory;
     private readonly string assetDirectory;
 
     private readonly Dictionary<string, FontTexture> textureCache = new Dictionary<string, FontTexture>();
 
-    internal FontGenerator(string directory, FontDescription description, FontEffect[] effects, string projectDirectory, string assetDirectory)
+    public FontGenerator()
+    {
+        throw new NotImplementedException();
+    }
+
+
+    internal FontGenerator(string directory, FontDescription description, IFontEffect[] effects, string projectDirectory, string assetDirectory)
     {
         Directory = directory;
         this.description = description;
@@ -284,7 +237,7 @@ public class FontGenerator
         return false;
     }
 
-    private bool matches(FontEffect fontEffect, TinyToken cache)
+    private bool matches(IFontEffect fontEffect, TinyToken cache)
     {
         var effectType = fontEffect.GetType();
         if (cache.Value<string>("Type") != effectType.FullName)
@@ -376,7 +329,7 @@ public class FontGenerator
             { "Height", letterEntry.Value.Height },
         };
 
-    private TinyObject fontEffectToTinyObject(FontEffect fontEffect)
+    private TinyObject fontEffectToTinyObject(IFontEffect fontEffect)
     {
         var effectType = fontEffect.GetType();
         var cache = new TinyObject

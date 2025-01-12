@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using SkiaSharp;
 
-namespace StoryBrew.Subtitles;
+namespace StoryBrew.Common.Text;
 
-public class FontGradient : FontEffect
+public class FontGradient : IFontEffect
 {
     public Vector2 Offset = new(0, 0);
     public Vector2 Size = new(0, 24);

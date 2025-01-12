@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using SkiaSharp;
 
-namespace StoryBrew.Subtitles;
+namespace StoryBrew.Common.Text;
 
-public class FontGlow : FontEffect
+public class FontGlow : IFontEffect
 {
     // private double[,]? kernel;
 

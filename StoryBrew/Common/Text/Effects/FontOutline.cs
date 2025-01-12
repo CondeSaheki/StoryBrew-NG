@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using SkiaSharp;
 
-namespace StoryBrew.Subtitles;
+namespace StoryBrew.Common.Text;
 
-public class FontOutline : FontEffect
+public class FontOutline : IFontEffect
 {
     private const float diagonal = 1.41421356237f;
 

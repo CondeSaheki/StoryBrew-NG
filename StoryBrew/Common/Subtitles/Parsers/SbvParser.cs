@@ -1,17 +1,16 @@
 ﻿using System.Text;
 
-namespace StoryBrew.Subtitles.Parsers;
+namespace StoryBrew.Common.Subtitles.Parsers;
 
 // YouTube's subtitle format
-public class SbvParser
+public static class SbvParser
 {
-    public SubtitleSet Parse(string path)
+    public static SubtitleSet Parse(string path)
     {
-        using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
-            return Parse(stream);
+        using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)) return Parse(stream);
     }
 
-    public SubtitleSet Parse(Stream stream)
+    public static SubtitleSet Parse(Stream stream)
     {
         var lines = new List<SubtitleLine>();
         foreach (var block in parseBlocks(stream))
@@ -26,7 +25,7 @@ public class SbvParser
         return new SubtitleSet(lines);
     }
 
-    private IEnumerable<string> parseBlocks(Stream stream)
+    private static IEnumerable<string> parseBlocks(Stream stream)
     {
         using (var reader = new StreamReader(stream))
         {
@@ -49,6 +48,5 @@ public class SbvParser
         }
     }
 
-    private double parseTimestamp(string timestamp)
-        => TimeSpan.Parse(timestamp).TotalMilliseconds;
+    private static double parseTimestamp(string timestamp) => TimeSpan.Parse(timestamp).TotalMilliseconds;
 }

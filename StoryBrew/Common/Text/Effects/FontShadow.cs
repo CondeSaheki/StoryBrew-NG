@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using SkiaSharp;
 
-namespace StoryBrew.Subtitles;
+namespace StoryBrew.Common.Text;
 
-public class FontShadow : FontEffect
+public class FontShadow : IFontEffect
 {
     public int Thickness = 1;
     public Color4 Color = new(0, 0, 0, 100);

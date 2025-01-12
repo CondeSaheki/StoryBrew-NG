@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 using SkiaSharp;
 
-namespace StoryBrew.Subtitles;
+namespace StoryBrew.Common.Text;
 
-public interface FontEffect
+public interface IFontEffect
 {
     bool Overlay { get; }
 
