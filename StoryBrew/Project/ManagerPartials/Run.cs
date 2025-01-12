@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using StoryBrew.Project.Files;
+using StoryBrew.Storyboarding;
 
 namespace StoryBrew.Project;
 
@@ -33,7 +34,7 @@ public partial class Manager
 
         var beatmaps = getBeatmaps();
 
-        void runLayer(object layer, List<ScriptConfiguration> scripts)
+        void runLayer(OsbLayer layer, List<ScriptConfiguration> scripts)
         {
             foreach (var script in scripts)
             {
@@ -90,17 +91,20 @@ public partial class Manager
         }
 
         logBuilder.AppendLine($"Running Background scripts");
-        runLayer("Background", configuration.Background);
+        runLayer(OsbLayer.Background, configuration.Background);
         logBuilder.AppendLine($"Running Fail scripts");
-        runLayer("Fail", configuration.Fail);
+        runLayer(OsbLayer.Fail, configuration.Fail);
         logBuilder.AppendLine($"Running Pass scripts");
-        runLayer("Pass", configuration.Pass);
+        runLayer(OsbLayer.Pass, configuration.Pass);
         logBuilder.AppendLine($"Running Foreground scripts");
-        runLayer("Foreground", configuration.Foreground);
+        runLayer(OsbLayer.Foreground, configuration.Foreground);
         logBuilder.AppendLine($"Running Overlay scripts");
-        runLayer("Overlay", configuration.Overlay);
-        logBuilder.AppendLine($"Running Video scripts");
-        runLayer("Video", configuration.Video);
+        runLayer(OsbLayer.Overlay, configuration.Overlay);
+
+        // TODO: add video layer
+
+        // logBuilder.AppendLine($"Running Video scripts");
+        // runLayer(OsbLayer.Video, configuration.Video);
 
         log = logBuilder.ToString();
         return true;

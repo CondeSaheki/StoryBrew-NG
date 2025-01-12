@@ -8,7 +8,7 @@ public abstract class Script : IDisposable
     public string ProjectPath { get; private set; } = string.Empty;
     public string MapsetPath { get; private set; } = string.Empty;
     public string AssetPath { get; private set; } = string.Empty; // Maybe remove
-    public object Layer { get; private set; } = null!;
+    public OsbLayer Layer { get; private set; } = default;
 
     /// <summary>
     /// Generates the storyboard.
@@ -69,13 +69,14 @@ public abstract class Script : IDisposable
         return BeatmapObjects;
     }
 
-    internal void Init(object layer, Manager project)
+    internal void Init(OsbLayer layer, Manager project)
     {
-        if (ProjectPath != string.Empty || MapsetPath != string.Empty || AssetPath != string.Empty) throw new Exception("Already initialized.");
+        if (ProjectPath != string.Empty || MapsetPath != string.Empty || AssetPath != string.Empty || Layer != default) throw new Exception("Already initialized.");
 
         ProjectPath = project.ProjectDirectoryPath;
         MapsetPath = project.MapsetDirectoryPath;
         AssetPath = project.AssetsDirectoryPath;
+        Layer = layer;
     }
 
     public void Dispose() { }
