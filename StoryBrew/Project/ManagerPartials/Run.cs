@@ -19,7 +19,7 @@ public partial class Manager
         logBuilder.AppendLine("Build:");
         logBuilder.AppendLine(buildLog);
 
-        if(!buildStatus)
+        if (!buildStatus)
         {
             log = logBuilder.ToString();
             return false;
@@ -42,36 +42,48 @@ public partial class Manager
                     if (!scriptTypes.TryGetValue(script.FullName, out var type)) throw new Exception($"Script {script.FullName} not found.");
 
                     object instance = Activator.CreateInstance(type) ?? throw new Exception($"Failed to create instantiate for {script.FullName}.");
+                    {
 
+                    }
                     if (instance is Script scriptInstance)
                     {
-                        scriptInstance.Init(layer, this);
-
-                        foreach (var configurable in script.Configurables)
+                        try
                         {
-                            if (configurable.Default == configurable.Value) continue;
+                            scriptInstance.Init(layer, this);
 
-                            var field = type.GetField(configurable.Name, BindingFlags.Public | BindingFlags.Instance)
-                                ?? throw new Exception($"Failed to find field {configurable.Name} in {type.FullName}");
 
-                            if (field.GetType() != configurable.Type)
-                                throw new Exception($"Field {configurable.Name} in {type.FullName} is not of type {configurable.Type}");
+                            foreach (var configurable in script.Configurables)
+                            {
+                                if (configurable.Default == configurable.Value) continue;
 
-                            field.SetValue(instance, configurable.Value);
+                                var field = type.GetField(configurable.Name, BindingFlags.Public | BindingFlags.Instance)
+                                    ?? throw new Exception($"Failed to find field {configurable.Name} in {type.FullName}");
+
+                                if (field.GetType() != configurable.Type)
+                                    throw new Exception($"Field {configurable.Name} in {type.FullName} is not of type {configurable.Type}");
+
+                                field.SetValue(instance, configurable.Value);
+                            }
+
+                            var osb = scriptInstance.Collect();
+
+                            foreach (var beatmap in beatmaps)
+                            {
+                                var osu = scriptInstance.Collect();
+                            }
+
+                            // TODO: process osb and osu
+
                         }
-
-                        var osb = scriptInstance.Collect();
-
-                        foreach (var beatmap in beatmaps)
+                        finally
                         {
-                            var osu = scriptInstance.Collect();
+                            scriptInstance?.Dispose();
                         }
-
-                        // TODO: process osb and osu
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
+
                     logBuilder.AppendLine($"Failed to run {script.FullName}: {ex}");
                 }
             }
