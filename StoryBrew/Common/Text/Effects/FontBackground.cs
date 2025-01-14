@@ -10,7 +10,7 @@ public class FontBackground : IFontEffect
     public bool Overlay => false;
     public Vector2 Measure() => Vector2.Zero;
 
-    public void Draw(SKBitmap bitmap, SKCanvas canvas, SKPaint paint, string text, float x, float y)
+    public void Draw(FontGenerator generator, SKCanvas canvas, SKTextBlob text)
     {
         throw new NotImplementedException();
 

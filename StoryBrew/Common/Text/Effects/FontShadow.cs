@@ -14,7 +14,7 @@ public class FontShadow : IFontEffect
     public Vector2 Measure() => new Vector2(Thickness * 2);
 
     // Draw the shadow effect using SkiaSharp
-    public void Draw(SKBitmap bitmap, SKCanvas canvas, SKPaint paint, string text, float x, float y)
+    public void Draw(FontGenerator generator, SKCanvas canvas, SKTextBlob text)
     {
         throw new NotImplementedException();
         // if (Thickness < 1)

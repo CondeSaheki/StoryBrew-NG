@@ -13,7 +13,7 @@ public class FontOutline : IFontEffect
     public bool Overlay => false;
     public Vector2 Measure() => new(Thickness * diagonal * 2);
 
-    public void Draw(SKBitmap bitmap, SKCanvas canvas, SKPaint paint, string text, float x, float y)
+    public void Draw(FontGenerator generator, SKCanvas canvas, SKTextBlob text)
     {
         throw new NotImplementedException();
         // if (Thickness < 1)

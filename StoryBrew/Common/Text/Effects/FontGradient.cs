@@ -13,7 +13,7 @@ public class FontGradient : IFontEffect
     public bool Overlay => true;
     public Vector2 Measure() => Vector2.Zero;
 
-    public void Draw(SKBitmap bitmap, SKCanvas canvas, SKPaint paint, string text, float x, float y)
+    public void Draw(FontGenerator generator, SKCanvas canvas, SKTextBlob text)
     {
         throw new NotImplementedException();
         // var transparentColor = Color.WithOpacity(0);
