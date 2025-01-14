@@ -1,6 +1,6 @@
 using System.Reflection;
 
-namespace StoryBrew.Project;
+namespace StoryBrew.Scripting;
 
 internal class ConfigurableInfo
 {

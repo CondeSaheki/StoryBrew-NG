@@ -1,4 +1,3 @@
-using StoryBrew.Project.Files;
 using StoryBrew.Util;
 
 namespace StoryBrew.Project;

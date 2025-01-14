@@ -1,4 +1,4 @@
-namespace StoryBrew.Project;
+namespace StoryBrew.Scripting;
 
 internal class Configurable : ConfigurableInfo
 {

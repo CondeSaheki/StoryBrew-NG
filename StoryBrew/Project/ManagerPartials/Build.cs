@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using StoryBrew.Scripting;
 using StoryBrew.Util;
 
 namespace StoryBrew.Project;

@@ -1,4 +1,8 @@
-﻿namespace StoryBrew.Storyboarding;
+﻿namespace StoryBrew.Scripting;
+
+/*
+
+    // not implemented
 
 [AttributeUsage(AttributeTargets.Field)]
 public class DescriptionAttribute : Attribute
@@ -10,3 +14,5 @@ public class DescriptionAttribute : Attribute
         Content = content;
     }
 }
+
+*/

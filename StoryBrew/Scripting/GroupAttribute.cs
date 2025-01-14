@@ -1,4 +1,8 @@
-﻿namespace StoryBrew.Storyboarding;
+﻿namespace StoryBrew.Scripting;
+
+/*
+
+    // not implemented
 
 [AttributeUsage(AttributeTargets.Field)]
 public class GroupAttribute : Attribute
@@ -10,3 +14,5 @@ public class GroupAttribute : Attribute
         Name = name;
     }
 }
+
+*/

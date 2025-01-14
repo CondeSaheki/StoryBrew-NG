@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Text;
 using StoryBrew.Project.Files;
+using StoryBrew.Scripting;
 using StoryBrew.Storyboarding;
 
 namespace StoryBrew.Project;

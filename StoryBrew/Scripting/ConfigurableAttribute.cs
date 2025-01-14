@@ -1,7 +1,10 @@
-namespace StoryBrew.Project;
+namespace StoryBrew.Scripting;
 
 [AttributeUsage(AttributeTargets.Field)]
-public class ConfigurableAttribute : Attribute { }
+public class ConfigurableAttribute : Attribute
+{
+    // public string DisplayName { get; set; } = string.Empty;
+}
 
 /*
     [AttributeUsage(AttributeTargets.Field)]

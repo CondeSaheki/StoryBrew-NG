@@ -1,9 +1,10 @@
 ﻿using StoryBrew.Mapset;
+using StoryBrew.Project;
 using StoryBrew.Storyboarding;
 
-namespace StoryBrew.Project;
+namespace StoryBrew.Scripting;
 
-public abstract class Script : IDisposable
+public abstract class Script: IDisposable
 {
     public string ProjectPath { get; private set; } = string.Empty;
     public string MapsetPath { get; private set; } = string.Empty;
