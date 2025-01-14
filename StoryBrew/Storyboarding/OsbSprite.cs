@@ -289,17 +289,17 @@ public class OsbSprite : StoryboardObject
 
     private void initializeDisplayValueBuilders()
     {
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is MoveCommand, new AnimatedValueBuilder<CommandPosition>(moveTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is MoveXCommand, new AnimatedValueBuilder<CommandDecimal>(moveXTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is MoveYCommand, new AnimatedValueBuilder<CommandDecimal>(moveYTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is ScaleCommand, new AnimatedValueBuilder<CommandDecimal>(scaleTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is VScaleCommand, new AnimatedValueBuilder<CommandScale>(scaleVecTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is RotateCommand, new AnimatedValueBuilder<CommandDecimal>(rotateTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is FadeCommand, new AnimatedValueBuilder<CommandDecimal>(fadeTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is ColorCommand, new AnimatedValueBuilder<CommandColor>(colorTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is ParameterCommand { StartValue.Type: ParameterType.AdditiveBlending }, new AnimatedValueBuilder<CommandParameter>(additiveTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is ParameterCommand { StartValue.Type: ParameterType.FlipHorizontal }, new AnimatedValueBuilder<CommandParameter>(flipHTimeline)));
-        displayValueBuilders.Add(new KeyValuePair<Predicate<ICommand>, IAnimatedValueBuilder>((c) => c is ParameterCommand { StartValue.Type: ParameterType.FlipVertical }, new AnimatedValueBuilder<CommandParameter>(flipVTimeline)));
+        displayValueBuilders.Add(new((c) => c is MoveCommand, new AnimatedValueBuilder<CommandPosition>(moveTimeline)));
+        displayValueBuilders.Add(new((c) => c is MoveXCommand, new AnimatedValueBuilder<CommandDecimal>(moveXTimeline)));
+        displayValueBuilders.Add(new((c) => c is MoveYCommand, new AnimatedValueBuilder<CommandDecimal>(moveYTimeline)));
+        displayValueBuilders.Add(new((c) => c is ScaleCommand, new AnimatedValueBuilder<CommandDecimal>(scaleTimeline)));
+        displayValueBuilders.Add(new((c) => c is VScaleCommand, new AnimatedValueBuilder<CommandScale>(scaleVecTimeline)));
+        displayValueBuilders.Add(new((c) => c is RotateCommand, new AnimatedValueBuilder<CommandDecimal>(rotateTimeline)));
+        displayValueBuilders.Add(new((c) => c is FadeCommand, new AnimatedValueBuilder<CommandDecimal>(fadeTimeline)));
+        displayValueBuilders.Add(new((c) => c is ColorCommand, new AnimatedValueBuilder<CommandColor>(colorTimeline)));
+        displayValueBuilders.Add(new((c) => c is ParameterCommand { StartValue.Type: ParameterType.AdditiveBlending }, new AnimatedValueBuilder<CommandParameter>(additiveTimeline)));
+        displayValueBuilders.Add(new((c) => c is ParameterCommand { StartValue.Type: ParameterType.FlipHorizontal }, new AnimatedValueBuilder<CommandParameter>(flipHTimeline)));
+        displayValueBuilders.Add(new((c) => c is ParameterCommand { StartValue.Type: ParameterType.FlipVertical }, new AnimatedValueBuilder<CommandParameter>(flipVTimeline)));
     }
 
     private void addDisplayCommand(ICommand command)
