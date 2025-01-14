@@ -5,9 +5,9 @@ namespace StoryBrew.Common.Text;
 
 public interface IFontEffect
 {
-    bool Overlay { get; }
+    public bool Overlay { get; }
 
-    Vector2 Measure();
+    public Vector2 Measure();
 
-    void Draw(SKBitmap bitmap, SKCanvas canvas, SKPaint paint, string text, float x, float y);
+    public void Draw(FontGenerator generator, SKCanvas canvas, SKTextBlob text);
 }

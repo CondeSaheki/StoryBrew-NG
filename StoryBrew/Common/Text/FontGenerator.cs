@@ -1,39 +1,60 @@
-﻿using SkiaSharp;
+﻿using OpenTK.Mathematics;
+using SkiaSharp;
 
 namespace StoryBrew.Common.Text;
 
-public class FontGenerator
+public class FontGenerator : IDisposable
 {
-    public string Directory { get; } = string.Empty;
-    public FontDescription Description { get; } = new();
-    public IFontEffect[] Effects { get; } = [];
+    public string Directory { get; set; }
+    public SKFont Font { get; set; }
+    public SKPaint Paint { get; set; }
 
-    private const string file_extention = ".png";
-    private const SKEncodedImageFormat extention = SKEncodedImageFormat.Png;
+    public IFontEffect[] Effects { get; set; } = [];
+    public Vector2 Padding { get; set; } = Vector2.Zero;
+    public bool TrimTransparency { get; set; } = true;
+    public bool EffectsOnly { get; set; } = false;
 
-    public FontGenerator(string directory, FontDescription description, IFontEffect[] effects)
+    public FontGenerator(string path, SKTypeface typeface, SKPaint paint) : this(path, typeface.ToFont(), paint) { }
+
+    public FontGenerator(string path, SKFont font, SKPaint paint)
     {
-        Directory = directory;
-        Description = description;
-        Effects = effects;
+        Directory = path;
+        Font = font;
+        Paint = paint;
     }
 
-    public FontTexture? GetTexture(string? text)
+    /// <summary>
+    /// Returns a SKBitmap for the given text, or null if the text is null or whitespace.
+    /// If the bitmap does not exist, it will be created and saved to the directory with the given name.
+    /// </summary>
+    /// <param name="text">The text to get the bitmap for.</param>
+    /// <returns>The SKBitmap for the given text, or null if the text is null or whitespace.</returns>
+    public SKBitmap? GetBitmap(string? text)
     {
+        const string file_extention = ".png";
+        const SKEncodedImageFormat extention = SKEncodedImageFormat.Png;
+
         if (string.IsNullOrWhiteSpace(text)) return null;
 
         var name = hash(text);
 
         var filePath = Path.Combine(Directory, name + file_extention);
-        if (!File.Exists(filePath)) return createTexture(text, filePath);
+        if (!File.Exists(filePath))
+        {
+            var bitmap = createBitmap(text);
+            if (bitmap != null) saveBitmap(bitmap, filePath, extention);
+            return bitmap;
+        }
 
-        return new FontTexture(filePath, 0, 0, 0, 0, 0, 0);
+        return SKBitmap.Decode(filePath);
     }
 
     /// <summary>
-    /// A simple fast hash function not cryptographically secure.
-    /// Colisions chance is not tested if you get issues please report.
+    /// Computes a simple fast not cryptographically secure hash for the given text.
+    /// The probability of collisions has not been tested. If you encounter issues, please report them.
     /// </summary>
+    /// <param name="text">The input text to hash.</param>
+    /// <returns>A string representing the hash value of the input text in hexadecimal format, prefixed with an underscore.</returns>
     private static string hash(string text)
     {
         const int shift = 5;
@@ -49,6 +70,65 @@ public class FontGenerator
         }
         return $"_{hash:x8}"; // example: "abc" -> "_30c2407f"
     }
+
+    /// <summary>
+    /// Creates a Bitmap for the given text using the specified font and paint.
+    /// </summary>
+    /// <param name="text">The text to create a bitmap with.</param>
+    /// <returns>A SKBitmap with the text.</returns>
+    /// <exception cref="Exception">Thrown if the text blob creation fails.</exception>
+    private SKBitmap createBitmap(string text)
+    {
+        using var blob = SKTextBlob.Create(text, Font) ?? throw new Exception($"Failed to create text blob with {text}");
+
+        var bitmap = new SKBitmap((int)Math.Ceiling(blob.Bounds.Width), (int)Math.Ceiling(blob.Bounds.Height), true);
+
+        using (var canvas = new SKCanvas(bitmap))
+        {
+
+            foreach (var effect in Effects)
+            {
+                if (effect.Overlay) continue;
+                effect.Draw(this, canvas, blob);
+            }
+
+            if (!EffectsOnly) canvas.DrawText(blob, 0, 0, Paint);
+
+            foreach (var effect in Effects)
+            {
+                if (!effect.Overlay) continue;
+                effect.Draw(this, canvas, blob);
+            }
+
+        }
+
+        return bitmap;
+    }
+
+    /// <summary>
+    /// Saves the given bitmap to the specified file path as an encoded image.
+    /// </summary>
+    /// <param name="bitmap">The SKBitmap to save.</param>
+    /// <param name="filePath">The file path where the bitmap will be saved.</param>
+    /// <param name="extention">The encoding format to use when saving the bitmap.</param>
+    /// <exception cref="ArgumentNullException">Thrown if the bitmap or filePath is null.</exception>
+    /// <exception cref="IOException">Thrown if there is an error saving the bitmap to the file path.</exception>
+    private static void saveBitmap(SKBitmap bitmap, string filePath, SKEncodedImageFormat extention = SKEncodedImageFormat.Png)
+    {
+        using var image = SKImage.FromBitmap(bitmap);
+        using var data = image.Encode(extention, 100);
+        using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None);
+        data.SaveTo(stream);
+    }
+
+    public void Dispose()
+    {
+        Font?.Dispose();
+        Paint?.Dispose();
+    }
+}
+
+/*
 
     private FontTexture createTexture(string text, string bitmapPath)
     {
@@ -105,11 +185,9 @@ public class FontGenerator
                         canvas.Clear(SKColors.Transparent);
 
                         foreach (var effect in Effects)
-                            if (!effect.Overlay)
-                                effect.Draw(bitmap, canvas, paint, text, textX, textY);
+                            if (!effect.Overlay) effect.Draw(bitmap, canvas, paint, text, textX, textY);
 
-                        if (!Description.EffectsOnly)
-                            canvas.DrawText(text, textX, textY, paint);
+                        if (!Description.EffectsOnly) canvas.DrawText(text, textX, textY, paint);
 
                         foreach (var effect in Effects)
                             if (effect.Overlay)
@@ -173,11 +251,4 @@ public class FontGenerator
         return new SKRect(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
     }
 
-    private static void saveBitmap(SKBitmap bitmap, string path)
-    {
-        using var image = SKImage.FromBitmap(bitmap);
-        using var data = image.Encode(extention, 100);
-        using var stream = File.OpenWrite(path);
-        data.SaveTo(stream);
-    }
-}
+*/
