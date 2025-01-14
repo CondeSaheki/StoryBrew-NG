@@ -6,63 +6,71 @@ using SkiaSharp;
 
 namespace Storybrew.Scripts;
 
-public class Particles : StoryboardObjectGenerator
+public class Particles : Script
 {
-    [Group("Timing")]
+    // [Group("Timing")]
     [Configurable] public int StartTime;
     [Configurable] public int EndTime;
 
-    [Group("Sprite")]
+    // [Group("Sprite")]
     [Configurable] public string Path = "sb/particle.png";
     [Configurable] public OsbOrigin Origin = OsbOrigin.Centre;
     [Configurable] public Vector2 Scale = new Vector2(1, 1);
-    [Description("Rotation of the sprite; does not influences particle motion direction.")]
+    // [Description("Rotation of the sprite; does not influences particle motion direction.")]
     [Configurable] public float Rotation = 0;
     [Configurable] public Color4 Color = Color4.White;
-    [Description("Varies the saturation and brightness of the selected Color for each particle.")]
+    // [Description("Varies the saturation and brightness of the selected Color for each particle.")]
     [Configurable] public float ColorVariance = 0.6f;
     [Configurable] public bool Additive = false;
 
-    [Group("Spawn")]
+    // [Group("Spawn")]
     [Configurable] public int ParticleCount = 32;
     [Configurable] public float Lifetime = 1000;
-    [Description("The point around which particles will be created.")]
+    // [Description("The point around which particles will be created.")]
     [Configurable] public Vector2 SpawnOrigin = new Vector2(420, 0);
-    [Description("The distance around the Spawn Origin point where particles will be created.")]
+    // [Description("The distance around the Spawn Origin point where particles will be created.")]
     [Configurable] public float SpawnSpread = 360;
 
-    [Group("Motion")]
-    [Description("The angle in degrees at which particles will be moving.\n0 is to the right, positive values rotate counterclockwise.")]
+    // [Group("Motion")]
+    // [Description("The angle in degrees at which particles will be moving.\n0 is to the right, positive values rotate counterclockwise.")]
     [Configurable] public float Angle = 110;
-    [Description("The spread in degrees around Angle.")]
+    // [Description("The spread in degrees around Angle.")]
     [Configurable] public float AngleSpread = 60;
-    [Description("The speed at which particles move, in osupixels.")]
+    // [Description("The speed at which particles move, in osupixels.")]
     [Configurable] public float Speed = 480;
-    [Description("Eases the motion of particles.")]
+    // [Description("Eases the motion of particles.")]
     [Configurable] public OsbEasing Easing = OsbEasing.None;
 
-    public override void Generate()
-    {
-        if (StartTime == EndTime && Beatmap.HitObjects.FirstOrDefault() != null)
-        {
-            StartTime = (int)Beatmap.HitObjects.First().StartTime;
-            EndTime = (int)Beatmap.HitObjects.Last().EndTime;
-        }
-        EndTime = Math.Min(EndTime, (int)AudioDuration);
-        StartTime = Math.Min(StartTime, EndTime);
+    [Configurable] public int? RngSeed = null;
+    private Random random = new Random();
 
-        var bitmap = GetMapsetBitmap(Path);
+    public override void Generate() { }
+    public override void Generate(Beatmap beatmap)
+    {
+        if (RngSeed != null) {
+            random = new Random((int)RngSeed);
+        }
+
+        if (StartTime == EndTime && beatmap.HitObjects.FirstOrDefault() != null)
+        {
+            StartTime = (int)beatmap.HitObjects.First().StartTime;
+            EndTime = (int)beatmap.HitObjects.Last().EndTime;
+        }
+        
+        if (StartTime <= EndTime) {
+            throw new InvalidOperationException(string.Format("EndTime({0}) must be greater than StartTime{1}", EndTime, StartTime));
+        }
+        using var bitmap = SKBitmap.Decode(Path);
 
         var duration = (double)(EndTime - StartTime);
         var loopCount = Math.Max(1, (int)Math.Floor(duration / Lifetime));
 
-        var layer = GetLayer("");
         for (var i = 0; i < ParticleCount; i++)
         {
-            var spawnAngle = Random(Math.PI * 2);
-            var spawnDistance = (float)(SpawnSpread * Math.Sqrt(Random(1f)));
+            var spawnAngle = (float)(random.NextDouble() * (Math.PI * 2));
+            var spawnDistance = (float)(SpawnSpread * Math.Sqrt(random.NextDouble()));
 
-            var moveAngle = MathHelper.DegreesToRadians(Angle + Random(-AngleSpread, AngleSpread) * 0.5f);
+            var moveAngle = MathHelper.DegreesToRadians(Angle + randFloatRange(-AngleSpread, AngleSpread) * 0.5f);
             var moveDistance = Speed * Lifetime * 0.001f;
 
             var spriteRotation = moveAngle + MathHelper.DegreesToRadians(Rotation);
@@ -90,12 +98,12 @@ public class Particles : StoryboardObjectGenerator
 
                 color = Color4.FromHsl(new Vector4(
                     hsba.X,
-                    (float)Random(sMin, sMax),
-                    (float)Random(vMin, vMax),
+                    randFloatRange(sMin, sMax),
+                    randFloatRange(vMin, vMax),
                     hsba.W));
             }
 
-            var particle = layer.CreateSprite(Path, Origin);
+            Register(new OsbSprite(Path, Origin), out var particle);
             if (spriteRotation != 0)
                 particle.Rotate(startTime, spriteRotation);
             if (color.R != 1 || color.G != 1 || color.B != 1)
@@ -129,5 +137,9 @@ public class Particles : StoryboardObjectGenerator
                 return true;
         }
         return false;
+    }
+
+    private float randFloatRange(float min, float max) {
+        return (float)(random.NextDouble() * (min - max) + min);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using OpenTK.Mathematics;
+using SkiaSharp;
 using StoryBrew.Animations;
+using StoryBrew.Mapset;
 using StoryBrew.Scripting;
 using StoryBrew.Storyboarding;
 
@@ -8,19 +10,19 @@ namespace Storybrew.Scripts;
 /// <summary>
 /// An example of a radial spectrum effect, using movement instead of scaling.
 /// </summary>
-public class RadialSpectrum : StoryboardObjectGenerator
+public class RadialSpectrum : Script
 {
-    [Group("Timing")]
+    // [Group("Timing")]
     [Configurable] public int StartTime = 0;
     [Configurable] public int EndTime = 10000;
     [Configurable] public int BeatDivisor = 8;
 
-    [Group("Sprite")]
+    // [Group("Sprite")]
     [Configurable] public string SpritePath = "sb/bar.png";
     [Configurable] public OsbOrigin SpriteOrigin = OsbOrigin.Centre;
     [Configurable] public Vector2 SpriteScale = Vector2.One;
 
-    [Group("Bars")]
+    // [Group("Bars")]
     [Configurable] public Vector2 Position = new Vector2(320, 240);
     [Configurable] public int BarCount = 20;
     [Configurable] public int Radius = 50;
@@ -28,32 +30,37 @@ public class RadialSpectrum : StoryboardObjectGenerator
     [Configurable] public int LogScale = 600;
     [Configurable] public OsbEasing FftEasing = OsbEasing.InExpo;
 
-    [Group("Optimization")]
+    // [Group("Optimization")]
     [Configurable] public double Tolerance = 2;
     [Configurable] public int CommandDecimals = 0;
     [Configurable] public int FrequencyCutOff = 16000;
 
-    public override void Generate()
-    {
-        if (StartTime == EndTime && Beatmap.HitObjects.FirstOrDefault() != null)
-        {
-            StartTime = (int)Beatmap.HitObjects.First().StartTime;
-            EndTime = (int)Beatmap.HitObjects.Last().EndTime;
-        }
-        EndTime = Math.Min(EndTime, (int)AudioDuration);
-        StartTime = Math.Min(StartTime, EndTime);
+    [Configurable] public int? RngSeed = null;
+    private Random random = new Random();
 
-        var bitmap = GetMapsetBitmap(SpritePath);
+    public override void Generate(Beatmap beatmap)
+    {
+        if (StartTime == EndTime && beatmap.HitObjects.FirstOrDefault() != null)
+        {
+            StartTime = (int)beatmap.HitObjects.First().StartTime;
+            EndTime = (int)beatmap.HitObjects.Last().EndTime;
+        }
+        
+        if (StartTime <= EndTime) {
+            throw new InvalidOperationException(string.Format("EndTime({0}) must be greater than StartTime{1}", EndTime, StartTime));
+        }
+        using var bitmap = SKBitmap.Decode(SpritePath);
 
         var positionKeyframes = new KeyframedValue<Vector2>[BarCount];
 
         for (var i = 0; i < BarCount; i++)
             positionKeyframes[i] = new KeyframedValue<Vector2>((a, b, c) => Vector2.Zero, Vector2.Zero);
 
-        var fftTimeStep = (Beatmap?.GetTimingPointAt(StartTime)?.BeatDuration ?? throw new Exception()) / BeatDivisor;
+        var fftTimeStep = (beatmap.GetTimingPointAt(StartTime)?.BeatDuration ?? throw new Exception()) / BeatDivisor;
         var fftOffset = fftTimeStep * 0.2;
         for (var time = (double)StartTime; time < EndTime; time += fftTimeStep)
         {
+            // TODO: fix this
             var fft = GetFft(time + fftOffset, BarCount, null, FftEasing, FrequencyCutOff);
             for (var i = 0; i < BarCount; i++)
             {
@@ -66,7 +73,6 @@ public class RadialSpectrum : StoryboardObjectGenerator
             }
         }
 
-        var layer = GetLayer("Spectrum");
         var barScale = ((Math.PI * 2 * Radius) / BarCount) / bitmap.Width;
         for (var i = 0; i < BarCount; i++)
         {
@@ -76,9 +82,9 @@ public class RadialSpectrum : StoryboardObjectGenerator
             var angle = i * (Math.PI * 2) / BarCount;
             var defaultPosition = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle)) * Radius;
 
-            var bar = layer.CreateSprite(SpritePath, SpriteOrigin);
+            Register(new OsbSprite(SpritePath, SpriteOrigin), out var bar);
             bar.CommandSplitThreshold = 300;
-            bar.ColorHsb(StartTime, (i * 360.0 / BarCount) + Random(-10.0, 10.0), 0.6 + Random(0.4), 1);
+            bar.ColorHsb(StartTime, (i * 360.0 / BarCount) + randFloatRange(-10.0f, 10.0f), 0.6 + randFloatRange(0f, 0.4f), 1);
             if (SpriteScale.X == SpriteScale.Y)
                 bar.Scale(StartTime, barScale * SpriteScale.X);
             else bar.ScaleVec(StartTime, barScale * SpriteScale.X, barScale * SpriteScale.Y);
@@ -97,5 +103,9 @@ public class RadialSpectrum : StoryboardObjectGenerator
             );
             if (!hasMove) bar.Move(StartTime, defaultPosition);
         }
+    }
+
+    private float randFloatRange(float min, float max) {
+        return (float)(random.NextDouble() * (min - max) + min);
     }
 }

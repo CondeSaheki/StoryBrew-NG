@@ -1,22 +1,23 @@
 ﻿using OpenTK.Mathematics;
+using StoryBrew.Mapset;
 using StoryBrew.Scripting;
 using StoryBrew.Storyboarding;
 
 namespace Storybrew.Scripts;
 
-public class Tetris : StoryboardObjectGenerator
+public class Tetris : Script
 {
-    [Group("Timing")]
+    // [Group("Timing")]
     [Configurable] public int StartTime = 0;
     [Configurable] public int EndTime = 0;
     [Configurable] public double BeatDivisor = 1;
 
-    [Group("Sprite")]
+    // [Group("Sprite")]
     [Configurable] public string SpritePath = "sb/sq.png";
     [Configurable] public double SpriteScale = 0.625;
     [Configurable] public Color4 Color;
 
-    [Group("Grid")]
+    // [Group("Grid")]
     [Configurable] public Vector2 Offset = new Vector2(320, 240);
     [Configurable] public Vector2 ShadowOffset = new Vector2(4, 4);
     [Configurable] public double Rotation = 0;
@@ -26,10 +27,13 @@ public class Tetris : StoryboardObjectGenerator
     [Configurable] public int BlockLength = 4;
     [Configurable] public int Blocks = 1;
 
-    [Group("AI")]
+    // [Group("AI")]
     [Configurable] public bool Wait = true;
     [Configurable] public bool Dumb = false;
 
+
+    [Configurable] public int? RngSeed = null;
+    private Random random = new Random();
     public class Cell
     {
         public int X;
@@ -43,9 +47,9 @@ public class Tetris : StoryboardObjectGenerator
 
     private Cell[,] cells = null!;
 
-    public override void Generate()
+    public override void Generate(Beatmap beatmap)
     {
-        var beatDuration = Beatmap?.GetTimingPointAt(0)?.BeatDuration ?? throw new Exception("Beat duration not found");
+        var beatDuration = beatmap?.GetTimingPointAt(0)?.BeatDuration ?? throw new Exception("Beat duration not found");
         var timestep = beatDuration / BeatDivisor;
 
         cells = new Cell[GridWidth, GridHeight];
@@ -68,7 +72,7 @@ public class Tetris : StoryboardObjectGenerator
 
     private void addBlock(double startTime, double endTime)
     {
-        var brightness = (float)Random(0.3, 1.0);
+        var brightness = randFloatRange(0.3f, 1.0f);
         var color = new Color4(Color.R * brightness, Color.G * brightness, Color.B * brightness, 1);
 
         var heightMap = new int[GridWidth];
@@ -85,9 +89,9 @@ public class Tetris : StoryboardObjectGenerator
             bottom = Math.Max(bottom, heightMap[x]);
         }
 
-        var dropX = Random(GridWidth);
+        var dropX = (int)randFloatRange(0f, GridWidth);
         while (!Dumb && heightMap[dropX] != bottom)
-            dropX = Random(GridWidth);
+            dropX = (int)randFloatRange(0f, GridWidth);
 
         var dropY = heightMap[dropX];
 
@@ -161,8 +165,8 @@ public class Tetris : StoryboardObjectGenerator
 
     private void fillCell(double startTime, double endTime, int dropX, int dropY, Color4 color)
     {
-        var shadow = GetLayer("Shadows").CreateSprite(SpritePath, OsbOrigin.TopCentre);
-        var sprite = GetLayer("Blocks").CreateSprite(SpritePath, OsbOrigin.TopCentre);
+        Register(new OsbSprite(SpritePath, OsbOrigin.TopCentre), out var shadow);
+        Register(new OsbSprite(SpritePath, OsbOrigin.TopCentre), out var sprite);
 
         cells[dropX, dropY].Sprite = sprite;
         cells[dropX, dropY].Shadow = shadow;
@@ -225,10 +229,14 @@ public class Tetris : StoryboardObjectGenerator
         while (n > 1)
         {
             n--;
-            var k = Random(n + 1);
+            var k = (int)randFloatRange(0f, n + 1);
             var value = array[k];
             array[k] = array[n];
             array[n] = value;
         }
+    }
+
+    private float randFloatRange(float min, float max) {
+        return (float)(random.NextDouble() * (min - max) + min);
     }
 }

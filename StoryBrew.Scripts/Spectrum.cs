@@ -1,5 +1,7 @@
 ﻿using OpenTK.Mathematics;
+using SkiaSharp;
 using StoryBrew.Animations;
+using StoryBrew.Mapset;
 using StoryBrew.Scripting;
 using StoryBrew.Storyboarding;
 
@@ -8,19 +10,19 @@ namespace Storybrew.Scripts;
 /// <summary>
 /// An example of a spectrum effect.
 /// </summary>
-public class Spectrum : StoryboardObjectGenerator
+public class Spectrum : Script
 {
-    [Group("Timing")]
+    // [Group("Timing")]
     [Configurable] public int StartTime = 0;
     [Configurable] public int EndTime = 10000;
     [Configurable] public int BeatDivisor = 16;
 
-    [Group("Sprite")]
+    // [Group("Sprite")]
     [Configurable] public string SpritePath = "sb/bar.png";
     [Configurable] public OsbOrigin SpriteOrigin = OsbOrigin.BottomLeft;
     [Configurable] public Vector2 SpriteScale = new Vector2(1, 100);
 
-    [Group("Bars")]
+    // [Group("Bars")]
     [Configurable] public Vector2 Position = new Vector2(0, 400);
     [Configurable] public float Width = 640;
     [Configurable] public int BarCount = 96;
@@ -28,31 +30,40 @@ public class Spectrum : StoryboardObjectGenerator
     [Configurable] public OsbEasing FftEasing = OsbEasing.InExpo;
     [Configurable] public float MinimalHeight = 0.05f;
 
-    [Group("Optimization")]
+    // [Group("Optimization")]
     [Configurable] public double Tolerance = 0.2;
     [Configurable] public int CommandDecimals = 1;
     [Configurable] public int FrequencyCutOff = 16000;
 
-    public override void Generate()
-    {
-        if (StartTime == EndTime && Beatmap.HitObjects.FirstOrDefault() != null)
-        {
-            StartTime = (int)Beatmap.HitObjects.First().StartTime;
-            EndTime = (int)Beatmap.HitObjects.Last().EndTime;
-        }
-        EndTime = Math.Min(EndTime, (int)AudioDuration);
-        StartTime = Math.Min(StartTime, EndTime);
+    [Configurable] public int? RngSeed = null;
+    private Random random = new Random();
 
-        var bitmap = GetMapsetBitmap(SpritePath);
+    public override void Generate(Beatmap beatmap)
+    {
+        if (RngSeed != null) {
+            random = new Random((int)RngSeed);
+        }
+
+        if (StartTime == EndTime && beatmap.HitObjects.FirstOrDefault() != null)
+        {
+            StartTime = (int)beatmap.HitObjects.First().StartTime;
+            EndTime = (int)beatmap.HitObjects.Last().EndTime;
+        }
+        
+        if (StartTime <= EndTime) {
+            throw new InvalidOperationException(string.Format("EndTime({0}) must be greater than StartTime{1}", EndTime, StartTime));
+        }
+        using var bitmap = SKBitmap.Decode(SpritePath);
 
         var heightKeyframes = new KeyframedValue<float>[BarCount];
         for (var i = 0; i < BarCount; i++)
             heightKeyframes[i] = new KeyframedValue<float>((a, b, c) => 0, 0);
 
-        var fftTimeStep = (Beatmap?.GetTimingPointAt(StartTime)?.BeatDuration ?? throw new Exception()) / BeatDivisor;
+        var fftTimeStep = (beatmap.GetTimingPointAt(StartTime)?.BeatDuration ?? throw new Exception()) / BeatDivisor;
         var fftOffset = fftTimeStep * 0.2;
         for (var time = (double)StartTime; time < EndTime; time += fftTimeStep)
         {
+            // TODO: fix this
             var fft = GetFft(time + fftOffset, BarCount, null, FftEasing, FrequencyCutOff);
             for (var i = 0; i < BarCount; i++)
             {
@@ -63,16 +74,16 @@ public class Spectrum : StoryboardObjectGenerator
             }
         }
 
-        var layer = GetLayer("Spectrum");
         var barWidth = Width / BarCount;
         for (var i = 0; i < BarCount; i++)
         {
             var keyframes = heightKeyframes[i];
             keyframes.Simplify1dKeyframes(Tolerance, h => h);
 
-            var bar = layer.CreateSprite(SpritePath, SpriteOrigin, new Vector2(Position.X + i * barWidth, Position.Y));
+            // var bar = layer.CreateSprite(SpritePath, SpriteOrigin, new Vector2(Position.X + i * barWidth, Position.Y));
+            Register(new OsbSprite(SpritePath, SpriteOrigin), out var bar);
             bar.CommandSplitThreshold = 300;
-            bar.ColorHsb(StartTime, (i * 360.0 / BarCount) + Random(-10.0, 10.0), 0.6 + Random(0.4), 1);
+            bar.ColorHsb(StartTime, (i * 360.0 / BarCount) + randFloatRange(-10.0f, 10.0f), 0.6 + randFloatRange(0f, 0.4f), 1);
             bar.Additive(StartTime, EndTime);
 
             var scaleX = SpriteScale.X * barWidth / bitmap.Width;
@@ -92,5 +103,9 @@ public class Spectrum : StoryboardObjectGenerator
             );
             if (!hasScale) bar.ScaleVec(StartTime, scaleX, MinimalHeight);
         }
+    }
+
+    private float randFloatRange(float min, float max) {
+        return (float)(random.NextDouble() * (min - max) + min);
     }
 }
