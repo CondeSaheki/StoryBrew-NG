@@ -4,7 +4,7 @@ namespace StoryBrew.Storyboarding.Commands;
 
 public class ScaleCommand : Command<CommandDecimal>
 {
-    public ScaleCommand(OsbEasing easing, double startTime, double endTime, CommandDecimal startValue, CommandDecimal endValue)
+    public ScaleCommand(Easing easing, double startTime, double endTime, CommandDecimal startValue, CommandDecimal endValue)
         : base("S", easing, startTime, endTime, startValue, endValue)
     {
     }

@@ -1,4 +1,6 @@
-﻿namespace StoryBrew.Storyboarding.Commands;
+﻿using StoryBrew.Project.Files;
+
+namespace StoryBrew.Storyboarding.Commands;
 
 public abstract class CommandGroup : ICommand
 {
@@ -76,5 +78,5 @@ public abstract class CommandGroup : ICommand
 
     protected abstract string GetCommandGroupHeader(ExportSettings exportSettings);
 
-    public override string ToString() => $"{GetCommandGroupHeader(ExportSettings.DEFAULT)} ({commands.Count} commands)";
+    public override string ToString() => $"{GetCommandGroupHeader(new())} ({commands.Count} commands)";
 }

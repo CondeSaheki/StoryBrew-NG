@@ -1,11 +1,12 @@
 ﻿using StoryBrew.Storyboarding.CommandValues;
 using StoryBrew.Storyboarding.Display;
+using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding;
 
 public class OsbWriterFactory
 {
-    public static OsbSpriteWriter CreateWriter(OsbSprite osbSprite, AnimatedValue<CommandPosition> moveTimeline,
+    public static OsbSpriteWriter CreateWriter(Sprite osbSprite, AnimatedValue<CommandPosition> moveTimeline,
                                                                     AnimatedValue<CommandDecimal> moveXTimeline,
                                                                     AnimatedValue<CommandDecimal> moveYTimeline,
                                                                     AnimatedValue<CommandDecimal> scaleTimeline,
@@ -13,9 +14,9 @@ public class OsbWriterFactory
                                                                     AnimatedValue<CommandDecimal> rotateTimeline,
                                                                     AnimatedValue<CommandDecimal> fadeTimeline,
                                                                     AnimatedValue<CommandColor> colorTimeline,
-                                                                    TextWriter writer, ExportSettings exportSettings, OsbLayer layer)
+                                                                    TextWriter writer, ExportSettings exportSettings, Layer layer)
     {
-        if (osbSprite is OsbAnimation osbAnimation)
+        if (osbSprite is Animation osbAnimation)
         {
             return new OsbAnimationWriter(osbAnimation, moveTimeline,
                                                         moveXTimeline,

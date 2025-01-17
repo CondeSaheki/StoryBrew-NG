@@ -1,15 +1,16 @@
 ﻿using StoryBrew.Storyboarding.Commands;
 using StoryBrew.Storyboarding.CommandValues;
+using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding.Display
 {
     public class TriggerDecorator<TValue> : ITypedCommand<TValue>
-        where TValue : CommandValue
+        where TValue : ICommandValue
     {
         private readonly ITypedCommand<TValue> command;
         private double triggerTime;
 
-        public OsbEasing Easing { get { throw new InvalidOperationException(); } }
+        public Easing Easing { get { throw new InvalidOperationException(); } }
         public double StartTime => triggerTime + command.StartTime;
         public double EndTime => triggerTime + command.EndTime;
         public TValue StartValue => command.StartValue;

@@ -2,8 +2,7 @@
 
 public class CommandComparer : Comparer<ICommand>
 {
-    public override int Compare(ICommand? x, ICommand? y)
-        => CompareCommands(x, y);
+    public override int Compare(ICommand? x, ICommand? y) => CompareCommands(x, y);
 
     public static int CompareCommands(ICommand? x, ICommand? y)
     {

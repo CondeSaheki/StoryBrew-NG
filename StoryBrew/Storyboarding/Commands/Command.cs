@@ -1,13 +1,14 @@
 ﻿using StoryBrew.Animations;
 using StoryBrew.Storyboarding.CommandValues;
+using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding.Commands;
 
     public abstract class Command<TValue> : ITypedCommand<TValue>, IFragmentableCommand, IOffsetable
-        where TValue : CommandValue
+        where TValue : ICommandValue
     {
         public string Identifier { get; set; }
-        public OsbEasing Easing { get; set; }
+        public Easing Easing { get; set; }
         public double StartTime { get; set; }
         public double EndTime { get; set; }
         public double Duration => EndTime - StartTime;
@@ -18,7 +19,7 @@ namespace StoryBrew.Storyboarding.Commands;
         public bool Active => true;
         public int Cost => 1;
 
-        protected Command(string identifier, OsbEasing easing, double startTime, double endTime, TValue startValue, TValue endValue)
+        protected Command(string identifier, Easing easing, double startTime, double endTime, TValue startValue, TValue endValue)
         {
             Identifier = identifier;
             Easing = easing;
@@ -50,7 +51,7 @@ namespace StoryBrew.Storyboarding.Commands;
         public abstract TValue ValueAtProgress(double progress);
         public abstract TValue Midpoint(Command<TValue> endCommand, double progress);
 
-        public bool IsFragmentable => StartTime == EndTime || Easing == OsbEasing.None;
+        public bool IsFragmentable => StartTime == EndTime || Easing == Easing.None;
 
         public abstract IFragmentableCommand GetFragment(double startTime, double endTime);
 
@@ -94,5 +95,5 @@ namespace StoryBrew.Storyboarding.Commands;
         public virtual void WriteOsb(TextWriter writer, ExportSettings exportSettings, StoryboardTransform transform, int indentation)
             => writer.WriteLine(new string(' ', indentation) + ToOsbString(exportSettings, transform));
 
-        public override string ToString() => ToOsbString(ExportSettings.DEFAULT, null);
+        public override string ToString() => ToOsbString(new(), null);
     }

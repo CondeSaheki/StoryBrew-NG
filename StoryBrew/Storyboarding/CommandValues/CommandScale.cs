@@ -1,52 +1,39 @@
 using OpenTK.Mathematics;
+using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding.CommandValues;
 
 [Serializable]
-public struct CommandScale : CommandValue, IEquatable<CommandScale>
+public struct CommandScale : ICommandValue, IEquatable<CommandScale>
 {
-    public static CommandScale One = new(1, 1);
-
-    private readonly CommandDecimal x;
-    private readonly CommandDecimal y;
-
-    public readonly CommandDecimal X => x;
-    public readonly CommandDecimal Y => y;
+    public readonly CommandDecimal X;
+    public readonly CommandDecimal Y;
 
     public CommandScale(CommandDecimal x, CommandDecimal y)
     {
-        this.x = x;
-        this.y = y;
+        X = x;
+        Y = y;
     }
 
-    public CommandScale(CommandDecimal value)
-        : this(value, value)
-    {
-    }
+    public CommandScale(CommandDecimal value) : this(value, value) { }
 
-    public CommandScale(Vector2 vector)
-        : this(vector.X, vector.Y)
-    {
-    }
+    public CommandScale(Vector2 vector) : this(vector.X, vector.Y) { }
 
-    public bool Equals(CommandScale other)
-        => x.Equals(other.x) && y.Equals(other.y);
+    public bool Equals(CommandScale other) => X.Equals(other.X) && Y.Equals(other.Y);
 
     public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj))
             return false;
 
-        return obj is CommandScale && Equals((CommandScale)obj);
+        return obj is CommandScale commandScale && Equals(commandScale);
     }
 
-    public override int GetHashCode()
-        => (x.GetHashCode() * 397) ^ y.GetHashCode();
+    public override int GetHashCode() => (X.GetHashCode() * 397) ^ Y.GetHashCode();
 
-    public string ToOsbString(ExportSettings exportSettings)
-        => $"{X.ToOsbString(exportSettings)},{Y.ToOsbString(exportSettings)}";
+    public string ToOsbString(ExportSettings exportSettings) => $"{X.ToOsbString(exportSettings)},{Y.ToOsbString(exportSettings)}";
 
-    public override string ToString() => ToOsbString(ExportSettings.DEFAULT);
+    public override string ToString() => ToOsbString(new());
 
     public float DistanceFrom(object obj)
     {
@@ -74,5 +61,5 @@ public struct CommandScale : CommandValue, IEquatable<CommandScale>
 
     public static implicit operator CommandScale(Vector2 vector) => new(vector);
 
-    public static implicit operator Vector2(CommandScale obj) => new(obj.x, obj.y);
+    public static implicit operator Vector2(CommandScale obj) => new(obj.X, obj.Y);
 }

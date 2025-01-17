@@ -1,3 +1,5 @@
+using StoryBrew.Project.Files;
+
 namespace StoryBrew.Storyboarding.Commands;
 
 public interface ICommand : IComparable<ICommand>

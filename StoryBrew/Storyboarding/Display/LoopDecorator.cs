@@ -1,16 +1,17 @@
 ﻿using StoryBrew.Storyboarding.Commands;
 using StoryBrew.Storyboarding.CommandValues;
+using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding.Display;
 
 public class LoopDecorator<TValue> : ITypedCommand<TValue>
-    where TValue : CommandValue
+    where TValue : ICommandValue
 {
     private readonly ITypedCommand<TValue> command;
     private readonly double repeatDuration;
     private readonly int repeats;
 
-    public OsbEasing Easing { get { throw new InvalidOperationException(); } }
+    public Easing Easing => throw new InvalidOperationException();
     public double StartTime { get; }
     public double EndTime => StartTime + RepeatDuration * repeats;
     public double Duration => EndTime - StartTime;

@@ -1,10 +1,11 @@
 using OpenTK.Mathematics;
 using System.Drawing;
+using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding.CommandValues;
 
 [Serializable]
-public struct CommandColor : CommandValue, IEquatable<CommandColor>
+public struct CommandColor : ICommandValue, IEquatable<CommandColor>
 {
     public static readonly CommandColor WHITE = new(1, 1, 1);
 
@@ -28,10 +29,7 @@ public struct CommandColor : CommandValue, IEquatable<CommandColor>
         this.b = b;
     }
 
-    public CommandColor(Vector3 vector)
-        : this(vector.X, vector.Y, vector.Z)
-    {
-    }
+    public CommandColor(Vector3 vector) : this(vector.X, vector.Y, vector.Z) { }
 
     public float DistanceFrom(object obj)
     {
@@ -42,15 +40,12 @@ public struct CommandColor : CommandValue, IEquatable<CommandColor>
         return (float)Math.Sqrt((diffR * diffR) + (diffG * diffG) + (diffB * diffB));
     }
 
-    public bool Equals(CommandColor other)
-        => r == other.r && g == other.g && b == other.b;
+    public bool Equals(CommandColor other) => r == other.r && g == other.g && b == other.b;
 
     public override bool Equals(object? other)
     {
-        if (ReferenceEquals(null, other))
-            return false;
-
-        return other is CommandColor && Equals((CommandColor)other);
+        if (ReferenceEquals(null, other)) return false;
+        return (other is CommandColor commandColor) && Equals(commandColor);
     }
 
     public override int GetHashCode()
@@ -61,10 +56,8 @@ public struct CommandColor : CommandValue, IEquatable<CommandColor>
         return hashCode;
     }
 
-    public string ToOsbString(ExportSettings exportSettings)
-        => $"{R},{G},{B}";
-
-    public override string ToString() => ToOsbString(ExportSettings.DEFAULT);
+    public string ToOsbString(ExportSettings exportSettings) => $"{R},{G},{B}";
+    public override string ToString() => ToOsbString(new());
 
     public static bool operator ==(CommandColor left, CommandColor right) => left.Equals(right);
 
@@ -112,8 +105,7 @@ public struct CommandColor : CommandValue, IEquatable<CommandColor>
 
     public static CommandColor FromHtml(string htmlColor)
     {
-        if (!htmlColor.StartsWith('#'))
-            htmlColor = '#' + htmlColor;
+        if (!htmlColor.StartsWith('#')) htmlColor = '#' + htmlColor;
 
         var color = ColorTranslator.FromHtml(htmlColor);
         return new CommandColor(color.R / 255.0f, color.G / 255.0f, color.B / 255.0f);

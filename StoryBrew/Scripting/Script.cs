@@ -9,7 +9,7 @@ public abstract class Script: IDisposable
     public string ProjectPath { get; private set; } = string.Empty;
     public string MapsetPath { get; private set; } = string.Empty;
     public string AssetPath { get; private set; } = string.Empty; // Maybe remove
-    public OsbLayer Layer { get; private set; } = default;
+    public Layer Layer { get; private set; } = default;
 
     /// <summary>
     /// Generates the storyboard.
@@ -28,7 +28,7 @@ public abstract class Script: IDisposable
     /// </summary>
     /// <typeparam name="T">The type of the storyboard object to register.</typeparam>
     /// <param name="instance">The storyboard object instance to register.</param>
-    public void Register<T>(T instance) where T : StoryboardObject => collector?.Invoke(instance);
+    public void Register<T>(T instance) where T : IStoryboardElement => collector?.Invoke(instance);
 
     /// <summary>
     /// Registers a storyboard object instance and outputs the same instance.
@@ -36,41 +36,41 @@ public abstract class Script: IDisposable
     /// <typeparam name="T">The type of the storyboard object to register.</typeparam>
     /// <param name="instance">The storyboard object instance to register.</param>
     /// <param name="obj">The output parameter that holds the registered storyboard object instance.</param>
-    public void Register<T>(T instance, out T obj) where T : StoryboardObject
+    public void Register<T>(T instance, out T obj) where T : IStoryboardElement
     {
         collector?.Invoke(instance);
         obj = instance;
     }
 
-    private Action<StoryboardObject>? collector;
+    private Action<IStoryboardElement>? collector;
 
-    internal List<StoryboardObject> Collect()
+    internal List<IStoryboardElement> Collect()
     {
-        List<StoryboardObject> osbObjects = [];
+        List<IStoryboardElement> osbObjects = [];
         collector = osbObjects.Add;
         Generate();
         collector = null;
         return osbObjects;
     }
 
-    internal List<StoryboardObject> Collect(Beatmap beatmap)
+    internal List<IStoryboardElement> Collect(Beatmap beatmap)
     {
-        List<StoryboardObject> osbObjects = [];
+        List<IStoryboardElement> osbObjects = [];
         collector = osbObjects.Add;
         Generate(beatmap);
         collector = null;
         return osbObjects;
     }
 
-    internal Dictionary<Beatmap, List<StoryboardObject>> Collect(List<Beatmap> beatmaps)
+    internal Dictionary<Beatmap, List<IStoryboardElement>> Collect(List<Beatmap> beatmaps)
     {
-        Dictionary<Beatmap, List<StoryboardObject>> BeatmapObjects = [];
+        Dictionary<Beatmap, List<IStoryboardElement>> BeatmapObjects = [];
         foreach (var beatmap in beatmaps) BeatmapObjects[beatmap] = Collect(beatmap);
         collector = null;
         return BeatmapObjects;
     }
 
-    internal void Init(OsbLayer layer, Manager project)
+    internal void Init(Layer layer, Manager project)
     {
         if (ProjectPath != string.Empty || MapsetPath != string.Empty || AssetPath != string.Empty || Layer != default) throw new Exception("Already initialized.");
 

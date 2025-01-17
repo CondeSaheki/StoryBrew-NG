@@ -1,4 +1,6 @@
-﻿namespace StoryBrew.Storyboarding.Commands;
+﻿using StoryBrew.Project.Files;
+
+namespace StoryBrew.Storyboarding.Commands;
 
 public class LoopCommand : CommandGroup, IFragmentableCommand
 {

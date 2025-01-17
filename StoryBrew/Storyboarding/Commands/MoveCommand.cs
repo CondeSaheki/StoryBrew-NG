@@ -4,7 +4,7 @@ namespace StoryBrew.Storyboarding.Commands;
 
 public class MoveCommand : Command<CommandPosition>
 {
-    public MoveCommand(OsbEasing easing, double startTime, double endTime, CommandPosition startValue, CommandPosition endValue)
+    public MoveCommand(Easing easing, double startTime, double endTime, CommandPosition startValue, CommandPosition endValue)
         : base("M", easing, startTime, endTime, startValue, endValue)
     {
     }

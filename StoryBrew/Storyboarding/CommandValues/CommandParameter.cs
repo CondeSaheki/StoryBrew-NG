@@ -1,7 +1,9 @@
-﻿namespace StoryBrew.Storyboarding.CommandValues;
+﻿using StoryBrew.Project.Files;
+
+namespace StoryBrew.Storyboarding.CommandValues;
 
 [Serializable]
-public struct CommandParameter : CommandValue
+public struct CommandParameter : ICommandValue
 {
     public static readonly CommandParameter NONE = new(ParameterType.None);
     public static readonly CommandParameter FLIP_HORIZONTAL = new(ParameterType.FlipHorizontal);
@@ -26,7 +28,7 @@ public struct CommandParameter : CommandValue
         }
     }
 
-    public override string ToString() => ToOsbString(ExportSettings.DEFAULT);
+    public override string ToString() => ToOsbString(new());
 
     public float DistanceFrom(object obj)
     {
@@ -34,14 +36,11 @@ public struct CommandParameter : CommandValue
         return other.Type != Type ? 1 : 0;
     }
 
-    public static bool operator ==(CommandParameter left, CommandParameter right)
-        => left.Type == right.Type;
+    public static bool operator ==(CommandParameter left, CommandParameter right) => left.Type == right.Type;
 
-    public static bool operator !=(CommandParameter left, CommandParameter right)
-        => left.Type != right.Type;
+    public static bool operator !=(CommandParameter left, CommandParameter right) => left.Type != right.Type;
 
-    public static implicit operator bool(CommandParameter obj)
-        => obj.Type != ParameterType.None;
+    public static implicit operator bool(CommandParameter obj) => obj.Type != ParameterType.None;
 
     public override bool Equals(object? obj)
     {
@@ -52,8 +51,5 @@ public struct CommandParameter : CommandValue
         return false;
     }
 
-    public override int GetHashCode()
-    {
-        return Type.GetHashCode();
-    }
+    public override int GetHashCode() => Type.GetHashCode();
 }

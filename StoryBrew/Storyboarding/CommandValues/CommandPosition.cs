@@ -1,50 +1,44 @@
 using OpenTK.Mathematics;
+using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding.CommandValues;
 
 [Serializable]
-public struct CommandPosition : CommandValue, IEquatable<CommandPosition>
+public struct CommandPosition : ICommandValue, IEquatable<CommandPosition>
 {
-    private readonly CommandDecimal x;
-    private readonly CommandDecimal y;
-
-    public CommandDecimal X => x;
-    public CommandDecimal Y => y;
+    public readonly CommandDecimal X;
+    public readonly CommandDecimal Y;
 
     public CommandPosition(double x, double y)
     {
-        this.x = x;
-        this.y = y;
+        X = x;
+        Y = y;
     }
 
-    public CommandPosition(Vector2 vector)
-        : this(vector.X, vector.Y)
-    {
-    }
+    public CommandPosition(Vector2 vector) : this(vector.X, vector.Y) { }
 
-    public bool Equals(CommandPosition other)
-        => x.Equals(other.x) && y.Equals(other.y);
+    public bool Equals(CommandPosition other) => X.Equals(other.X) && Y.Equals(other.Y);
 
     public override bool Equals(object? obj)
     {
-        if (obj is null)
-            return false;
-
-        return obj is CommandPosition && Equals((CommandPosition)obj);
+        if (obj is null) return false;
+        return obj is CommandPosition commandPosition && Equals(commandPosition);
     }
 
-    public override int GetHashCode()
-        => (x.GetHashCode() * 397) ^ y.GetHashCode();
+    public override int GetHashCode() => (X.GetHashCode() * 397) ^ Y.GetHashCode();
 
     public string ToOsbString(ExportSettings exportSettings)
-        => exportSettings.UseFloatForMove ?
-            $"{X.ToOsbString(exportSettings)},{Y.ToOsbString(exportSettings)}" :
-            $"{(int)Math.Round(X)},{(int)Math.Round(Y)}";
+    {
+        if (exportSettings.UseFloatForMove)
+        {
+            return $"{X.ToOsbString(exportSettings)},{Y.ToOsbString(exportSettings)}";
+        }
+        return $"{(int)Math.Round(X)},{(int)Math.Round(Y)}";
+    }
 
-    public override string ToString() => ToOsbString(ExportSettings.DEFAULT);
+    public override string ToString() => ToOsbString(new());
 
-    public float DistanceFrom(object obj)
-        => Distance(this, (CommandPosition)obj);
+    public float DistanceFrom(object obj) => Distance(this, (CommandPosition)obj);
 
     public static float Distance(CommandPosition a, CommandPosition b)
     {

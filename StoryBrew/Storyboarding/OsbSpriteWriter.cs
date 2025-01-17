@@ -1,12 +1,13 @@
 ﻿using StoryBrew.Storyboarding.Commands;
 using StoryBrew.Storyboarding.CommandValues;
 using StoryBrew.Storyboarding.Display;
+using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding;
 
 public class OsbSpriteWriter
 {
-    private readonly OsbSprite osbSprite;
+    private readonly Sprite osbSprite;
     private readonly AnimatedValue<CommandPosition> moveTimeline;
     private readonly AnimatedValue<CommandDecimal> moveXTimeline;
     private readonly AnimatedValue<CommandDecimal> moveYTimeline;
@@ -17,9 +18,9 @@ public class OsbSpriteWriter
     private readonly AnimatedValue<CommandColor> colorTimeline;
     protected readonly TextWriter TextWriter;
     protected readonly ExportSettings ExportSettings;
-    protected readonly OsbLayer OsbLayer;
+    protected readonly Layer OsbLayer;
 
-    public OsbSpriteWriter(OsbSprite osbSprite, AnimatedValue<CommandPosition> moveTimeline,
+    public OsbSpriteWriter(Sprite osbSprite, AnimatedValue<CommandPosition> moveTimeline,
                                                 AnimatedValue<CommandDecimal> moveXTimeline,
                                                 AnimatedValue<CommandDecimal> moveYTimeline,
                                                 AnimatedValue<CommandDecimal> scaleTimeline,
@@ -27,7 +28,7 @@ public class OsbSpriteWriter
                                                 AnimatedValue<CommandDecimal> rotateTimeline,
                                                 AnimatedValue<CommandDecimal> fadeTimeline,
                                                 AnimatedValue<CommandColor> colorTimeline,
-                                                TextWriter writer, ExportSettings exportSettings, OsbLayer layer)
+                                                TextWriter writer, ExportSettings exportSettings, Layer layer)
     {
         this.osbSprite = osbSprite;
         this.moveTimeline = moveTimeline;
@@ -60,11 +61,11 @@ public class OsbSpriteWriter
         else writeOsbSprite(osbSprite, transform);
     }
 
-    protected virtual OsbSprite CreateSprite(List<IFragmentableCommand> segment)
+    protected virtual Sprite CreateSprite(List<IFragmentableCommand> segment)
     {
-        var sprite = new OsbSprite()
+        var sprite = new Sprite()
         {
-            TexturePath = osbSprite.TexturePath,
+            Path = osbSprite.Path,
             InitialPosition = osbSprite.InitialPosition,
             Origin = osbSprite.Origin,
         };
@@ -75,23 +76,23 @@ public class OsbSpriteWriter
         return sprite;
     }
 
-    private void writeOsbSprite(OsbSprite sprite, StoryboardTransform transform)
+    private void writeOsbSprite(Sprite sprite, StoryboardTransform transform)
     {
         WriteHeader(sprite, transform);
         foreach (var command in sprite.Commands)
             command.WriteOsb(TextWriter, ExportSettings, transform, 1);
     }
 
-    protected virtual void WriteHeader(OsbSprite sprite, StoryboardTransform transform)
+    protected virtual void WriteHeader(Sprite sprite, StoryboardTransform transform)
     {
         TextWriter.Write($"Sprite");
         WriteHeaderCommon(sprite, transform);
         TextWriter.WriteLine();
     }
 
-    protected virtual void WriteHeaderCommon(OsbSprite sprite, StoryboardTransform transform)
+    protected virtual void WriteHeaderCommon(Sprite sprite, StoryboardTransform transform)
     {
-        TextWriter.Write($",{OsbLayer},{sprite.Origin},\"{sprite.TexturePath.Trim()}\"");
+        TextWriter.Write($",{OsbLayer},{sprite.Origin},\"{sprite.Path.Trim()}\"");
 
         var transformedInitialPosition = transform == null ?
             sprite.InitialPosition :
@@ -198,49 +199,49 @@ public class OsbSpriteWriter
         if (moveTimeline.HasCommands && !segment.Any(c => c is MoveCommand && c.StartTime == startTime))
         {
             var value = moveTimeline.ValueAtTime(startTime);
-            segment.Add(new MoveCommand(OsbEasing.None, startTime, startTime, value, value));
+            segment.Add(new MoveCommand(Easing.None, startTime, startTime, value, value));
         }
 
         if (moveXTimeline.HasCommands && !segment.Any(c => c is MoveXCommand && c.StartTime == startTime))
         {
             var value = moveXTimeline.ValueAtTime(startTime);
-            segment.Add(new MoveXCommand(OsbEasing.None, startTime, startTime, value, value));
+            segment.Add(new MoveXCommand(Easing.None, startTime, startTime, value, value));
         }
 
         if (moveYTimeline.HasCommands && !segment.Any(c => c is MoveYCommand && c.StartTime == startTime))
         {
             var value = moveYTimeline.ValueAtTime(startTime);
-            segment.Add(new MoveYCommand(OsbEasing.None, startTime, startTime, value, value));
+            segment.Add(new MoveYCommand(Easing.None, startTime, startTime, value, value));
         }
 
         if (rotateTimeline.HasCommands && !segment.Any(c => c is RotateCommand && c.StartTime == startTime))
         {
             var value = rotateTimeline.ValueAtTime(startTime);
-            segment.Add(new RotateCommand(OsbEasing.None, startTime, startTime, value, value));
+            segment.Add(new RotateCommand(Easing.None, startTime, startTime, value, value));
         }
 
         if (scaleTimeline.HasCommands && !segment.Any(c => c is ScaleCommand && c.StartTime == startTime))
         {
             var value = scaleTimeline.ValueAtTime(startTime);
-            segment.Add(new ScaleCommand(OsbEasing.None, startTime, startTime, value, value));
+            segment.Add(new ScaleCommand(Easing.None, startTime, startTime, value, value));
         }
 
         if (scaleVecTimeline.HasCommands && !segment.Any(c => c is VScaleCommand && c.StartTime == startTime))
         {
             var value = scaleVecTimeline.ValueAtTime(startTime);
-            segment.Add(new VScaleCommand(OsbEasing.None, startTime, startTime, value, value));
+            segment.Add(new VScaleCommand(Easing.None, startTime, startTime, value, value));
         }
 
         if (colorTimeline.HasCommands && !segment.Any(c => c is ColorCommand && c.StartTime == startTime))
         {
             var value = colorTimeline.ValueAtTime(startTime);
-            segment.Add(new ColorCommand(OsbEasing.None, startTime, startTime, value, value));
+            segment.Add(new ColorCommand(Easing.None, startTime, startTime, value, value));
         }
 
         if (fadeTimeline.HasCommands && !segment.Any(c => c is FadeCommand && c.StartTime == startTime))
         {
             var value = fadeTimeline.ValueAtTime(startTime);
-            segment.Add(new FadeCommand(OsbEasing.None, startTime, startTime, value, value));
+            segment.Add(new FadeCommand(Easing.None, startTime, startTime, value, value));
         }
     }
 }

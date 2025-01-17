@@ -4,7 +4,7 @@ namespace StoryBrew.Storyboarding.Commands;
 
 public class VScaleCommand : Command<CommandScale>
 {
-    public VScaleCommand(OsbEasing easing, double startTime, double endTime, CommandScale startValue, CommandScale endValue)
+    public VScaleCommand(Easing easing, double startTime, double endTime, CommandScale startValue, CommandScale endValue)
         : base("V", easing, startTime, endTime, startValue, endValue)
     {
     }

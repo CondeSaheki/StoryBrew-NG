@@ -4,7 +4,7 @@ using StoryBrew.Storyboarding.CommandValues;
 namespace StoryBrew.Storyboarding.Display;
 
 public class AnimatedValueBuilder<TValue> : IAnimatedValueBuilder
-    where TValue : CommandValue
+    where TValue : ICommandValue
 {
     private readonly AnimatedValue<TValue> value;
     private CompositeCommand<TValue>? composite;

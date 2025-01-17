@@ -4,7 +4,7 @@ namespace StoryBrew.Storyboarding.Commands;
 
 public class MoveYCommand : Command<CommandDecimal>
 {
-    public MoveYCommand(OsbEasing easing, double startTime, double endTime, CommandDecimal startValue, CommandDecimal endValue)
+    public MoveYCommand(Easing easing, double startTime, double endTime, CommandDecimal startValue, CommandDecimal endValue)
         : base("MY", easing, startTime, endTime, startValue, endValue)
     {
     }

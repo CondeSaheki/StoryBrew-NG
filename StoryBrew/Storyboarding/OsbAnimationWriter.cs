@@ -1,13 +1,14 @@
 ﻿using StoryBrew.Storyboarding.Commands;
 using StoryBrew.Storyboarding.CommandValues;
 using StoryBrew.Storyboarding.Display;
+using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding;
 
 public class OsbAnimationWriter : OsbSpriteWriter
 {
-    private readonly OsbAnimation osbAnimation;
-    public OsbAnimationWriter(OsbAnimation osbAnimation, AnimatedValue<CommandPosition> moveTimeline,
+    private readonly Animation osbAnimation;
+    public OsbAnimationWriter(Animation osbAnimation, AnimatedValue<CommandPosition> moveTimeline,
                                                          AnimatedValue<CommandDecimal> moveXTimeline,
                                                          AnimatedValue<CommandDecimal> moveYTimeline,
                                                          AnimatedValue<CommandDecimal> scaleTimeline,
@@ -15,7 +16,7 @@ public class OsbAnimationWriter : OsbSpriteWriter
                                                          AnimatedValue<CommandDecimal> rotateTimeline,
                                                          AnimatedValue<CommandDecimal> fadeTimeline,
                                                          AnimatedValue<CommandColor> colorTimeline,
-                                                         TextWriter writer, ExportSettings exportSettings, OsbLayer layer)
+                                                         TextWriter writer, ExportSettings exportSettings, Layer layer)
                                     : base(osbAnimation, moveTimeline,
                                                          moveXTimeline,
                                                          moveYTimeline,
@@ -29,16 +30,16 @@ public class OsbAnimationWriter : OsbSpriteWriter
         this.osbAnimation = osbAnimation;
     }
 
-    protected override OsbSprite CreateSprite(List<IFragmentableCommand> segment)
+    protected override Sprite CreateSprite(List<IFragmentableCommand> segment)
     {
-        if (osbAnimation.LoopType == OsbLoopType.LoopOnce && segment.Min(c => c.StartTime) >= osbAnimation.AnimationEndTime)
+        if (osbAnimation.LoopType == LoopType.LoopOnce && segment.Min(c => c.StartTime) >= osbAnimation.AnimationEndTime)
         {
             //this shouldn't loop again so we need a sprite instead
-            var sprite = new OsbSprite()
+            var sprite = new Sprite()
             {
                 InitialPosition = osbAnimation.InitialPosition,
                 Origin = osbAnimation.Origin,
-                TexturePath = getLastFramePath(),
+                Path = getLastFramePath(),
             };
 
             foreach (var command in segment)
@@ -48,9 +49,9 @@ public class OsbAnimationWriter : OsbSpriteWriter
         }
         else
         {
-            var animation = new OsbAnimation()
+            var animation = new Animation()
             {
-                TexturePath = osbAnimation.TexturePath,
+                Path = osbAnimation.Path,
                 InitialPosition = osbAnimation.InitialPosition,
                 Origin = osbAnimation.Origin,
                 FrameCount = osbAnimation.FrameCount,
@@ -65,9 +66,9 @@ public class OsbAnimationWriter : OsbSpriteWriter
         }
     }
 
-    protected override void WriteHeader(OsbSprite sprite, StoryboardTransform transform)
+    protected override void WriteHeader(Sprite sprite, StoryboardTransform transform)
     {
-        if (sprite is OsbAnimation animation)
+        if (sprite is Animation animation)
         {
             var frameDelay = animation.FrameDelay;
 
@@ -98,8 +99,8 @@ public class OsbAnimationWriter : OsbSpriteWriter
 
     private string getLastFramePath()
     {
-        var directory = Path.GetDirectoryName(osbAnimation.TexturePath) ?? throw new InvalidOperationException();
-        var file = string.Concat(Path.GetFileNameWithoutExtension(osbAnimation.TexturePath), osbAnimation.FrameCount - 1, Path.GetExtension(osbAnimation.TexturePath));
+        var directory = Path.GetDirectoryName(osbAnimation.Path) ?? throw new InvalidOperationException();
+        var file = string.Concat(Path.GetFileNameWithoutExtension(osbAnimation.Path), osbAnimation.FrameCount - 1, Path.GetExtension(osbAnimation.Path));
         return Path.Combine(directory, file);
     }
 }

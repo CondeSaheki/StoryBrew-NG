@@ -4,7 +4,7 @@ namespace StoryBrew.Storyboarding.Commands;
 
 public class RotateCommand : Command<CommandDecimal>
 {
-    public RotateCommand(OsbEasing easing, double startTime, double endTime, CommandDecimal startValue, CommandDecimal endValue)
+    public RotateCommand(Easing easing, double startTime, double endTime, CommandDecimal startValue, CommandDecimal endValue)
         : base("R", easing, startTime, endTime, startValue, endValue)
     {
     }

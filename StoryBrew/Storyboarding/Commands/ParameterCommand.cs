@@ -7,7 +7,7 @@ public class ParameterCommand : Command<CommandParameter>
     public override bool MaintainValue => StartTime == EndTime;
     public override bool ExportEndValue => false;
 
-    public ParameterCommand(OsbEasing easing, double startTime, double endTime, CommandParameter value)
+    public ParameterCommand(Easing easing, double startTime, double endTime, CommandParameter value)
         : base("P", easing, startTime, endTime, value, value)
     {
         if (value == CommandParameter.NONE)

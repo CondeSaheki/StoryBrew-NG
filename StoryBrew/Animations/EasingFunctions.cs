@@ -49,52 +49,52 @@ public static class EasingFunctions
     public static Func<double, double> ElasticOutQuarter = x => Math.Pow(2, -10 * x) * Math.Sin((0.25 * x - 0.075) * (2 * Math.PI) / .3) + 1;
     public static Func<double, double> ElasticInOut = x => ToInOut(ElasticIn, x);
 
-    public static double Ease(this OsbEasing easing, double value)
+    public static double Ease(this Easing easing, double value)
         => easing.ToEasingFunction().Invoke(value);
 
-    public static Func<double, double> ToEasingFunction(this OsbEasing easing)
+    public static Func<double, double> ToEasingFunction(this Easing easing)
     {
         switch (easing)
         {
             default:
-            case OsbEasing.None: return Linear;
+            case Easing.None: return Linear;
 
-            case OsbEasing.In:
-            case OsbEasing.InQuad: return QuadIn;
-            case OsbEasing.Out:
-            case OsbEasing.OutQuad: return QuadOut;
-            case OsbEasing.InOutQuad: return QuadInOut;
+            case Easing.In:
+            case Easing.InQuad: return QuadIn;
+            case Easing.Out:
+            case Easing.OutQuad: return QuadOut;
+            case Easing.InOutQuad: return QuadInOut;
 
-            case OsbEasing.InCubic: return CubicIn;
-            case OsbEasing.OutCubic: return CubicOut;
-            case OsbEasing.InOutCubic: return CubicInOut;
-            case OsbEasing.InQuart: return QuartIn;
-            case OsbEasing.OutQuart: return QuartOut;
-            case OsbEasing.InOutQuart: return QuartInOut;
-            case OsbEasing.InQuint: return QuintIn;
-            case OsbEasing.OutQuint: return QuintOut;
-            case OsbEasing.InOutQuint: return QuintInOut;
+            case Easing.InCubic: return CubicIn;
+            case Easing.OutCubic: return CubicOut;
+            case Easing.InOutCubic: return CubicInOut;
+            case Easing.InQuart: return QuartIn;
+            case Easing.OutQuart: return QuartOut;
+            case Easing.InOutQuart: return QuartInOut;
+            case Easing.InQuint: return QuintIn;
+            case Easing.OutQuint: return QuintOut;
+            case Easing.InOutQuint: return QuintInOut;
 
-            case OsbEasing.InSine: return SineIn;
-            case OsbEasing.OutSine: return SineOut;
-            case OsbEasing.InOutSine: return SineInOut;
-            case OsbEasing.InExpo: return ExpoIn;
-            case OsbEasing.OutExpo: return ExpoOut;
-            case OsbEasing.InOutExpo: return ExpoInOut;
-            case OsbEasing.InCirc: return CircIn;
-            case OsbEasing.OutCirc: return CircOut;
-            case OsbEasing.InOutCirc: return CircInOut;
-            case OsbEasing.InElastic: return ElasticIn;
-            case OsbEasing.OutElastic: return ElasticOut;
-            case OsbEasing.OutElasticHalf: return ElasticOutHalf;
-            case OsbEasing.OutElasticQuarter: return ElasticOutQuarter;
-            case OsbEasing.InOutElastic: return ElasticInOut;
-            case OsbEasing.InBack: return BackIn;
-            case OsbEasing.OutBack: return BackOut;
-            case OsbEasing.InOutBack: return BackInOut;
-            case OsbEasing.InBounce: return BounceIn;
-            case OsbEasing.OutBounce: return BounceOut;
-            case OsbEasing.InOutBounce: return BounceInOut;
+            case Easing.InSine: return SineIn;
+            case Easing.OutSine: return SineOut;
+            case Easing.InOutSine: return SineInOut;
+            case Easing.InExpo: return ExpoIn;
+            case Easing.OutExpo: return ExpoOut;
+            case Easing.InOutExpo: return ExpoInOut;
+            case Easing.InCirc: return CircIn;
+            case Easing.OutCirc: return CircOut;
+            case Easing.InOutCirc: return CircInOut;
+            case Easing.InElastic: return ElasticIn;
+            case Easing.OutElastic: return ElasticOut;
+            case Easing.OutElasticHalf: return ElasticOutHalf;
+            case Easing.OutElasticQuarter: return ElasticOutQuarter;
+            case Easing.InOutElastic: return ElasticInOut;
+            case Easing.InBack: return BackIn;
+            case Easing.OutBack: return BackOut;
+            case Easing.InOutBack: return BackInOut;
+            case Easing.InBounce: return BounceIn;
+            case Easing.OutBounce: return BounceOut;
+            case Easing.InOutBounce: return BounceInOut;
         }
     }
 }

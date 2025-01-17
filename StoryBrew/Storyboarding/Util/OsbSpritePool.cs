@@ -4,14 +4,14 @@ public class OsbSpritePool : IDisposable
 {
     private readonly StoryboardSegment segment;
     private readonly string path;
-    private readonly OsbOrigin origin;
-    private readonly Action<OsbSprite, double, double>? finalizeSprite;
+    private readonly Origin origin;
+    private readonly Action<Sprite, double, double>? finalizeSprite;
 
     private readonly List<PooledSprite> pooledSprites = [];
 
     public int MaxPoolDuration = 60000;
 
-    public OsbSpritePool(StoryboardSegment segment, string path, OsbOrigin origin, Action<OsbSprite, double, double>? finalizeSprite = null)
+    public OsbSpritePool(StoryboardSegment segment, string path, Origin origin, Action<Sprite, double, double>? finalizeSprite = null)
     {
         this.segment = segment;
         this.path = path;
@@ -19,12 +19,10 @@ public class OsbSpritePool : IDisposable
         this.finalizeSprite = finalizeSprite;
     }
 
-    public OsbSpritePool(StoryboardSegment segment, string path, OsbOrigin origin, bool additive)
-        : this(segment, path, origin, additive ? (sprite, startTime, endTime) => sprite.Additive(startTime, endTime) : null)
-    {
-    }
+    public OsbSpritePool(StoryboardSegment segment, string path, Origin origin, bool additive)
+        : this(segment, path, origin, additive ? (sprite, startTime, endTime) => sprite.Additive(startTime, endTime) : null) { }
 
-    public OsbSprite Get(double startTime, double endTime)
+    public Sprite Get(double startTime, double endTime)
     {
         PooledSprite? result = null;
         foreach (var pooledSprite in pooledSprites)
@@ -58,16 +56,15 @@ public class OsbSpritePool : IDisposable
         pooledSprites.Clear();
     }
 
-    protected virtual OsbSprite CreateSprite(StoryboardSegment segment, string path, OsbOrigin origin)
-        => segment.CreateSprite(path, origin);
+    protected virtual Sprite CreateSprite(StoryboardSegment segment, string path, Origin origin) => segment.CreateSprite(path, origin);
 
     private class PooledSprite
     {
-        public OsbSprite Sprite;
+        public Sprite Sprite;
         public double StartTime;
         public double EndTime;
 
-        public PooledSprite(OsbSprite sprite, double startTime, double endTime)
+        public PooledSprite(Sprite sprite, double startTime, double endTime)
         {
             Sprite = sprite;
             StartTime = startTime;

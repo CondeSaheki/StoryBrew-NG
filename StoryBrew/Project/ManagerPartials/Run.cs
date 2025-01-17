@@ -35,7 +35,7 @@ public partial class Manager
 
         var beatmaps = getBeatmaps();
 
-        void runLayer(OsbLayer layer, List<ScriptConfiguration> scripts)
+        void runLayer(Layer layer, List<ScriptConfiguration> scripts)
         {
             foreach (var script in scripts)
             {
@@ -92,15 +92,15 @@ public partial class Manager
         }
 
         logBuilder.AppendLine($"Running Background scripts");
-        runLayer(OsbLayer.Background, configuration.Background);
+        runLayer(Layer.Background, configuration.Background);
         logBuilder.AppendLine($"Running Fail scripts");
-        runLayer(OsbLayer.Fail, configuration.Fail);
+        runLayer(Layer.Fail, configuration.Fail);
         logBuilder.AppendLine($"Running Pass scripts");
-        runLayer(OsbLayer.Pass, configuration.Pass);
+        runLayer(Layer.Pass, configuration.Pass);
         logBuilder.AppendLine($"Running Foreground scripts");
-        runLayer(OsbLayer.Foreground, configuration.Foreground);
+        runLayer(Layer.Foreground, configuration.Foreground);
         logBuilder.AppendLine($"Running Overlay scripts");
-        runLayer(OsbLayer.Overlay, configuration.Overlay);
+        runLayer(Layer.Overlay, configuration.Overlay);
 
         // TODO: add video layer
 

@@ -1,11 +1,9 @@
 ﻿using StoryBrew.Storyboarding.Commands;
 using StoryBrew.Storyboarding.CommandValues;
-using System.Diagnostics;
 
 namespace StoryBrew.Storyboarding.Display;
 
-public class AnimatedValue<TValue>
-    where TValue : CommandValue
+public class AnimatedValue<TValue> where TValue : ICommandValue
 {
     public TValue DefaultValue;
 
@@ -30,14 +28,12 @@ public class AnimatedValue<TValue>
     {
         if (command is not TriggerDecorator<TValue> triggerable)
         {
-            if (command.EndTime < command.StartTime)
-                Debug.Print($"'{command}' ends before it starts");
+            if (command.EndTime < command.StartTime) Console.WriteLine($"'{command}' ends before it starts");
 
             findCommandIndex(command.StartTime, out int index);
             while (index < commands.Count)
             {
-                if (commands[index].CompareTo(command) < 0)
-                    index++;
+                if (commands[index].CompareTo(command) < 0) index++;
                 else break;
             }
 
@@ -52,28 +48,29 @@ public class AnimatedValue<TValue>
 
     public void Remove(ITypedCommand<TValue> command)
     {
-        if (command is not TriggerDecorator<TValue> triggerable)
-            commands.Remove(command);
+        if (command is not TriggerDecorator<TValue> triggerable) commands.Remove(command);
         else triggerable.OnStateChanged -= triggerable_OnStateChanged;
     }
 
-    public bool IsActive(double time)
-        => commands.Count > 0 && StartTime <= time && time <= EndTime;
+    public bool IsActive(double time) => commands.Count > 0 && StartTime <= time && time <= EndTime;
 
     public TValue ValueAtTime(double time)
     {
         if (commands.Count == 0) return DefaultValue;
 
-        if (!findCommandIndex(time, out int index) && index > 0)
-            index--;
+        if (!findCommandIndex(time, out int index) && index > 0) index--;
 
         if (HasOverlap)
+        {
             for (var i = 0; i < index; i++)
+            {
                 if (time < commands[i].EndTime)
                 {
                     index = i;
                     break;
                 }
+            }
+        }
 
         var command = commands[index];
         return command.ValueAtTime(time);
@@ -87,10 +84,8 @@ public class AnimatedValue<TValue>
         {
             index = left + ((right - left) >> 1);
             var commandTime = commands[index].StartTime;
-            if (commandTime == time)
-                return true;
-            else if (commandTime < time)
-                left = index + 1;
+            if (commandTime == time) return true;
+            else if (commandTime < time) left = index + 1;
             else right = index - 1;
         }
         index = left;

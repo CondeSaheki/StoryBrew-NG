@@ -4,7 +4,7 @@ namespace StoryBrew.Storyboarding.Commands;
 
 public class MoveXCommand : Command<CommandDecimal>
 {
-    public MoveXCommand(OsbEasing easing, double startTime, double endTime, CommandDecimal startValue, CommandDecimal endValue)
+    public MoveXCommand(Easing easing, double startTime, double endTime, CommandDecimal startValue, CommandDecimal endValue)
         : base("MX", easing, startTime, endTime, startValue, endValue)
     {
     }

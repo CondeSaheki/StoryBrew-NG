@@ -14,8 +14,7 @@ public class OsbSpritePools : IDisposable
         {
             if (maxPoolDuration == value) return;
             maxPoolDuration = value;
-            foreach (var pool in pools.Values)
-                pool.MaxPoolDuration = maxPoolDuration;
+            foreach (var pool in pools.Values) pool.MaxPoolDuration = maxPoolDuration;
         }
     }
 
@@ -34,21 +33,21 @@ public class OsbSpritePools : IDisposable
         animationPools.Clear();
     }
 
-    public OsbSprite Get(double startTime, double endTime, string path, OsbOrigin origin = OsbOrigin.Centre, Action<OsbSprite, double, double>? finalizeSprite = null, int poolGroup = 0)
+    public Sprite Get(double startTime, double endTime, string path, Origin origin = Origin.Centre, Action<Sprite, double, double>? finalizeSprite = null, int poolGroup = 0)
         => getPool(path, origin, finalizeSprite, poolGroup).Get(startTime, endTime);
 
-    public OsbSprite Get(double startTime, double endTime, string path, OsbOrigin origin, bool additive, int poolGroup = 0)
+    public Sprite Get(double startTime, double endTime, string path, Origin origin, bool additive, int poolGroup = 0)
         => Get(startTime, endTime, path, origin, additive ? (sprite, spriteStartTime, spriteEndTime) => sprite.Additive(spriteStartTime, spriteEndTime) : null, poolGroup);
 
-    public OsbAnimation Get(double startTime, double endTime, string path, int frameCount, double frameDelay, OsbLoopType loopType, OsbOrigin origin = OsbOrigin.Centre, Action<OsbSprite, double, double>? finalizeSprite = null, int poolGroup = 0)
-        => (OsbAnimation)getPool(path, frameCount, frameDelay, loopType, origin, finalizeSprite, poolGroup).Get(startTime, endTime);
+    public Animation Get(double startTime, double endTime, string path, int frameCount, double frameDelay, LoopType loopType, Origin origin = Origin.Centre, Action<Sprite, double, double>? finalizeSprite = null, int poolGroup = 0)
+        => (Animation)getPool(path, frameCount, frameDelay, loopType, origin, finalizeSprite, poolGroup).Get(startTime, endTime);
 
-    public OsbAnimation Get(double startTime, double endTime, string path, int frameCount, double frameDelay, OsbLoopType loopType, OsbOrigin origin, bool additive, int poolGroup = 0)
+    public Animation Get(double startTime, double endTime, string path, int frameCount, double frameDelay, LoopType loopType, Origin origin, bool additive, int poolGroup = 0)
         => Get(startTime, endTime, path, frameCount, frameDelay, loopType, origin, additive ? (sprite, spriteStartTime, spriteEndTime) => sprite.Additive(spriteStartTime, spriteEndTime) : null, poolGroup);
 
-    private OsbSpritePool getPool(string path, OsbOrigin origin, Action<OsbSprite, double, double>? finalizeSprite, int poolGroup)
+    private OsbSpritePool getPool(string path, Origin origin, Action<Sprite, double, double>? finalizeSprite, int poolGroup)
     {
-        if (finalizeSprite == null) throw new ArgumentNullException(nameof(finalizeSprite));
+        ArgumentNullException.ThrowIfNull(finalizeSprite);
 
         var key = getKey(path, origin, finalizeSprite, poolGroup);
 
@@ -58,9 +57,9 @@ public class OsbSpritePools : IDisposable
         return pool;
     }
 
-    private OsbAnimationPool getPool(string path, int frameCount, double frameDelay, OsbLoopType loopType, OsbOrigin origin, Action<OsbSprite, double, double>? finalizeSprite, int poolGroup)
+    private OsbAnimationPool getPool(string path, int frameCount, double frameDelay, LoopType loopType, Origin origin, Action<Sprite, double, double>? finalizeSprite, int poolGroup)
     {
-        if (finalizeSprite == null) throw new ArgumentNullException(nameof(finalizeSprite));
+        ArgumentNullException.ThrowIfNull(finalizeSprite);
 
         var key = getKey(path, frameCount, frameDelay, loopType, origin, finalizeSprite, poolGroup);
 
@@ -70,10 +69,10 @@ public class OsbSpritePools : IDisposable
         return pool;
     }
 
-    private string getKey(string path, OsbOrigin origin, Action<OsbSprite, double, double> action, int poolGroup)
+    private string getKey(string path, Origin origin, Action<Sprite, double, double> action, int poolGroup)
         => $"{path}#{origin}#{action?.Target}.{action?.Method.Name}#{poolGroup}";
 
-    private string getKey(string path, int frameCount, double frameDelay, OsbLoopType loopType, OsbOrigin origin, Action<OsbSprite, double, double> action, int poolGroup)
+    private string getKey(string path, int frameCount, double frameDelay, LoopType loopType, Origin origin, Action<Sprite, double, double> action, int poolGroup)
         => $"{path}#{frameCount}#{frameDelay}#{loopType}#{origin}#{action?.Target}.{action?.Method.Name}#{poolGroup}";
 
     #region IDisposable Support

@@ -1,8 +1,4 @@
-﻿using ManagedBass;
-
-namespace StoryBrew.Common;
-
-/*
+﻿/*
     Note: NEEDS TESTING.
 
     Note: "FFT" stands for "fast fourier transform", a technique used to analyze audio signals and extract their frequency components.
@@ -13,6 +9,10 @@ namespace StoryBrew.Common;
     Note: This is obsolete, providing audio analysis tools is not responsability of the storybrew is recomended to use an external library,
     they can provide this and other features more efficiently.
 */
+
+using ManagedBass;
+
+namespace StoryBrew.Common;
 
 [Obsolete("Providing audio analysis tools is not be responsability of the storybrew is recomended to use an external library")]
 public class FftStream : IDisposable
@@ -52,16 +52,13 @@ public class FftStream : IDisposable
     }
 
     [Obsolete("Providing audio analysis tools is not responsability of the storybrew is recomended to use an external library")]
-    public static double GetAudioDuration(string path)
-        => GetInstance(path).Duration * 1000;
+    public static double GetAudioDuration(string path) => GetInstance(path).Duration * 1000;
 
     [Obsolete("Providing audio analysis tools is not responsability of the storybrew is recomended to use an external library")]
-    public static float GetFftFrequency(string path)
-        => GetInstance(path).Frequency;
+    public static float GetFftFrequency(string path) => GetInstance(path).Frequency;
 
     [Obsolete("Providing audio analysis tools is not responsability of the storybrew is recomended to use an external library")]
-    public static float[] GetFft(double time, string path, bool splitChannels = false)
-        => GetInstance(path).calculateFft(time * 0.001, splitChannels);
+    public static float[] GetFft(double time, string path, bool splitChannels = false) => GetInstance(path).calculateFft(time * 0.001, splitChannels);
 
     private float[] calculateFft(double time, bool splitChannels)
     {
