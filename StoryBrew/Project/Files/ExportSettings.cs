@@ -1,11 +1,16 @@
-﻿using System.Globalization;
+﻿/*
+    Note: Obsolete, To be removed/replaced in next update.
 
-namespace StoryBrew.Storyboarding;
+    Todo: ProjectConfiguration or commandline arguments might be more apropriate for this configuration.
+*/
 
+using System.Globalization;
+
+namespace StoryBrew.Project.Files;
+
+[Obsolete("To be removed/replaced in next update.")]
 public class ExportSettings
 {
-    public static readonly ExportSettings DEFAULT = new();
-
     /// <summary>
     /// Not compatible with Fallback!
     /// </summary>
@@ -22,4 +27,7 @@ public class ExportSettings
     public bool OptimiseSprites = true;
 
     public readonly NumberFormatInfo NumberFormat = new CultureInfo(@"en-US", false).NumberFormat;
+
+    [Obsolete("To be removed/replaced in next update.")]
+    public ExportSettings() { }
 }
