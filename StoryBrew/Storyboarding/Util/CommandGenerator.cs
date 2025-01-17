@@ -64,11 +64,14 @@ public class CommandGenerator
     public void ClearStates()
         => states.Clear();
 
-    public bool GenerateCommands(OsbSprite sprite, Action<Action, OsbSprite>? action = null, double? startTime = null, double? endTime = null, double timeOffset = 0, bool loopable = false)
+    public bool GenerateCommands(Sprite sprite, Action<Action, Sprite>? action = null, double? startTime = null, double? endTime = null, double timeOffset = 0, bool loopable = false)
         => GenerateCommands(sprite, OsuHitObject.WIDESCREEN_STORYBOARD_BOUNDS, action, startTime, endTime, timeOffset, loopable);
 
-    public bool GenerateCommands(OsbSprite sprite, Box2 bounds, Action<Action, OsbSprite>? action = null, double? startTime = null, double? endTime = null, double timeOffset = 0, bool loopable = false)
+    public bool GenerateCommands(Sprite sprite, Box2 bounds, Action<Action, Sprite>? action = null, double? startTime = null, double? endTime = null, double timeOffset = 0, bool loopable = false)
     {
+        throw new NotImplementedException();
+        /*
+
         State? previousState = null;
         var wasVisible = false;
         var everVisible = false;
@@ -121,6 +124,7 @@ public class CommandGenerator
 
         clearFinalKeyframes();
         return everVisible;
+        */
     }
 
     private void commitKeyframes(Vector2 imageSize)
@@ -143,7 +147,7 @@ public class CommandGenerator
         opacities.TransferKeyframes(finalOpacities);
     }
 
-    private void convertToCommands(OsbSprite sprite, double? startTime, double? endTime, double timeOffset, bool loopable)
+    private void convertToCommands(Sprite sprite, double? startTime, double? endTime, double timeOffset, bool loopable)
     {
         var startStateTime = loopable ? (startTime ?? StartState?.Time) + timeOffset : null;
         var endStateTime = loopable ? (endTime ?? EndState?.Time) + timeOffset : null;
@@ -205,7 +209,7 @@ public class CommandGenerator
         public bool FlipV;
         public bool Additive;
 
-        public bool IsVisible(int width, int height, OsbOrigin origin, Box2 bounds)
+        public bool IsVisible(int width, int height, Origin origin, Box2 bounds)
         {
             if (Opacity <= 0)
                 return false;
@@ -224,15 +228,15 @@ public class CommandGenerator
                 switch (origin)
                 {
                     default:
-                    case OsbOrigin.TopLeft: originVector = Vector2.Zero; break;
-                    case OsbOrigin.TopCentre: originVector = new Vector2(w * 0.5f, 0); break;
-                    case OsbOrigin.TopRight: originVector = new Vector2(w, 0); break;
-                    case OsbOrigin.CentreLeft: originVector = new Vector2(0, h * 0.5f); break;
-                    case OsbOrigin.Centre: originVector = new Vector2(w * 0.5f, h * 0.5f); break;
-                    case OsbOrigin.CentreRight: originVector = new Vector2(w, h * 0.5f); break;
-                    case OsbOrigin.BottomLeft: originVector = new Vector2(0, h); break;
-                    case OsbOrigin.BottomCentre: originVector = new Vector2(w * 0.5f, h); break;
-                    case OsbOrigin.BottomRight: originVector = new Vector2(w, h); break;
+                    case Origin.TopLeft: originVector = Vector2.Zero; break;
+                    case Origin.TopCentre: originVector = new Vector2(w * 0.5f, 0); break;
+                    case Origin.TopRight: originVector = new Vector2(w, 0); break;
+                    case Origin.CentreLeft: originVector = new Vector2(0, h * 0.5f); break;
+                    case Origin.Centre: originVector = new Vector2(w * 0.5f, h * 0.5f); break;
+                    case Origin.CentreRight: originVector = new Vector2(w, h * 0.5f); break;
+                    case Origin.BottomLeft: originVector = new Vector2(0, h); break;
+                    case Origin.BottomCentre: originVector = new Vector2(w * 0.5f, h); break;
+                    case Origin.BottomRight: originVector = new Vector2(w, h); break;
                 }
                 var obb = new OrientedBoundingBox(Position, originVector, w, h, Rotation);
                 if (!obb.Intersects(bounds))
