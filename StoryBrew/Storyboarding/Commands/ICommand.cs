@@ -1,13 +1,7 @@
-using StoryBrew.Project.Files;
+namespace StoryBrew.Storyboarding;
 
-namespace StoryBrew.Storyboarding.Commands;
-
-public interface ICommand : IComparable<ICommand>
+public interface ICommand // : IComparable<ICommand>
 {
     double StartTime { get; }
     double EndTime { get; }
-    bool Active { get; }
-    int Cost { get; }
-
-    void WriteOsb(TextWriter writer, ExportSettings exportSettings, StoryboardTransform transform, int indentation);
 }
