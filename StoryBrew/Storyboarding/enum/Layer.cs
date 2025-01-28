@@ -7,4 +7,5 @@ public enum Layer
     Pass,
     Foreground,
     Overlay,
+    Video
 }

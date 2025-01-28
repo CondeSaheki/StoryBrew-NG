@@ -1,6 +1,6 @@
 namespace StoryBrew.Storyboarding;
 
-public enum Origin
+public enum Anchor
 {
     TopLeft,
     TopCentre,
