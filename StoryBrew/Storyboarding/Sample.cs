@@ -1,15 +1,30 @@
-﻿using StoryBrew.Project.Files;
+﻿using System.Globalization;
 
 namespace StoryBrew.Storyboarding;
 
-public class Sample : IStoryboardElement
+public class Sample : Writable, IElement
 {
-    public string Path { get; set; } = string.Empty;
-    public double Time { get; set; } = 0;
-    public double Volume { get; set; } = 100;
-    public double StartTime => Time;
-    public double EndTime => Time;
+    public string Path { get; }
+    public double StartTime { get; }
+    public int Volume { get; }
 
-    public void WriteOsb(TextWriter writer, ExportSettings exportSettings, Layer layer, StoryboardTransform? transform)
-        => writer.WriteLine($"Sample,{((int)Time).ToString(exportSettings.NumberFormat)},{layer},\"{Path.Trim()}\",{((int)Volume).ToString(exportSettings.NumberFormat)}");
+    public Sample(string path, double startTime, int volume)
+    {
+        Path = path;
+        StartTime = startTime;
+        Volume = volume;
+    }
+
+    public override string ToString() => $"Sample -> {StartTime} {Volume}";
+
+    internal override void Write(uint depth = 0)
+    {
+        const Layer layer = Layer.Background;
+
+        const string identifier = "Sample";
+
+        var indentation = new string(' ', (int)depth);
+
+        var result = $"{indentation}{identifier},{StartTime},{layer},\"{Path}\",{Volume}";
+    }
 }
