@@ -1,5 +1,4 @@
 ﻿using OpenTK.Mathematics;
-using StoryBrew.Storyboarding.CommandValues;
 
 namespace StoryBrew.Animations;
 
@@ -18,11 +17,24 @@ public static class InterpolatingFunctions
     public static Func<bool, bool, double, bool> BoolAny = (from, to, progress) => from || to;
     public static Func<bool, bool, double, bool> BoolBoth = (from, to, progress) => from && to;
 
-    public static Func<CommandColor, CommandColor, double, CommandColor> CommandColor = (from, to, progress) => from + (to - from) * (float)progress;
+    public static Func<Color4, Color4, double, Color4> CommandColor = (from, to, progress) => new Color4(
+        Float(from.R, to.R, progress),
+        Float(from.G, to.G, progress),
+        Float(from.B, to.B, progress),
+        Float(from.A, to.A, progress)
+    );
 
     private static double getShortestAngleDelta(double from, double to)
     {
         var difference = (to - from) % MathHelper.TwoPi;
         return (2 * difference % MathHelper.TwoPi) - difference;
+    }
+
+    internal static float? Interpolate<T>(T from, T to, double progress)
+    {
+        if (from == null) throw new ArgumentNullException(nameof(from));
+        if (to == null) throw new ArgumentNullException(nameof(to));
+
+        return (float?)((dynamic)from + ((dynamic)to - (dynamic)from) * (float)progress);
     }
 }

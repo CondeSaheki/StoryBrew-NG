@@ -28,7 +28,7 @@ public abstract class Script: IDisposable
     /// </summary>
     /// <typeparam name="T">The type of the storyboard object to register.</typeparam>
     /// <param name="instance">The storyboard object instance to register.</param>
-    public void Register<T>(T instance) where T : IStoryboardElement => collector?.Invoke(instance);
+    public void Register<T>(T instance) where T : IElement => collector?.Invoke(instance);
 
     /// <summary>
     /// Registers a storyboard object instance and outputs the same instance.
@@ -36,35 +36,35 @@ public abstract class Script: IDisposable
     /// <typeparam name="T">The type of the storyboard object to register.</typeparam>
     /// <param name="instance">The storyboard object instance to register.</param>
     /// <param name="obj">The output parameter that holds the registered storyboard object instance.</param>
-    public void Register<T>(T instance, out T obj) where T : IStoryboardElement
+    public void Register<T>(T instance, out T obj) where T : IElement
     {
         collector?.Invoke(instance);
         obj = instance;
     }
 
-    private Action<IStoryboardElement>? collector;
+    private Action<IElement>? collector;
 
-    internal List<IStoryboardElement> Collect()
+    internal List<IElement> Collect()
     {
-        List<IStoryboardElement> osbObjects = [];
+        List<IElement> osbObjects = [];
         collector = osbObjects.Add;
         Generate();
         collector = null;
         return osbObjects;
     }
 
-    internal List<IStoryboardElement> Collect(Beatmap beatmap)
+    internal List<IElement> Collect(Beatmap beatmap)
     {
-        List<IStoryboardElement> osbObjects = [];
+        List<IElement> osbObjects = [];
         collector = osbObjects.Add;
         Generate(beatmap);
         collector = null;
         return osbObjects;
     }
 
-    internal Dictionary<Beatmap, List<IStoryboardElement>> Collect(List<Beatmap> beatmaps)
+    internal Dictionary<Beatmap, List<IElement>> Collect(List<Beatmap> beatmaps)
     {
-        Dictionary<Beatmap, List<IStoryboardElement>> BeatmapObjects = [];
+        Dictionary<Beatmap, List<IElement>> BeatmapObjects = [];
         foreach (var beatmap in beatmaps) BeatmapObjects[beatmap] = Collect(beatmap);
         collector = null;
         return BeatmapObjects;
