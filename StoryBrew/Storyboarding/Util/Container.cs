@@ -38,12 +38,12 @@ public class Container : Group, IElement
 
     public override string ToString() => $"Container: ";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         foreach (var element in Elements)
         {
             if (!element.HasCommands) throw new InvalidOperationException("Cannot write element with no commands");
-            element.Write(depth);
+            element.Write(writer, depth);
         }
     }
 }

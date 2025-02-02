@@ -1,3 +1,4 @@
+using System.Globalization;
 using OpenTK.Mathematics;
 
 namespace StoryBrew.Storyboarding;
@@ -25,8 +26,23 @@ public class ScaleVector : Command<Vector2>
 
     public override string ToString() => $"VectorScale -> {StartTime} -> {EndTime}, {StartValue.X} -> {EndValue.X}, {StartValue.Y} -> {EndValue.Y} {Easing}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
-        throw new NotImplementedException();
+        const string identifier = "V";
+        const bool float_time = false;
+
+        var indentation = new string(' ', (int)depth);
+
+        var easing = ((int)Easing).ToString();
+        var startTime = (float_time ? StartTime : (int)StartTime).ToString(CultureInfo.InvariantCulture);
+        var endTime = (float_time ? EndTime : (int)EndTime).ToString(CultureInfo.InvariantCulture);
+        var startXValue = StartValue.X.ToString(CultureInfo.InvariantCulture);
+        var endXValue = EndValue.X.ToString(CultureInfo.InvariantCulture);
+        var startYValue = StartValue.Y.ToString(CultureInfo.InvariantCulture);
+        var endYValue = EndValue.Y.ToString(CultureInfo.InvariantCulture);
+
+        string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{startXValue},{startYValue},{endXValue},{endYValue}";
+
+        writer.WriteLine(result);
     }
 }

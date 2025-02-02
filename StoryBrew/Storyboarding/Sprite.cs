@@ -10,17 +10,18 @@ public class Sprite : Commandable
 
     public override string ToString() => $"Sprite -> {StartTime} -> {EndTime}, {Origin} {InitialPosition}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         const Layer layer = Layer.Background;
 
         const string identifier = "Sprite";
 
         var indentation = new string(' ', (int)depth);
-        
+
         var result = $"{indentation}{identifier},{layer},{Origin},\"{FilePath}\",{InitialPosition.X},{InitialPosition.Y}";
 
-        base.Write(depth + 1);
+        writer.WriteLine(result);
 
+        base.Write(writer, depth + 1);
     }
 }

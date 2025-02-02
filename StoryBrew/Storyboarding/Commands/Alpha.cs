@@ -16,7 +16,7 @@ public class Alpha : Command<float>
 
     public override string ToString() => $"Alpha: {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         const string identifier = "F";
         const bool float_time = false;
@@ -30,5 +30,7 @@ public class Alpha : Command<float>
         var endValue = ((float)EndValue).ToString(CultureInfo.InvariantCulture);
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{startValue},{endValue}";
+
+        writer.WriteLine(result);
     }
 }

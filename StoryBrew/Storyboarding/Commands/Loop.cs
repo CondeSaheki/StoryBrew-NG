@@ -17,7 +17,7 @@ public class Loop : Group, ICommand
 
     public override string ToString() => $"Loop -> {StartTime} -> {EndTime}, {TotalIterations} {Commands.Count()}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         if (!HasCommands) return;
 
@@ -32,6 +32,8 @@ public class Loop : Group, ICommand
 
         var result = $"{indentation}{identifier},{startTime},{iterationsValue}";
 
-        base.Write(depth + 1);
+        writer.WriteLine(result);
+
+        base.Write(writer, depth + 1);
     }
 }

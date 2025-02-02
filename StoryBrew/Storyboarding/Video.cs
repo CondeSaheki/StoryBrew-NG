@@ -17,7 +17,7 @@ public class Video : Commandable
 
     public override string ToString() => $"Video -> {StartTime} -> {EndTime}, {Origin} {InitialPosition}, {Offset}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         const Layer layer = Layer.Video;
 
@@ -26,5 +26,7 @@ public class Video : Commandable
         var indentation = new string(' ', (int)depth);
 
         var result = $"{indentation}{identifier},{layer},{Origin},\"{FilePath}\",{InitialPosition.X},{InitialPosition.Y},{Offset}";
+
+        writer.WriteLine(result);
     }
 }

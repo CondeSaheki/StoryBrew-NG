@@ -7,7 +7,7 @@ public class Text : Container
         throw new NotImplementedException();
     }
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         throw new NotImplementedException();
     }

@@ -15,7 +15,7 @@ public class Angle : Command<float>
 
     public override string ToString() => $"Angle: {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         const string identifier = "R";
         const bool float_time = false;
@@ -29,5 +29,7 @@ public class Angle : Command<float>
         var endValue = ((float)EndValue).ToString(CultureInfo.InvariantCulture);
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{startValue},{endValue}";
+        
+        writer.WriteLine(result);
     }
 }

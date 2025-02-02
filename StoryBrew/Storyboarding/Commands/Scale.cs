@@ -15,7 +15,7 @@ public class Scale : Command<float>
 
     public override string ToString() => $"Scale: {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         const string identifier = "S";
         const bool float_time = false;
@@ -29,5 +29,7 @@ public class Scale : Command<float>
         var endValue = ((float)EndValue).ToString(CultureInfo.InvariantCulture);
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{startValue},{endValue}";
+
+        writer.WriteLine(result);
     }
 }

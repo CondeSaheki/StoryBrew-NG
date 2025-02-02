@@ -28,7 +28,7 @@ public class Animation : Commandable
 
     public override string ToString() => $"Animation -> {StartTime} -> {EndTime}, {Origin} {InitialPosition}, {FrameCount} {FrameDelay} {(LoopForever ? "Forever" : "Once")}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         const Layer layer = Layer.Background;
 
@@ -36,6 +36,8 @@ public class Animation : Commandable
 
         var result = $"{identifier},{layer},{Origin},\"{FilePath}\",{InitialPosition.X},{InitialPosition.Y},{FrameCount},{FrameDelay},{LoopForever}";
 
-        base.Write(depth + 1);
+        writer.WriteLine(result);
+
+        base.Write(writer, depth + 1);
     }
 }

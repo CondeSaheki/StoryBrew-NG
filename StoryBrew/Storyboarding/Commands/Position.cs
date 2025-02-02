@@ -44,9 +44,11 @@ public class Position : Command<Vector2>
         }
     }
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
-        const bool float_time = false;
+        // Note: Aditionaly convert M to MX or MY when 
+
+        const bool float_time = false; // Note: This will be implemented as param in next update
 
         var indentation = new string(' ', (int)depth);
 
@@ -67,9 +69,11 @@ public class Position : Command<Vector2>
         var startYValue = ((int)StartValue.Y).ToString(CultureInfo.InvariantCulture);
         var endYValue = ((int)EndValue.Y).ToString(CultureInfo.InvariantCulture);
 
-        string result1 = $"{indentation}{identifier},{easing},{startTime},{endTime},{startXValue},{startYValue},{endXValue},{endYValue}";
-        string result2 = $"{indentation}{identifier},{easing},{startTime},{endTime},{startXValue},{endXValue}";
-        string result3 = $"{indentation}{identifier},{easing},{startTime},{endTime},{startYValue},{endYValue}";
+        string resultM = $"{indentation}{identifier},{easing},{startTime},{endTime},{startXValue},{startYValue},{endXValue},{endYValue}";
+        string resultMx = $"{indentation}{identifier},{easing},{startTime},{endTime},{startXValue},{endXValue}";
+        string resultMy = $"{indentation}{identifier},{easing},{startTime},{endTime},{startYValue},{endYValue}";
+
+        writer.WriteLine(resultM);
     }
 
     protected enum Axis

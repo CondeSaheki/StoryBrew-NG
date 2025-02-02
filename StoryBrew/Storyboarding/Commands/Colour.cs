@@ -6,9 +6,31 @@ namespace StoryBrew.Storyboarding;
 
 public class Colour : Command<Color4>
 {
+
+    private enum CommandColor
+    {
+        Both,
+        Color,
+        Alpha,
+    }
+    private CommandColor affects;
+
+    public Colour(Easing easing, double startTime, double endTime, Vector4 startValue, Vector4 endValue)
+        : base(easing, startTime, endTime, (Color4)startValue, (Color4)endValue)
+    {
+    }
+
+    public Colour(Easing easing, double startTime, double endTime, Vector3 startValue, Vector3 endValue)
+        : base(easing, startTime, endTime, new(startValue.X, startValue.Y, startValue.Z, 1), new(endValue.X, endValue.Y, endValue.Z, 1))
+    {
+    }
+
     public Colour(Easing easing, double startTime, double endTime, Color4 startValue, Color4 endValue)
         : base(easing, startTime, endTime, startValue, endValue)
     {
+        var alpha = startValue.A != 1 || endValue.A != 1;
+        var color = startValue.R != 1 || startValue.G != 1 || startValue.B != 1 || endValue.R != 1 || endValue.G != 1 || endValue.B != 1;
+        affects = alpha && color ? CommandColor.Both : alpha ? CommandColor.Alpha : CommandColor.Color;
     }
 
     public Colour(Easing easing, double startTime, Color4 startValue)
@@ -38,7 +60,7 @@ public class Colour : Command<Color4>
 
     public override string ToString() => $"Color -> {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         const string identifier = "C";
         const bool float_time = false;
@@ -53,5 +75,7 @@ public class Colour : Command<Color4>
         (byte endR, byte endG, byte endB) = ((byte)(EndValue.R * byte.MaxValue), (byte)(EndValue.G * byte.MaxValue), (byte)(EndValue.B * byte.MaxValue));
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{startR},{startG},{startB},{endR},{endG},{endB}";
+
+        writer.WriteLine(result);
     }
 }

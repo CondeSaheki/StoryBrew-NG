@@ -17,7 +17,7 @@ public class Trigger : Group, ICommand
 
     public override string ToString() => $"Trigger -> {StartTime} -> {EndTime}, {Type} {Commands.Count()}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         if (!HasCommands) return;
 
@@ -31,6 +31,8 @@ public class Trigger : Group, ICommand
 
         var result = $"{indentation}{identifier},{Type},{startTime},{endTime}";
 
-        base.Write(depth + 1);
+        writer.WriteLine(result);
+
+        base.Write(writer, depth + 1);
     }
 }

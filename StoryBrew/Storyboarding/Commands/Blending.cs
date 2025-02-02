@@ -24,7 +24,7 @@ public class Blending : Command<bool>
 
     public override string ToString() => $"Blending -> {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         const string identifier = "P";
         const string value = "A";
@@ -37,5 +37,7 @@ public class Blending : Command<bool>
         var endTime = (float_time ? EndTime : (int)EndTime).ToString(CultureInfo.InvariantCulture);
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{value}";
+
+        writer.WriteLine(result);
     }
 }

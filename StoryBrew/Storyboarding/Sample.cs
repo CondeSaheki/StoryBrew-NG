@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace StoryBrew.Storyboarding;
+﻿namespace StoryBrew.Storyboarding;
 
 public class Sample : Writable, IElement
 {
@@ -17,7 +15,7 @@ public class Sample : Writable, IElement
 
     public override string ToString() => $"Sample -> {StartTime} {Volume}";
 
-    internal override void Write(uint depth = 0)
+    internal override void Write(StreamWriter writer, uint depth = 0)
     {
         const Layer layer = Layer.Background;
 
@@ -26,5 +24,7 @@ public class Sample : Writable, IElement
         var indentation = new string(' ', (int)depth);
 
         var result = $"{indentation}{identifier},{StartTime},{layer},\"{Path}\",{Volume}";
+
+        writer.WriteLine(result);
     }
 }
