@@ -25,15 +25,21 @@ internal class BuildInfo
             return new BuildInfo();
         }
 
-        var hashesRaw = File.ReadAllText(filePath);
-        return JsonConvert.DeserializeObject<BuildInfo>(hashesRaw) ?? new BuildInfo();
+        using var fileStream = File.OpenRead(filePath);
+        using var streamReader = new StreamReader(fileStream);
+        using var jsonReader = new JsonTextReader(streamReader);
+
+        return JsonSerializer.CreateDefault().Deserialize<BuildInfo>(jsonReader) ?? new BuildInfo();
     }
 
-    public void Save(string path, bool overwrite = false)
+    public void Save(string filePath, bool overwrite = false)
     {
-        if (!overwrite && File.Exists(path)) throw new ArgumentException($"The config file already exists at {path}.");
+        if (!overwrite && File.Exists(filePath)) throw new ArgumentException($"The config file already exists at {filePath}.");
 
-        var json = JsonConvert.SerializeObject(this, Formatting.Indented);
-        File.WriteAllText(path, json);
+        using var fileStream = File.Create(filePath);
+        using var streamWriter = new StreamWriter(fileStream);
+        using var jsonWriter = new JsonTextWriter(streamWriter) { Formatting = Formatting.Indented };
+
+        JsonSerializer.CreateDefault().Serialize(jsonWriter, this);
     }
 }

@@ -33,14 +33,17 @@ internal class Version
     /// <summary>
     /// Reads a JSON file from the specified path and deserializes it to a Version object.
     /// </summary>
-    /// <param name="path">The path to the JSON file containing version information.</param>
+    /// <param name="filePath">The path to the JSON file containing version information.</param>
     /// <returns>The deserialized Version object.</returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when the JSON file cannot be deserialized or if the version information is missing.
     /// </exception>
-    public static Version FromJsonFile(string path)
+    public static Version FromJsonFile(string filePath)
     {
-        var json = JsonConvert.DeserializeObject<VersionFile>(File.ReadAllText(path))
+        using var fileStream = File.OpenRead(filePath);
+        using var streamReader = new StreamReader(fileStream);
+        using var jsonReader = new JsonTextReader(streamReader);
+        var json = JsonSerializer.CreateDefault().Deserialize<VersionFile>(jsonReader)
             ?? throw new InvalidOperationException("Failed to deserialize versioned file.");
         return json.Version ?? throw new InvalidOperationException("no version");
     }
