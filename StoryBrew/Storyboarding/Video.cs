@@ -1,6 +1,7 @@
 ﻿
 // Note: Osu video element are not documented and need to be tested extensively or reverse-engineered
 
+using System.Text;
 using OpenTK.Mathematics;
 
 namespace StoryBrew.Storyboarding;
@@ -17,9 +18,9 @@ public class Video : Commandable
 
     public override string ToString() => $"Video -> {StartTime} -> {EndTime}, {Origin} {InitialPosition}, {Offset}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
-        const Layer layer = Layer.Video;
+        if (layer != Layer.Video) throw new InvalidOperationException("Video element must be in Video layer.");
 
         const string identifier = "Video";
 
@@ -27,6 +28,6 @@ public class Video : Commandable
 
         var result = $"{indentation}{identifier},{layer},{Origin},\"{FilePath}\",{InitialPosition.X},{InitialPosition.Y},{Offset}";
 
-        writer.WriteLine(result);
+        writer.AppendLine(result);
     }
 }

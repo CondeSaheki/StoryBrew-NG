@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using OpenTK.Mathematics;
 
 namespace StoryBrew.Storyboarding;
@@ -44,7 +45,7 @@ public class Position : Command<Vector2>
         }
     }
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
         // Note: Aditionaly convert M to MX or MY when 
 
@@ -73,7 +74,7 @@ public class Position : Command<Vector2>
         string resultMx = $"{indentation}{identifier},{easing},{startTime},{endTime},{startXValue},{endXValue}";
         string resultMy = $"{indentation}{identifier},{easing},{startTime},{endTime},{startYValue},{endYValue}";
 
-        writer.WriteLine(resultM);
+        writer.AppendLine(resultM);
     }
 
     protected enum Axis

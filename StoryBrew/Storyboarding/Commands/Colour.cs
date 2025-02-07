@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using OpenTK.Mathematics;
 using SkiaSharp;
 
@@ -60,7 +61,7 @@ public class Colour : Command<Color4>
 
     public override string ToString() => $"Color -> {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
         const string identifier = "C";
         const bool float_time = false;
@@ -76,6 +77,6 @@ public class Colour : Command<Color4>
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{startR},{startG},{startB},{endR},{endG},{endB}";
 
-        writer.WriteLine(result);
+        writer.AppendLine(result);
     }
 }

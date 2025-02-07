@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using StoryBrew.Project.Files;
 
 namespace StoryBrew.Storyboarding;
@@ -16,7 +17,7 @@ public class Alpha : Command<float>
 
     public override string ToString() => $"Alpha: {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
         const string identifier = "F";
         const bool float_time = false;
@@ -31,6 +32,6 @@ public class Alpha : Command<float>
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{startValue},{endValue}";
 
-        writer.WriteLine(result);
+        writer.AppendLine(result);
     }
 }

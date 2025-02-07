@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using System.Text;
+using OpenTK.Mathematics;
 
 namespace StoryBrew.Storyboarding;
 
@@ -28,16 +29,14 @@ public class Animation : Commandable
 
     public override string ToString() => $"Animation -> {StartTime} -> {EndTime}, {Origin} {InitialPosition}, {FrameCount} {FrameDelay} {(LoopForever ? "Forever" : "Once")}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
-        const Layer layer = Layer.Background;
-
         const string identifier = "Animation";
 
         var result = $"{identifier},{layer},{Origin},\"{FilePath}\",{InitialPosition.X},{InitialPosition.Y},{FrameCount},{FrameDelay},{LoopForever}";
 
-        writer.WriteLine(result);
+        writer.AppendLine(result);
 
-        base.Write(writer, depth + 1);
+        base.Write(log, writer, layer, depth + 1);
     }
 }

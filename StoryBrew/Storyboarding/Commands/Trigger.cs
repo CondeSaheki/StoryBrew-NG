@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 
 namespace StoryBrew.Storyboarding;
 
@@ -17,7 +18,7 @@ public class Trigger : Group, ICommand
 
     public override string ToString() => $"Trigger -> {StartTime} -> {EndTime}, {Type} {Commands.Count()}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
         if (!HasCommands) return;
 
@@ -31,8 +32,8 @@ public class Trigger : Group, ICommand
 
         var result = $"{indentation}{identifier},{Type},{startTime},{endTime}";
 
-        writer.WriteLine(result);
+        writer.AppendLine(result);
 
-        base.Write(writer, depth + 1);
+        base.Write(log, writer, layer, depth + 1);
     }
 }

@@ -82,7 +82,7 @@ public abstract class Group : Writable
         foreach (var command in enumerable) Transform(command);
     }
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
         if (!HasCommands) throw new InvalidOperationException("Can not write empty group");
 
@@ -91,7 +91,7 @@ public abstract class Group : Writable
             if (command is Loop || command is Trigger && !AllowCompound) throw new InvalidOperationException("Cannot write compound commands");
             if (command is not Writable writable) throw new InvalidOperationException($"Unhandled command type: {command.GetType()}");
 
-            writable.Write(writer, depth);
+            writable.Write(log, writer, layer, depth);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿
 using System.Globalization;
+using System.Text;
 using OpenTK.Mathematics;
 
 namespace StoryBrew.Storyboarding;
@@ -10,18 +11,16 @@ public class Sprite : Commandable
 
     public override string ToString() => $"Sprite -> {StartTime} -> {EndTime}, {Origin} {InitialPosition}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
-        const Layer layer = Layer.Background;
-
         const string identifier = "Sprite";
 
         var indentation = new string(' ', (int)depth);
 
         var result = $"{indentation}{identifier},{layer},{Origin},\"{FilePath}\",{InitialPosition.X},{InitialPosition.Y}";
 
-        writer.WriteLine(result);
+        writer.AppendLine(result);
 
-        base.Write(writer, depth + 1);
+        base.Write(log, writer, layer, depth + 1);
     }
 }

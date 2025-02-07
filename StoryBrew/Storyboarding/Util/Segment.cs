@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace StoryBrew.Storyboarding;
 
 public class Segment: Writable, IElement
@@ -21,12 +23,12 @@ public class Segment: Writable, IElement
 
     public override string ToString() => $"Segment: ";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
         foreach (var element in Elements)
         {
             if (element is not Writable writable) throw new InvalidOperationException($"Unhandled element type: {element.GetType()}");
-            writable.Write(writer, depth);
+            writable.Write(log, writer, layer, depth);
         }
     }
 }

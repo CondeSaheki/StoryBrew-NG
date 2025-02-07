@@ -1,4 +1,6 @@
-﻿namespace StoryBrew.Storyboarding;
+﻿using System.Text;
+
+namespace StoryBrew.Storyboarding;
 
 public class ElementPool<T> : Writable, IElement where T : Commandable, IElement
 {
@@ -69,7 +71,7 @@ public class ElementPool<T> : Writable, IElement where T : Commandable, IElement
 
     public override string ToString() => $"ElementPool -> {commands.Count}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0) => ToSegment().Write(writer, depth);
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0) => ToSegment().Write(log, writer, layer, depth);
 }
 
 public class PoolElement : Group
@@ -78,5 +80,5 @@ public class PoolElement : Group
     {
     }
 
-    internal override void Write(StreamWriter writer, uint depth = 0) => throw new NotSupportedException("Write is not supported for PoolElement.");
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0) => throw new NotSupportedException("Write is not supported for PoolElement.");
 }

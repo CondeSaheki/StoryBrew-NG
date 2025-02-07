@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 
 namespace StoryBrew.Storyboarding;
 
@@ -17,7 +18,7 @@ public class Loop : Group, ICommand
 
     public override string ToString() => $"Loop -> {StartTime} -> {EndTime}, {TotalIterations} {Commands.Count()}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
         if (!HasCommands) return;
 
@@ -32,8 +33,8 @@ public class Loop : Group, ICommand
 
         var result = $"{indentation}{identifier},{startTime},{iterationsValue}";
 
-        writer.WriteLine(result);
+        writer.AppendLine(result);
 
-        base.Write(writer, depth + 1);
+        base.Write(log, writer, layer, depth + 1);
     }
 }

@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 
 namespace StoryBrew.Storyboarding;
 
@@ -11,7 +12,7 @@ public class FlipH : Command<bool>
 
     public override string ToString() => $"FlipH -> {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
         const string identifier = "P";
         const string value = "H";
@@ -25,6 +26,6 @@ public class FlipH : Command<bool>
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{value}";
 
-        writer.WriteLine(result);
+        writer.AppendLine(result);
     }
 }

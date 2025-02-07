@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 
 namespace StoryBrew.Storyboarding;
 
@@ -24,7 +25,7 @@ public class Blending : Command<bool>
 
     public override string ToString() => $"Blending -> {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
 
-    internal override void Write(StreamWriter writer, uint depth = 0)
+    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
     {
         const string identifier = "P";
         const string value = "A";
@@ -38,6 +39,6 @@ public class Blending : Command<bool>
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{value}";
 
-        writer.WriteLine(result);
+        writer.AppendLine(result);
     }
 }
