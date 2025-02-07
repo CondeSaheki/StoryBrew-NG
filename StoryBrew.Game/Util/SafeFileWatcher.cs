@@ -1,11 +1,11 @@
 namespace StoryBrew.Viewer.Util;
 
-public class SafeFileWatcher : IDisposable
+internal class SafeFileWatcher : IDisposable
 {
     private CancellationTokenSource? tokenSource = null;
     private readonly FileSystemWatcher fileWatcher;
-    private readonly object TaskLock = new();
-    private static int TaskCount = 0;
+    private readonly object taskLock = new();
+    private int taskCount = 0;
 
     public readonly string FilePath;
     public readonly Action<string?, CancellationToken> Task;
@@ -37,22 +37,22 @@ public class SafeFileWatcher : IDisposable
             EnableRaisingEvents = true
         };
 
-        fileWatcher.Changed += OnChanged;
-        fileWatcher.Created += OnChanged;
-        fileWatcher.Deleted += OnChanged;
+        fileWatcher.Changed += onChanged;
+        fileWatcher.Created += onChanged;
+        fileWatcher.Deleted += onChanged;
 
         Trigger();
     }
 
-    private void OnChanged(object? _, FileSystemEventArgs? __)
+    private void onChanged(object? _, FileSystemEventArgs? __)
     {
         // Ensure at max one pending task at a time.
-        if(Volatile.Read(ref TaskCount) > 2) return;
-        Interlocked.Increment(ref TaskCount);
+        if(Volatile.Read(ref taskCount) > 2) return;
+        Interlocked.Increment(ref taskCount);
 
         tokenSource?.Cancel();
 
-        lock (TaskLock)
+        lock (taskLock)
         {
             try
             {
@@ -79,7 +79,7 @@ public class SafeFileWatcher : IDisposable
                 tokenSource?.Dispose();
                 tokenSource = null;
 
-                Interlocked.Decrement(ref TaskCount);
+                Interlocked.Decrement(ref taskCount);
             }
         }
     }
@@ -89,7 +89,7 @@ public class SafeFileWatcher : IDisposable
     /// </summary>
     public void Trigger()
     {
-        OnChanged(null, null);
+        onChanged(null, null);
     }
     
     /// <summary>
@@ -101,9 +101,9 @@ public class SafeFileWatcher : IDisposable
         {
             tokenSource?.Cancel();
             
-            lock (TaskLock) { } // TODO: add a timeout for this lock obtention
+            lock (taskLock) { } // TODO: add a timeout for this lock obtention
         }
-        while (Volatile.Read(ref TaskCount) != 0);
+        while (Volatile.Read(ref taskCount) != 0);
     }
     
     public void Dispose()
