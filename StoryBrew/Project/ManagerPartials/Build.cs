@@ -11,12 +11,19 @@ namespace StoryBrew.Project;
 public partial class Manager
 {
     /// <summary>
+    /// Attempts to build the project.
+    /// </summary>
+    /// <param name="log">The log of the build process.</param>
+    /// <returns><c>true</c> if the build was successful, <c>false</c> otherwise.</returns>
+    public bool TryBuild(out string log) => Build(out log) != null;
+
+    /// <summary>
     /// Builds the project into a single assembly and updates the build info.
     /// The project is only built if the source code files have changed since the last build.
     /// </summary>
     /// <param name="log">The log of the build process.</param>
-    /// <returns><c>true</c> if the build was successful, <c>false</c> otherwise.</returns>
-    public bool Build(out string log)
+    /// <returns> the assembly if the build was successful, <c>null</c> otherwise.</returns>
+    public Assembly? Build(out string log)
     {
         /*
             Note: Unlike the old StoryBrew, this compiler do not watch the source code files for changes atively, instead it only checks
@@ -30,7 +37,7 @@ public partial class Manager
             Note: The source code files are getting read twice in this function maybe stream can be reused, not sure how to do
             syntax trees creation with streams
 
-            Note: is recomended to use AssemblyMetadata instead of MetadataReference, attempted to use but gave an error that i did not understod.
+            Note: is recomended to use AssemblyMetadata instead of MetadataReference, attempted to use but gave an error that i did not understood.
         */
 
         // files, source codes
@@ -41,18 +48,20 @@ public partial class Manager
                            !file.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar))
             .ToArray();
 
-        if(sourceCodeFilePaths.Length == 0)
+        if (sourceCodeFilePaths.Length == 0)
         {
             log = "No source code files found in the project directory.";
-            return false;
-        };
+            return null;
+        }
 
         // hash check
 
         if (matchFiles(buildInfo.Hashes, sourceCodeFilePaths, out var currentHashes) && File.Exists(assemblyFilePath))
         {
             log = "The project has not changed since the last build.";
-            return true;
+
+            byte[] assemblyBytes = File.ReadAllBytes(assemblyFilePath);
+            return Assembly.Load(assemblyBytes);
         }
 
         buildInfo.Hashes = [];
@@ -113,15 +122,17 @@ public partial class Manager
         foreach (var diagnostic in result.Diagnostics) diagnosticBuilder.AppendLine(diagnostic.ToString());
         log = diagnosticBuilder.ToString();
 
-        if (!result.Success) return false;
+        if (!result.Success) return null;
 
         var assembly = Assembly.Load(memoryStream.ToArray());
         var info = scriptInfo(assembly);
-        if(info.Count == 0)
+        if (info.Count == 0)
         {
             log = "No scripts found in the project.";
-            return false;
+            return null;
         }
+
+        Directory.CreateDirectory(CacheDirectoryPath);
 
         using (var fileStream = new FileStream(assemblyFilePath, FileMode.Create, FileAccess.Write))
         {
@@ -132,7 +143,7 @@ public partial class Manager
         buildInfo.Hashes = currentHashes;
         buildInfo.Save(BuildInfoFilePath, true);
 
-        return true;
+        return assembly;
     }
 
     private static Dictionary<string, List<ConfigurableInfo>> scriptInfo(Assembly assembly)
@@ -170,28 +181,29 @@ public partial class Manager
 
         return currentHashes.SetEquals(hashes);
     }
-/*
 
-    // Workspace MSBuild alternative needs more researh and testing
+    /*
 
- using Microsoft.Build.Locator;
- using Microsoft.CodeAnalysis.MSBuild;
+        // Workspace MSBuild alternative needs more researh and testing
 
-    private static bool build()
-    {
-        MSBuildLocator.RegisterDefaults();
+        using Microsoft.Build.Locator;
+        using Microsoft.CodeAnalysis.MSBuild;
 
-        using var workspace = MSBuildWorkspace.Create();
+        private static bool build()
+        {
+            MSBuildLocator.RegisterDefaults();
 
-        if (!File.Exists(projectPath)) return false;
-        var project = await workspace.OpenProjectAsync(projectPath);
+            using var workspace = MSBuildWorkspace.Create();
 
-        var compilation = await project.GetCompilationAsync();
-        if (compilation == null) return false;
+            if (!File.Exists(projectPath)) return false;
+            var project = await workspace.OpenProjectAsync(projectPath);
 
-        var result = compilation.Emit("output.dll");
+            var compilation = await project.GetCompilationAsync();
+            if (compilation == null) return false;
 
-        return result.Success;
-    }
-*/
+            var result = compilation.Emit("output.dll");
+
+            return result.Success;
+        }
+    */
 }
