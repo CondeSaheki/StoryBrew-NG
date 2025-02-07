@@ -6,15 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- packages listed here are only for intelisense -->
+
   <ItemGroup>
     <Reference Include="OpenTK.Mathematics">
-      <HintPath>..\..\OpenTK.Mathematics.dll</HintPath>
+      <HintPath>{path}OpenTK.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="SkiaSharp">
-      <HintPath>..\..\SkiaSharp.dll</HintPath>
+      <HintPath>{path}SkiaSharp.dll</HintPath>
     </Reference>
-    <Reference Include="StorybrewCommon">
-      <HintPath>..\..\StorybrewCommon.dll</HintPath>
+    <Reference Include="StoryBrew">
+      <HintPath>{path}StoryBrew.dll</HintPath>
     </Reference>
   </ItemGroup>
 

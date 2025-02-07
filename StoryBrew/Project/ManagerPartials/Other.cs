@@ -42,6 +42,10 @@ public partial class Manager
     {
         var scriptTemplate = Helper.EmbeddedResource("cs");
         scriptTemplate = scriptTemplate.Replace("{name}", name);
+        
+        var projectName = new DirectoryInfo(ProjectDirectoryPath).Name;
+        scriptTemplate = scriptTemplate.Replace("{namespace}", projectName);
+        
 
         File.WriteAllText(Path.Combine(ProjectDirectoryPath, name + ".cs"), scriptTemplate);
     }

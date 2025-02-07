@@ -1,3 +1,4 @@
+using System.Reflection;
 using StoryBrew.Project.Files;
 using StoryBrew.Util;
 
@@ -30,7 +31,7 @@ public partial class Manager
         var csprojFilePath = Path.Combine(path, name + ".csproj");
         var gitignoreFilePath = Path.Combine(path, ".gitignore");
         var configurationFilePath = Path.Combine(path, name + ".sbproj");
-
+        
         var assetsDirectoryPath = Path.Combine(path, "Assets");
 
         Directory.CreateDirectory(assetsDirectoryPath);
@@ -38,6 +39,9 @@ public partial class Manager
         string sln = Helper.EmbeddedResource("sln");
         string gitignore = Helper.EmbeddedResource("gitignore");
         string csproj = Helper.EmbeddedResource("csproj");
+
+        sln = sln.Replace("{name}", name);
+        csproj = csproj.Replace("{path}", AppDomain.CurrentDomain.BaseDirectory);
 
         File.WriteAllText(slnFilePath, sln);
         File.WriteAllText(gitignoreFilePath, gitignore);

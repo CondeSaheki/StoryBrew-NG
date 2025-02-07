@@ -1,4 +1,9 @@
-using StoryBrew;
+using OpenTK.Mathematics;
+using StoryBrew.Mapset;
+using StoryBrew.Scripting;
+using StoryBrew.Storyboarding;
+
+namespace {namespace};
 
 public class {name} : Script
 {
