@@ -28,7 +28,7 @@ public static class Program
             "build" when args.Length == 2 => () => Build(args[1]),
             "run" when args.Length == 2 => () => Run(args[1]),
             "clean" => () => Clean(args[1]),
-            "add" when args.Length == 3 => () => New(args[1], args[2]),
+            "add" when args.Length == 3 => () => Add(args[1], args[2]),
             "create" when args.Length == 3 => () => Create(args[1], args[2]),
             "help" => help,
             "version" => Version,
@@ -55,7 +55,7 @@ public static class Program
         try
         {
             var project = new Project.Manager(path);
-            var result = project.Build(out var log) ? "Success" : "Failed";
+            var result = project.TryBuild(out var log) ? "Success" : "Failed";
             if (!string.IsNullOrEmpty(log)) Console.WriteLine($"{log}");
             Console.WriteLine($"Build {result}.");
         }
@@ -70,7 +70,7 @@ public static class Program
         try
         {
             var project = new Project.Manager(path);
-            var result = project.Run(out var log) ? "Success" : "Failed";
+            var result = project.TryRun(out var log) ? "Success" : "Failed";
             if (!string.IsNullOrEmpty(log)) Console.WriteLine($"{log}");
             Console.WriteLine($"Run {result}.");
         }
@@ -97,8 +97,8 @@ public static class Program
     {
         try
         {
-            // TODO: adds a script instance to the project config
-            throw new NotImplementedException();
+            var project = new Project.Manager(path);
+            project.Add(name);
         }
         catch (Exception ex)
         {

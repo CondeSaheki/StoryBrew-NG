@@ -1,3 +1,5 @@
+using StoryBrew.Project.Files;
+using StoryBrew.Scripting;
 using StoryBrew.Util;
 
 namespace StoryBrew.Project;
@@ -11,8 +13,16 @@ public partial class Manager
     /// <exception cref="NotImplementedException">Thrown when the method is not yet implemented.</exception>
     public void Add(string name)
     {
-        configuration.Save(ConfigFilePath);
-        throw new NotImplementedException();
+        if (!buildInfo.ScriptsInfo.TryGetValue(name, out var infos)) throw new ArgumentException("Script does not exist.");
+
+        configuration.Background.Add(new ScriptConfiguration
+        {
+            // Nickname = name,
+            FullName = name,
+            Configurables = [.. infos.Select(info => new Configurable(info))],
+        });
+
+        configuration.Save(ConfigFilePath, true);
     }
 
     /// <summary>
