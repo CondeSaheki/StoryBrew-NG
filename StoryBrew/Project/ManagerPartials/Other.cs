@@ -37,16 +37,13 @@ public partial class Manager
     /// <summary>
     /// Creates a new script file with the specified name in the project directory.
     /// </summary>
-    /// <param name="name">The name of the script file to create.</param>
-    public void Create(string name)
+    /// <param name="scriptName">The name of the script file to create.</param>
+    public void Create(string scriptName)
     {
         var scriptTemplate = Helper.EmbeddedResource("cs");
-        scriptTemplate = scriptTemplate.Replace("{name}", name);
-        
-        var projectName = new DirectoryInfo(ProjectDirectoryPath).Name;
-        scriptTemplate = scriptTemplate.Replace("{namespace}", projectName);
-        
+        scriptTemplate = scriptTemplate.Replace("{name}", scriptName);
+        scriptTemplate = scriptTemplate.Replace("{namespace}", Name);
 
-        File.WriteAllText(Path.Combine(ProjectDirectoryPath, name + ".cs"), scriptTemplate);
+        File.WriteAllText(Path.Combine(ProjectDirectoryPath, scriptName + ".cs"), scriptTemplate);
     }
 }

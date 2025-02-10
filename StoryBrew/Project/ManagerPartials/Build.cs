@@ -1,8 +1,16 @@
+/*
+    Note: Regards to the build process,
+    Roslyn (Microsoft.CodeAnalysis.CSharp) is powerful and highly performant, it allows in-memory output minimizing I/O operations. 
+    However, adding references is not flexible because it does not read .csproj files, making it difficult to add dependencies like SkiaSharp, which includes native runtimes.
+    Roslyn Workspaces (Microsoft.CodeAnalysis.Workspaces.MSBuild) addresses this limitation by reading .csproj files and correctly resolving references. 
+    However, resolving references is slow and requires caching. Additionally, it does not restore dependencies, meaning a custom mechanism is needed 
+    to restoring dependencies and NuGet packages. Implementing this is complex and may introduce other issues.
+    MSBuild (Microsoft.Build) solves these problems, but it does not support in-memory compilation, which is one of the main reasons for implementing a custom compiler.
+    Considering all these factors, I concluded that the simplest and most reliable approach despite lacking in-memory output is to invoke dotnet build as an external process.
+*/
+
+using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Text;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using StoryBrew.Scripting;
 using StoryBrew.Util;
 
@@ -13,137 +21,74 @@ public partial class Manager
     /// <summary>
     /// Attempts to build the project.
     /// </summary>
-    /// <param name="log">The log of the build process.</param>
     /// <returns><c>true</c> if the build was successful, <c>false</c> otherwise.</returns>
-    public bool TryBuild(out string log) => Build(out log) != null;
+    public bool TryBuild()
+    {
+        try
+        {
+            return Build() != null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to build project: {ex}");
+            return false;
+        }
+    }
 
     /// <summary>
     /// Builds the project into a single assembly and updates the build info.
-    /// The project is only built if the source code files have changed since the last build.
     /// </summary>
-    /// <param name="log">The log of the build process.</param>
     /// <returns> the assembly if the build was successful, <c>null</c> otherwise.</returns>
-    public Assembly? Build(out string log)
+    public Assembly? Build()
     {
-        /*
-            Note: Unlike the old StoryBrew, this compiler do not watch the source code files for changes atively, instead it only checks
-            if the source code files have changed since the last build using hashes making it less dependent on file system IO operations.
+        Console.WriteLine($"Building project {Name}:");
 
-            Note: All .cs Files in the project directory and its subdirectories are compiled into a single assembly,
-            it allows for more freedom and better quality of Life in the script creation process.
+        var projectfilePath = Path.Combine(ProjectDirectoryPath, $"{Name}.csproj");
+        var assemblyFilePath = Path.Combine(ProjectDirectoryPath, "bin", "Release", "net8.0", Name + ".dll");
 
-            Note: Adds all .dll files in the project directory to the references list simplyfying the process to add new dependencies to the project.
+        var sucess = buildProcess(projectfilePath);
 
-            Note: The source code files are getting read twice in this function maybe stream can be reused, not sure how to do
-            syntax trees creation with streams
-
-            Note: is recomended to use AssemblyMetadata instead of MetadataReference, attempted to use but gave an error that i did not understood.
-        */
-
-        // files, source codes
-
-        string assemblyFilePath = Path.Combine(CacheDirectoryPath, Name + ".dll");
-        var sourceCodeFilePaths = Directory.EnumerateFiles(ProjectDirectoryPath, "*.cs", SearchOption.AllDirectories)
-            .Where(file => !file.Contains(Path.DirectorySeparatorChar + "bin" + Path.DirectorySeparatorChar) &&
-                           !file.Contains(Path.DirectorySeparatorChar + "obj" + Path.DirectorySeparatorChar))
-            .ToArray();
-
-        if (sourceCodeFilePaths.Length == 0)
+        if (!sucess) return null;
+        
+        if (!File.Exists(assemblyFilePath))
         {
-            log = "No source code files found in the project directory.";
+            Console.WriteLine($"Assembly file not found at {assemblyFilePath}.");
             return null;
         }
 
-        // hash check
+        var assembly = Assembly.LoadFile(assemblyFilePath);
 
-        if (matchFiles(buildInfo.Hashes, sourceCodeFilePaths, out var currentHashes) && File.Exists(assemblyFilePath))
-        {
-            log = "The project has not changed since the last build.";
-
-            byte[] assemblyBytes = File.ReadAllBytes(assemblyFilePath);
-            return Assembly.Load(assemblyBytes);
-        }
-
-        buildInfo.Hashes = [];
-        if (File.Exists(BuildInfoFilePath)) File.Delete(BuildInfoFilePath);
-        if (File.Exists(assemblyFilePath)) File.Delete(assemblyFilePath);
-
-        // syntax trees
-
-        var syntaxTrees = sourceCodeFilePaths.Select(codePath =>
-        {
-            var raw = File.ReadAllText(codePath);
-            return CSharpSyntaxTree.ParseText(raw);
-        });
-
-        // references
-
-        var app = AppDomain.CurrentDomain.BaseDirectory;
-        string[] defaultReferences =
-        [
-            Path.Combine(app, "StoryBrew.dll"),
-            Path.Combine(app, "SkiaSharp.dll"),
-            Path.Combine(app, "OpenTK.Mathematics.dll"),
-        ];
-
-        var runtimeReferences = Directory.GetFiles(RuntimeEnvironment.GetRuntimeDirectory(), "*.dll");
-        var projectReferences = Directory.GetFiles(ProjectDirectoryPath, "*.dll");
-
-        var assemblyReferenceFilePaths = defaultReferences.Concat(projectReferences).Concat(runtimeReferences).ToArray();
-
-        /*
-            AssemblyMetadata.CreateFromStream(fileStream);
-            assemblyMetadatas.Select(metadata => metadata.GetReference()),
-            finally { foreach (var reference in assemblyMetadatas) reference?.Dispose(); }
-        */
-
-        var assemblyMetadatas = assemblyReferenceFilePaths.Select(file =>
-        {
-            if (!File.Exists(file)) throw new ArgumentException($"Assembly reference does not exist: {file}");
-
-            using var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
-            return MetadataReference.CreateFromStream(fileStream);
-        }).ToArray();
-
-        // compile
-
-        var compilation = CSharpCompilation.Create(
-            Name,
-            syntaxTrees,
-            assemblyMetadatas,
-            new(OutputKind.DynamicallyLinkedLibrary));
-
-        using var memoryStream = new MemoryStream();
-        var result = compilation.Emit(memoryStream);
-
-        // output
-
-        StringBuilder diagnosticBuilder = new();
-        foreach (var diagnostic in result.Diagnostics) diagnosticBuilder.AppendLine(diagnostic.ToString());
-        log = diagnosticBuilder.ToString();
-
-        if (!result.Success) return null;
-
-        var assembly = Assembly.Load(memoryStream.ToArray());
         var info = scriptInfo(assembly);
         if (info.Count == 0)
         {
-            log = "No scripts found in the project.";
+            Console.WriteLine("No scripts found in the project.");
             return null;
         }
 
         Directory.CreateDirectory(CacheDirectoryPath);
 
-        using (var fileStream = new FileStream(assemblyFilePath, FileMode.Create, FileAccess.Write))
-        {
-            memoryStream.WriteTo(fileStream);
-        }
-
         buildInfo.ScriptsInfo = info;
-        buildInfo.Hashes = currentHashes;
+        buildInfo.Hashes = []; //Helper.SHA256File(assemblyFilePath)
         buildInfo.Save(BuildInfoFilePath, true);
 
         return assembly;
+    }
+
+    private static bool buildProcess(string projectDirectoryPath)
+    {
+        var config = new ProcessStartInfo
+        {
+            FileName = "dotnet",
+            Arguments = $"build -c Release {projectDirectoryPath}",
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+
+        using var process = new Process { StartInfo = config };
+        process.Start();
+        process.WaitForExit();
+
+        return process.ExitCode == 0;
     }
 
     private static Dictionary<string, List<ConfigurableInfo>> scriptInfo(Assembly assembly)
@@ -182,28 +127,31 @@ public partial class Manager
         return currentHashes.SetEquals(hashes);
     }
 
-    /*
+    private static IEnumerable<string> enumerateFiles(string directoryPath, HashSet<string> ignoreDirectories, HashSet<string> extensions)
+    {
+        if (ignoreDirectories.Count == 0) throw new ArgumentException("ignoreDirectories cannot be empty.", nameof(ignoreDirectories));
+        var directories = Directory.EnumerateDirectories(directoryPath)
+            .Where(directory => !ignoreDirectories.Contains(Path.GetFileName(directory)));
 
-        // Workspace MSBuild alternative needs more researh and testing
+        return process(directoryPath, extensions, false).Concat(directories.SelectMany(directory => process(directory, extensions, true)));
 
-        using Microsoft.Build.Locator;
-        using Microsoft.CodeAnalysis.MSBuild;
-
-        private static bool build()
+        static IEnumerable<string> process(string directoryPath, HashSet<string> extensions, bool recursive)
         {
-            MSBuildLocator.RegisterDefaults();
+            var options = new EnumerationOptions
+            {
+                RecurseSubdirectories = recursive,
+                AttributesToSkip = FileAttributes.System | FileAttributes.Hidden,
+                BufferSize = 4096,
+                IgnoreInaccessible = true
+            };
 
-            using var workspace = MSBuildWorkspace.Create();
-
-            if (!File.Exists(projectPath)) return false;
-            var project = await workspace.OpenProjectAsync(projectPath);
-
-            var compilation = await project.GetCompilationAsync();
-            if (compilation == null) return false;
-
-            var result = compilation.Emit("output.dll");
-
-            return result.Success;
+            return extensions.Count switch
+            {
+                0 => Directory.EnumerateFiles(directoryPath, "*", options),
+                1 => Directory.EnumerateFiles(directoryPath, $"*.{extensions.First()}", options),
+                _ => Directory.EnumerateFiles(directoryPath, "*", options)
+                              .Where(file => extensions.Contains(Path.GetExtension(file).TrimStart('.'))),
+            };
         }
-    */
+    }
 }

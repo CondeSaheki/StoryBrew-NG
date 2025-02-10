@@ -52,32 +52,15 @@ public static class Program
 
     public static void Build(string path)
     {
-        try
-        {
-            var project = new Project.Manager(path);
-            var result = project.TryBuild(out var log) ? "Success" : "Failed";
-            if (!string.IsNullOrEmpty(log)) Console.WriteLine($"{log}");
-            Console.WriteLine($"Build {result}.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to build project: {ex}");
-        }
+        var project = new Project.Manager(path);
+        project.TryBuild();
     }
 
     public static void Run(string path)
     {
-        try
-        {
-            var project = new Project.Manager(path);
-            var result = project.TryRun(out var log) ? "Success" : "Failed";
-            if (!string.IsNullOrEmpty(log)) Console.WriteLine($"{log}");
-            Console.WriteLine($"Run {result}.");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to run project: {ex}");
-        }
+        var project = new Project.Manager(path);
+        var result = project.TryRun() ? "Success" : "Failed";
+        Console.WriteLine($"Run {result}.");
     }
 
     public static void Clean(string path)

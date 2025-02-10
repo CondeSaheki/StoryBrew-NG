@@ -12,33 +12,35 @@ public partial class Manager
     /// <summary>
     /// Attempts to run all the scripts in the project. If a script fails it will be skipped.
     /// </summary>
-    /// <param name="log">The log of the run process.</param>
     /// <returns><c>true</c> if the run was successful, <c>false</c> otherwise.</returns>
-    public bool TryRun(out string log) => Run(out log) != null;
+    public bool TryRun()
+    {
+        try
+        {
+            return Run() != null;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to build project: {ex}");
+            return false;
+        }
+    }
 
     /// <summary>
     /// Runs all the scripts in the project. If a script fails it will be skipped.
     /// </summary>
-    /// <param name="log">The log of the build and run process.</param>
     /// <returns>The content of the .osb file if the run was successful, <c>null</c> otherwise.</returns>
-    public string? Run(out string log)
+    public string? Run()
     {
-        StringBuilder logBuilder = new();
+        var assembly = Build();
+        if (assembly == null) return null;
 
-        var assembly = Build(out var buildLog);
-        logBuilder.AppendLine("Build:");
-        logBuilder.AppendLine(buildLog);
-
-        if (assembly == null)
-        {
-            log = logBuilder.ToString();
-            return null;
-        }
+        Console.WriteLine($"Running project {Name}:");
 
         // var beatmaps = getBeatmaps();
         var scriptInfos = getScriptInfos(assembly);
 
-        var osbContent = runGroup(logBuilder, scriptInfos);
+        var osbContent = runGroup(scriptInfos);
         //  var osuContents = beatmaps.Select(tuple => (tuple.filePath, tuple.beatmap, runGroup(logBuilder, scriptInfos, tuple.beatmap))).ToArray();
 
         var filePath = MapsetDirectoryPath == string.Empty ? Path.Combine(MapsetDirectoryPath, $"{Name}.osb") : Path.Combine(ProjectDirectoryPath, $"{Name}.osb");
@@ -46,16 +48,14 @@ public partial class Manager
         using var StreamWriter = new StreamWriter(fileStream);
         StreamWriter.Write(osbContent);
 
-        log = logBuilder.ToString();
-
         return osbContent;
     }
 
     private (Layer, ScriptConfiguration, Type)[] getScriptInfos(Assembly assembly)
     {
         var types = assembly.GetTypes()
-                            .Where(type => typeof(Script).IsAssignableFrom(type))
-                            .ToDictionary(type => type.FullName ?? throw new Exception("Unable to get type name."), type => type);
+            .Where(type => typeof(Script).IsAssignableFrom(type))
+            .ToDictionary(type => type.FullName ?? throw new Exception("Unable to get type name."), type => type);
 
         return
         [
@@ -68,19 +68,19 @@ public partial class Manager
         ];
     }
 
-    private string runGroup(StringBuilder logBuilder, (Layer, ScriptConfiguration, Type)[] scriptInfo, Beatmap? beatmap = null)
+    private string runGroup((Layer, ScriptConfiguration, Type)[] scriptInfo, Beatmap? beatmap = null)
     {
         StringBuilder builder = new();
 
-        logBuilder.AppendLine(beatmap == null ? "Running Group" : $"Running Group -> {beatmap}");
-        foreach (var (layer, config, type) in scriptInfo) builder.Append(runTarget(logBuilder, layer, config, type, beatmap));
+        Console.WriteLine(beatmap == null ? "  target osb" : $"  target {beatmap}");
+        foreach (var (layer, config, type) in scriptInfo) builder.Append(runTarget(layer, config, type, beatmap));
 
         return builder.ToString();
     }
 
-    private string runTarget(StringBuilder logBuilder, Layer layer, ScriptConfiguration configuration, Type type, Beatmap? beatmap = null)
+    private string runTarget(Layer layer, ScriptConfiguration configuration, Type type, Beatmap? beatmap = null)
     {
-        logBuilder.AppendLine($"Running -> {layer} -> {configuration.FullName}");
+        Console.WriteLine($"    {configuration.FullName} → {layer}");
 
         Script? script = null;
         StringBuilder builder = new();
@@ -93,12 +93,15 @@ public partial class Manager
             foreach (var element in elements)
             {
                 if (element is not Writable writable) throw new InvalidOperationException($"Unhandled element type: {element.GetType()}");
+                var logBuilder = new StringBuilder();
                 writable.Write(logBuilder, builder, layer);
+                var result = logBuilder.ToString();
+                if (result != string.Empty) Console.WriteLine(result);
             }
         }
         catch (Exception ex)
         {
-            logBuilder.AppendLine($"Failed to run {configuration.FullName}: {ex}");
+            Console.WriteLine($"Failed to run {configuration.FullName}: {ex}");
         }
 
         script?.Dispose(); // this is not catch here intentionally, exception in disposal should not be ignored.
