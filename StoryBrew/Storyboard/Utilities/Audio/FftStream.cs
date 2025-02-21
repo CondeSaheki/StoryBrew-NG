@@ -12,7 +12,7 @@
 
 using ManagedBass;
 
-namespace StoryBrew.Common;
+namespace StoryBrew.Storyboard.Utilities.Audio;
 
 [Obsolete("Providing audio analysis tools is not be responsability of the storybrew is recomended to use an external library")]
 public class FftStream : IDisposable

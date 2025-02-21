@@ -5,7 +5,7 @@
 
 using OpenTK.Mathematics;
 
-namespace StoryBrew.Common;
+namespace StoryBrew.Storyboard.Utilities;
 
 public static partial class Converter
 {
