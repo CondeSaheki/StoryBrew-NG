@@ -1,6 +1,8 @@
 using System.Text;
+using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Element.Collections;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Element.Text;
 
 public class Text : Container
 {
@@ -9,7 +11,7 @@ public class Text : Container
         throw new NotImplementedException();
     }
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0)
     {
         throw new NotImplementedException();
     }
