@@ -1,4 +1,4 @@
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Common;
 
 public enum Anchor
 {
