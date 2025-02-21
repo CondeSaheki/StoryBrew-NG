@@ -1,17 +1,19 @@
 using System.Text;
 using OpenTK.Mathematics;
+using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Core;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Element.Collections;
 
-public class Container : Group, IElement
+public class Container : Transformable, IElement
 {
     public Anchor Origin;
     public Vector2 InitialPosition;
-    public IReadOnlyList<Commandable> Elements => elements;
+    public IReadOnlyList<ElementTransformable> Elements => elements;
 
-    private readonly List<Commandable> elements = [];
+    private readonly List<ElementTransformable> elements = [];
 
-    public Container(IEnumerable<Commandable> elements, Anchor origin = Anchor.Centre) : base(false)
+    public Container(IEnumerable<ElementTransformable> elements, Anchor origin = Anchor.Centre) : base(false)
     {
         if (elements.Any(element => element.AllowCompound && (element.Triggers!.Count != 0 || element.Loops!.Count != 0)))
             throw new ArgumentException("Elements with triggers or loops can not be added to containers.");
@@ -25,13 +27,13 @@ public class Container : Group, IElement
         Origin = origin;
     }
 
-    public void Add(Commandable element, out Commandable value)
+    public void Add(ElementTransformable element, out ElementTransformable value)
     {
         value = element;
         Add(element);
     }
 
-    public void Add(Commandable element)
+    public void Add(ElementTransformable element)
     {
         element.AllowCompound = false;
         elements.Add(element);
@@ -39,12 +41,12 @@ public class Container : Group, IElement
 
     public override string ToString() => $"Container: ";
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0)
     {
         foreach (var element in Elements)
         {
             if (!element.HasCommands) throw new InvalidOperationException("Cannot write element with no commands");
-            element.Write(log, writer, layer, depth);
+            element.Write(writer, layer, depth);
         }
     }
 }

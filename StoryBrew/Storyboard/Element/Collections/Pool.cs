@@ -1,17 +1,19 @@
 ﻿using System.Text;
+using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Core;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Element.Collections;
 
-public class ElementPool<T> : Writable, IElement where T : Commandable, IElement
+public class Pool<T> : Writable, IElement where T : ElementTransformable, IElement
 {
     public readonly Func<T> ElementFactory;
 
     private List<PoolElement> commands = [];
     private bool compoundCommands;
 
-    private readonly object commadsLock = new();
+    private readonly Lock commadsLock = new();
 
-    public ElementPool(Func<T> elementFactory, bool compoundCommands = false)
+    public Pool(Func<T> elementFactory, bool compoundCommands = false)
     {
         ElementFactory = elementFactory;
         this.compoundCommands = compoundCommands;
@@ -71,14 +73,14 @@ public class ElementPool<T> : Writable, IElement where T : Commandable, IElement
 
     public override string ToString() => $"ElementPool -> {commands.Count}";
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0) => ToSegment().Write(log, writer, layer, depth);
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0) => ToSegment().Write(writer, layer, depth);
 }
 
-public class PoolElement : Group
+public class PoolElement : Transformable
 {
     internal PoolElement(bool allowCompound = false) : base(allowCompound)
     {
     }
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0) => throw new NotSupportedException("Write is not supported for PoolElement.");
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0) => throw new NotSupportedException("Write is not supported for PoolElement.");
 }
