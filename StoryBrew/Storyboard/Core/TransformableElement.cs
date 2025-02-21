@@ -1,15 +1,16 @@
 ﻿
 using OpenTK.Mathematics;
+using StoryBrew.Storyboard.Common;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Core;
 
-public abstract class Commandable : Group, IElement
+public abstract class ElementTransformable : Transformable, IElement
 {
     public string FilePath { get; }
     public Anchor Origin;
     public Vector2 InitialPosition;
 
-    public Commandable(string filePath, Anchor origin, Vector2 initialPosition) : base()
+    public ElementTransformable(string filePath, Anchor origin, Vector2 initialPosition) : base()
     {
         FilePath = filePath;
         Origin = origin;
