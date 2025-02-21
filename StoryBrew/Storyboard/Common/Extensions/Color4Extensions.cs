@@ -1,6 +1,8 @@
 using OpenTK.Mathematics;
 using SkiaSharp;
 
+namespace StoryBrew.Storyboard.Common.Extensions;
+
 public static class Color4Extensions
 {
     public static SKColor ToSKColor(this Color4 color)
