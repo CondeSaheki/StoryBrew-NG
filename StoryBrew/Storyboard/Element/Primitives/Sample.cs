@@ -1,6 +1,9 @@
-﻿using System.Text;
+﻿using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Core;
 
-namespace StoryBrew.Storyboarding;
+using System.Text;
+
+namespace StoryBrew.Storyboard.Element.Primitives;
 
 public class Sample : Writable, IElement
 {
@@ -17,7 +20,7 @@ public class Sample : Writable, IElement
 
     public override string ToString() => $"Sample -> {StartTime} {Volume}";
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0)
     {
         const string identifier = "Sample";
 

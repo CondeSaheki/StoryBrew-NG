@@ -1,9 +1,11 @@
 ﻿using System.Text;
 using OpenTK.Mathematics;
+using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Core;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Element.Primitives;
 
-public class Animation : Commandable
+public class Animation : ElementTransformable
 {
     public int FrameCount;
     public double FrameDelay;
@@ -29,7 +31,7 @@ public class Animation : Commandable
 
     public override string ToString() => $"Animation -> {StartTime} -> {EndTime}, {Origin} {InitialPosition}, {FrameCount} {FrameDelay} {(LoopForever ? "Forever" : "Once")}";
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0)
     {
         const string identifier = "Animation";
 
@@ -37,6 +39,6 @@ public class Animation : Commandable
 
         writer.AppendLine(result);
 
-        base.Write(log, writer, layer, depth + 1);
+        base.Write(writer, layer, depth + 1);
     }
 }

@@ -1,17 +1,18 @@
 ﻿
-using System.Globalization;
 using System.Text;
 using OpenTK.Mathematics;
+using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Core;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Element.Primitives;
 
-public class Sprite : Commandable
+public class Sprite : ElementTransformable
 {
     public Sprite(string path, Anchor origin, Vector2 initialPosition) : base(path, origin, initialPosition) { }
 
     public override string ToString() => $"Sprite -> {StartTime} -> {EndTime}, {Origin} {InitialPosition}";
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0)
     {
         const string identifier = "Sprite";
 
@@ -21,6 +22,6 @@ public class Sprite : Commandable
 
         writer.AppendLine(result);
 
-        base.Write(log, writer, layer, depth + 1);
+        base.Write(writer, layer, depth + 1);
     }
 }

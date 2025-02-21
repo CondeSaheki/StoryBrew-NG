@@ -3,10 +3,12 @@
 
 using System.Text;
 using OpenTK.Mathematics;
+using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Core;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Element.Primitives;
 
-public class Video : Commandable
+public class Video : ElementTransformable
 {
     public double Offset { get; }
 
@@ -18,7 +20,7 @@ public class Video : Commandable
 
     public override string ToString() => $"Video -> {StartTime} -> {EndTime}, {Origin} {InitialPosition}, {Offset}";
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0)
     {
         if (layer != Layer.Video) throw new InvalidOperationException("Video element must be in Video layer.");
 
