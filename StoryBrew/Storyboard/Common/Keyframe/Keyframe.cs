@@ -1,4 +1,4 @@
-﻿namespace StoryBrew.Animations;
+﻿namespace StoryBrew.Storyboard.Common.keyframe;
 
 public struct Keyframe<TValue> : IComparable<Keyframe<TValue>>
 {
@@ -15,7 +15,7 @@ public struct Keyframe<TValue> : IComparable<Keyframe<TValue>>
     {
         Time = time;
         Value = value;
-        Ease = easing ?? EasingFunctions.Linear;
+        Ease = easing ?? Common.EaseMath.Linear;
     }
 
     public Keyframe<TValue> WithTime(double time) => new(time, Value, Ease);

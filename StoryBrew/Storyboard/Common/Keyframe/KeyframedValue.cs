@@ -1,11 +1,11 @@
 ﻿using OpenTK.Mathematics;
 using System.Collections;
 
-namespace StoryBrew.Animations;
+namespace StoryBrew.Storyboard.Common.keyframe;
 
 public class KeyframedValue<TValue> : IEnumerable<Keyframe<TValue>>
 {
-    private List<Keyframe<TValue>> keyframes = new List<Keyframe<TValue>>();
+    private List<Keyframe<TValue>> keyframes = [];
     private readonly Func<TValue, TValue, double, TValue> interpolate;
     private readonly TValue defaultValue;
 
@@ -31,7 +31,7 @@ public class KeyframedValue<TValue> : IEnumerable<Keyframe<TValue>>
 
     public KeyframedValue<TValue> Add(params Keyframe<TValue>[] values) => AddRange(values);
 
-    public KeyframedValue<TValue> Add(double time, TValue value, bool before = false) => Add(time, value, EasingFunctions.Linear, before);
+    public KeyframedValue<TValue> Add(double time, TValue value, bool before = false) => Add(time, value, EaseMath.Linear, before);
 
     public KeyframedValue<TValue> Add(double time, TValue value, Func<double, double>? easing, bool before = false) => Add(new Keyframe<TValue>(time, value, easing), before);
 

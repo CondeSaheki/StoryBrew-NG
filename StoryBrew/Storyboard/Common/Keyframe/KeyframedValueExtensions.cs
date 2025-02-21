@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace StoryBrew.Animations;
+namespace StoryBrew.Storyboard.Common.keyframe;
 
 public static class KeyframedValueExtensions
 {
