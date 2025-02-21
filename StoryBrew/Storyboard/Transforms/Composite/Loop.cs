@@ -1,9 +1,11 @@
 ﻿using System.Globalization;
 using System.Text;
+using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Core;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Transforms.Composite;
 
-public class Loop : Group, ICommand
+public class Loop : Transformable, ITransform
 {
     public readonly uint TotalIterations;
 
@@ -18,7 +20,7 @@ public class Loop : Group, ICommand
 
     public override string ToString() => $"Loop -> {StartTime} -> {EndTime}, {TotalIterations} {Commands.Count()}";
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0)
     {
         if (!HasCommands) return;
 
@@ -35,6 +37,6 @@ public class Loop : Group, ICommand
 
         writer.AppendLine(result);
 
-        base.Write(log, writer, layer, depth + 1);
+        base.Write(writer, layer, depth + 1);
     }
 }

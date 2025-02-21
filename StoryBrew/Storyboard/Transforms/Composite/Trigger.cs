@@ -1,9 +1,11 @@
 ﻿using System.Globalization;
 using System.Text;
+using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Core;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Transforms.Composite;
 
-public class Trigger : Group, ICommand
+public class Trigger : Transformable, ITransform
 {
     public string Type { get; }
     public override double StartTime { get; }
@@ -18,7 +20,7 @@ public class Trigger : Group, ICommand
 
     public override string ToString() => $"Trigger -> {StartTime} -> {EndTime}, {Type} {Commands.Count()}";
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0)
     {
         if (!HasCommands) return;
 
@@ -34,6 +36,6 @@ public class Trigger : Group, ICommand
 
         writer.AppendLine(result);
 
-        base.Write(log, writer, layer, depth + 1);
+        base.Write(writer, layer, depth + 1);
     }
 }

@@ -1,18 +1,20 @@
 using System.Globalization;
 using System.Text;
+using StoryBrew.Storyboard.Common;
+using StoryBrew.Storyboard.Core;
 
-namespace StoryBrew.Storyboarding;
+namespace StoryBrew.Storyboard.Transforms;
 
-public class FlipH : Command<bool>
+public class FlipHorizontal : Transform<bool>
 {
-    public FlipH(Easing easing, double startTime, double endTime, bool startValue, bool endValue)
-        : base(easing, startTime, endTime, startValue, endValue)
+    public FlipHorizontal(Ease ease, double startTime, double endTime, bool startValue, bool endValue)
+        : base(ease, startTime, endTime, startValue, endValue)
     {
     }
 
-    public override string ToString() => $"FlipH -> {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Easing}";
+    public override string ToString() => $"FlipH -> {StartTime} -> {EndTime}, {StartValue} -> {EndValue} {Ease}";
 
-    internal override void Write(StringBuilder log, StringBuilder writer, Layer layer, uint depth = 0)
+    internal override void Write(StringBuilder writer, Layer layer, uint depth = 0)
     {
         const string identifier = "P";
         const string value = "H";
@@ -20,7 +22,7 @@ public class FlipH : Command<bool>
 
         var indentation = new string(' ', (int)depth);
 
-        var easing = ((int)Easing).ToString();
+        var easing = ((int)Ease).ToString();
         var startTime = (float_time ? StartTime : (int)StartTime).ToString(CultureInfo.InvariantCulture);
         var endTime = (float_time ? EndTime : (int)EndTime).ToString(CultureInfo.InvariantCulture);
 
