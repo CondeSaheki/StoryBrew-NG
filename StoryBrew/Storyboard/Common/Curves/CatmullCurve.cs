@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 
-namespace StoryBrew.Curves;
+namespace StoryBrew.Storyboard.Common.Curves;
 
 [Serializable]
-public class CatmullCurve : BaseCurve
+public class CatmullCurve : Curve
 {
     private readonly List<Vector2> points;
     private readonly int precision;

@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 
-namespace StoryBrew.Curves;
+namespace StoryBrew.Storyboard.Common.Curves;
 
 [Serializable]
-public class CircleCurve : BaseCurve
+public class CircleCurve : Curve
 {
     private Vector2 startPoint;
     private Vector2 midPoint;

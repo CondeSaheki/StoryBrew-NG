@@ -1,9 +1,9 @@
 ﻿using OpenTK.Mathematics;
 
-namespace StoryBrew.Curves;
+namespace StoryBrew.Storyboard.Common.Curves;
 
 [Serializable]
-public abstract class BaseCurve : ICurve
+public abstract class Curve : ICurve
 {
     public abstract Vector2 EndPosition { get; }
     public abstract Vector2 StartPosition { get; }

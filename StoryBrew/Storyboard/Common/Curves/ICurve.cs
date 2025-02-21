@@ -1,6 +1,6 @@
 ﻿using OpenTK.Mathematics;
 
-namespace StoryBrew.Curves;
+namespace StoryBrew.Storyboard.Common.Curves;
 
 public interface ICurve
 {
