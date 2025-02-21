@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.CLI", "StoryBrew.CLI\StoryBrew.CLI.csproj", "{C23B3F4C-239D-4428-B59F-D9AC621E6542}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew", "StoryBrew\StoryBrew.csproj", "{68047D76-DD88-40BD-952E-E0DA89D917FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Desktop", "StoryBrew.Desktop\StoryBrew.Desktop.csproj", "{EB1C518C-1CF2-484D-85ED-B36D7E1305BE}"
@@ -15,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Game.Tests", "Sto
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Resources", "StoryBrew.Resources\StoryBrew.Resources.csproj", "{CB702F47-55D4-405F-A77F-62E01912DD73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Scripts", "StoryBrew.Scripts\StoryBrew.Scripts.csproj", "{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryBrew.Generator", "StoryBrew.Generator\StoryBrew.Generator.csproj", "{7D32A280-EF52-47D2-AF4E-F1F2FD12DC89}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,9 +48,9 @@ Global
 		{CB702F47-55D4-405F-A77F-62E01912DD73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB702F47-55D4-405F-A77F-62E01912DD73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB702F47-55D4-405F-A77F-62E01912DD73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37D1EC94-E3D2-4B03-8C66-5E49F6FC9EB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D32A280-EF52-47D2-AF4E-F1F2FD12DC89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D32A280-EF52-47D2-AF4E-F1F2FD12DC89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D32A280-EF52-47D2-AF4E-F1F2FD12DC89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D32A280-EF52-47D2-AF4E-F1F2FD12DC89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
