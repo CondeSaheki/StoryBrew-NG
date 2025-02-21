@@ -1,14 +1,14 @@
-﻿namespace StoryBrew.Common.Subtitles;
+﻿namespace StoryBrew.Storyboard.Utilities.Subtitle;
 
-public class SubtitleLine
+public class Line
 {
     public double StartTime { get; set; } = 0;
     public double EndTime { get; set; } = 0;
     public string Text { get; set; } = string.Empty;
 
-    public SubtitleLine() { }
+    public Line() { }
 
-    public SubtitleLine(double startTime, double endTime, string text)
+    public Line(double startTime, double endTime, string text)
     {
         StartTime = startTime;
         EndTime = endTime;

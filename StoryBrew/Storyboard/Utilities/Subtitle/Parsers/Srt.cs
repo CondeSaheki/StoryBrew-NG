@@ -1,17 +1,17 @@
 ﻿using System.Text;
 
-namespace StoryBrew.Common.Subtitles.Parsers;
+namespace StoryBrew.Storyboard.Utilities.Subtitle.Parsers;
 
-public static class SrtParser
+public static class Srt
 {
-    public static SubtitleSet Parse(string path)
+    public static Set Parse(string path)
     {
         using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)) return Parse(stream);
     }
 
-    public static SubtitleSet Parse(Stream stream)
+    public static Set Parse(Stream stream)
     {
-        var lines = new List<SubtitleLine>();
+        var lines = new List<Line>();
         foreach (var block in parseBlocks(stream))
         {
             var blockLines = block.Split('\n');
@@ -19,9 +19,9 @@ public static class SrtParser
             var startTime = parseTimestamp(timestamps[0]);
             var endTime = parseTimestamp(timestamps[1]);
             var text = string.Join('\n', blockLines, 2, blockLines.Length - 2);
-            lines.Add(new SubtitleLine(startTime, endTime, text));
+            lines.Add(new Line(startTime, endTime, text));
         }
-        return new SubtitleSet(lines);
+        return new Set(lines);
     }
 
     private static IEnumerable<string> parseBlocks(Stream stream)
