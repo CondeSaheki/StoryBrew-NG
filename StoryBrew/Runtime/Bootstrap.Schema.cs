@@ -1,9 +1,7 @@
-using System.Text;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Schema;
 using Newtonsoft.Json.Schema.Generation;
 
-namespace StoryBrew;
+namespace StoryBrew.Runtime;
 
 public partial class Bootstrap
 {

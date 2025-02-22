@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace StoryBrew;
+namespace StoryBrew.Runtime.LogSystem;
 
 internal class Collector : IDisposable
 {

@@ -4,8 +4,9 @@ using StoryBrew.Storyboard;
 using StoryBrew.Storyboard.Common;
 using StoryBrew.Storyboard.Common.Beatmap;
 using StoryBrew.Storyboard.Core;
+using StoryBrew.Runtime.LogSystem;
 
-namespace StoryBrew;
+namespace StoryBrew.Runtime;
 
 public partial class Bootstrap
 {

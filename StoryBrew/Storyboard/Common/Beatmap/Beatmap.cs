@@ -1,4 +1,6 @@
-﻿namespace StoryBrew.Storyboard.Common.Beatmap;
+﻿using StoryBrew.Runtime.LogSystem;
+
+namespace StoryBrew.Storyboard.Common.Beatmap;
 
 public class Beatmap
 {

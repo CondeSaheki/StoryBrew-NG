@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
-namespace StoryBrew;
+namespace StoryBrew.Runtime.LogSystem;
 
 internal static class Log
 {

@@ -22,7 +22,7 @@
 
 using Newtonsoft.Json;
 
-namespace StoryBrew;
+namespace StoryBrew.Runtime;
 
 public class ProjectData
 {

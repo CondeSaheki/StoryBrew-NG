@@ -1,4 +1,6 @@
-namespace StoryBrew;
+using StoryBrew.Runtime.LogSystem;
+
+namespace StoryBrew.Runtime;
 
 public partial class Bootstrap
 {

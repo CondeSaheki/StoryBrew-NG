@@ -1,6 +1,7 @@
 ﻿using StoryBrew.Storyboard.Core;
 using StoryBrew.Storyboard.Common;
 using StoryBrew.Storyboard.Common.Beatmap;
+using StoryBrew.Runtime;
 
 namespace StoryBrew.Storyboard;
 
@@ -51,7 +52,7 @@ public abstract class Script : IDisposable
     /// Logs a message.
     /// </summary>
     /// <param name="content">The content to log.</param>
-    public void Log(string content) => StoryBrew.Log.Message($"{GetType().FullName}: {content}");
+    public void Log(string content) => Runtime.LogSystem.Log.Message($"{GetType().FullName}: {content}");
 
     private Action<IElement>? collector;
 

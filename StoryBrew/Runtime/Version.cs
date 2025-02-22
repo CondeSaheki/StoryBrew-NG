@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace StoryBrew;
+namespace StoryBrew.Runtime;
 
 [JsonConverter(typeof(VersionJsonConverter))]
 public class Version

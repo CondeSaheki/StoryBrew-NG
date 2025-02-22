@@ -1,8 +1,9 @@
 using System.Security.Cryptography;
 using System.Text;
 using Newtonsoft.Json;
+using StoryBrew.Runtime.LogSystem;
 
-namespace StoryBrew;
+namespace StoryBrew.Runtime;
 
 public partial class Bootstrap
 {
