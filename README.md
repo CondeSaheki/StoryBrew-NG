@@ -2,76 +2,128 @@
 
 # StoryBrew-NG
 
+**StoryBrew-NG** (Next Generation) is a complete refactor of the beloved StoryBrew project, rebuilt from the ground up for **cross-platform compatibility** and **enhanced flexibility**. We have as a GUI desktop application using **osu!Framework**, it empowers creators to manage osu! storyboards efficiently while offering script development libraries for script creation.
+
+**Documentation & Tutorials**: Explore the [StoryBrew Wiki] (placeholder) for detailed guides. While StoryBrew-NG introduces new features, much of the original documentation remains relevant.
+
+## Table of Contents
+- [Overview](#overview)
+- [Usage](#usage)
+  - [Project Creation](#creation)
+  - [Workflow](#workflow)
+- [Project Structure](#project-structure)
+- [Dependencies](#dependencies)
+- [Building from Source](#build)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Overview
-**StoryBrew-NG** (Next Generation) is a complete **refactor** and remake of the renowned and loved by the community StoryBrew project. Redesigned from the ground with **cross-platform** support in mind, it empowers developers to create, compile, and manage storyboard scripts for osu! efficiently with a comprehensive suite that includes a **CLI tool**, a **GUI desktop application** made with osu!Framework and **libraries** for osu! story board script development.
 
-For more detailed **documentation and tutorials** refer to the StoryBrew **Wiki**. While StoryBrew-NG introduces changes, much of the original documentation remains a valuable resource.
+StoryBrew-NG modernizes the original StoryBrew with:
+- **Cross-platform support** yes, it works on Linux
+- **Modular architecture** for easier maintenance and extensibility
+- **Improved performance** through optimized rendering and code generation
+- **Hybrid workflow** combining GUI editing and CLI scripting
 
-## Features
-- CLI for quick project creation and compilation.
-- Desktop GUI for intuitive and streamlined development.
-- Comprehensive libraries for scripting and resource management.
-- Examples and tests to support script and GUI development.
+## Usage
+
+### Creation
+
+#### Option 1: Using the Editor
+
+1. Launch the **StoryBrew** application.
+2. Use the **New Project** wizard to generate a template project automatically.
+
+#### Option 2: Command Line (dotnet template)
+
+1. Install the template package:
+   ```bash
+   dotnet new --install <storybrew_template>
+   ```
+2. Create a new project:
+   ```bash
+   dotnet new <storybrew_template> -n MyStoryboardProject
+   ```
+
+Once created, customize your storyboard scripts using your preferred IDE (e.g., Visual Studio, Rider, or VS Code).
+
+### Workflow
+
+#### Editor Workflow
+
+1. **Update Project**: Click the [placeholder] button in the editor to:
+   - Compile your code (`dotnet build`)
+   - Establish a real-time pipe connection with the editor for visualization (`dotnet run -- pipe`)
+2. **Visualize & Edit**: Interact with the timeline, adjust parameters visually, and see changes immediately.
+
+#### CLI Workflow
+
+1. Build your project:
+   ```bash
+   dotnet build -c Release
+   ```
+2. View command options:
+   ```bash
+   dotnet run --project MyStoryboardProject -- help
+   ```
+
+Iterate by editing scripts and rebuilding until you achieve your desired storyboard.
 
 ## Project Structure
 
-### Executables
-- **StoryBrew**: A CLI tool for compiling and creating new storyboard script projects.
-- **StoryBrew.Desktop**: A desktop application providing a GUI for storyboard vizualiation and development.
-
-### Libraries
-- **StoryBrew.Common**: A foundational library used by storyboard scripts.
+- **StoryBrew**: A foundational library for storyboard projects. ~~Distributed as a NuGet package.~~
+- **StoryBrew.Generator**: A Source Generator that makes the entrypoint for storyboard projects, this new component is automatically used when you compile your project ~~Distributed as a NuGet package.~~
+- **StoryBrew.Desktop**: A desktop application providing a GUI for storyboard visualization and development. 
 - **StoryBrew.Game**: Core library handling the GUI components.
 - **StoryBrew.Game.Tests**: Testing suite for the `StoryBrew.Game` library.
-- **StoryBrew.Resources**: Resource library used by `StoryBrew.Game`.
-- **StoryBrew.Scripts**: Library containing example scripts to aid developers.
+- **StoryBrew.Resources**: Resource library used by `StoryBrew.Game` library.
+
+The modular design ensures that the internal workings remain streamlined while offering robust functionality for storyboard development.
 
 ## Dependencies
-This project do not relies anymore on **BrewLib** and depends on the following packages:
-- **Newtonsoft.Json**: `13.0.3`
-- **OpenTK.Mathematics**: `4.9.3`
-- **SkiaSharp**: `3.116.1`
-- **ppy.osu.Framework**: `2024.1224.0`
-- **ppy.osu.Game**: `2024.1224.1`
-- **Damnae.Tiny**: `1.2.0` (to be removed)
-- **ManagedBass**: `3.1.1` (to be removed)
-- **Microsoft.CodeAnalysis.CSharp**: `4.11.0`
-- **Microsoft.NET.Test.Sdk**: `17.0.0`
-- **NUnit3TestAdapter**: `4.4.2`
 
-Ensure you have these packages available and restored when building the project.
+This project no longer relies on **BrewLib**, **Damnae.Tiny** or **System.Drawing.Common** allowing more flexibility and simpler maintenance, currently it depends on the following packages:
+
+- **ManagedBass:** `3.1.1` (API's using this are marked obsolete)
+- **Newtonsoft.Json:** `13.0.3`
+- **Newtonsoft.Json.Bson:** `1.0.3`
+- **Newtonsoft.Json.Schema:** `4.0.1`
+- **OpenTK.Mathematics:** `4.9.3`
+- **SkiaSharp:** `3.116.1`
+- **ppy.osu.Framework:** `2025.220.1`
+- **ppy.osu.Game:** `2025.221.0`
+- **Microsoft.NET.Test.Sdk:** `17.13.0`
+- **NUnit3TestAdapter:** `5.0.0`
+- **Microsoft.CodeAnalysis:** `4.12.0`
+- **Microsoft.CodeAnalysis.CSharp:** `4.12.0`
 
 ## Build
-1. Clone this repository:
+
+### Prerequisites
+
+- [.NET 9 SDK](https://dotnet.microsoft.com/download)
+- Git
+
+### Steps
+
+1. Clone the repository:
    ```bash
    git clone <url>
-   ```
-2. Navigate to the project directory:
-   ```bash
    cd StoryBrew-NG
+   ```
+2. Restore dependencies:
+   ```bash
+   dotnet restore
    ```
 3. Build the solution:
    ```bash
-   dotnet build
+   dotnet build -c Release
    ```
 
-### CLI Usage (`StoryBrew`)
-Run the CLI tool to create or compile storyboard script projects:
-- Create a new project:
-  ```bash
-  StoryBrew new <project-name>
-  ```
-- Build an existing project:
-  ```bash
-  StoryBrew build <project-path> <mapset-path>
-  ```
-- Get more help with:
-  ```bash
-  StoryBrew help
-  ```
-
 ## Contributing
-We welcome contributions to these project. Feel free to submit issues, suggest features, or create pull requests to improve the tool.
+
+We welcome contributions to this project. Feel free to submit issues, suggest features, or create pull requests to improve the tool.
 
 ## License
-This project is licensed under the [MIT License](LICENSE).
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for details.
