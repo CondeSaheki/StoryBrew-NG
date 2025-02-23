@@ -47,18 +47,19 @@ public partial class Bootstrap
         catch (Exception ex)
         {
             Log.Error(ex.ToString());
-        }  
+        }
     }
 
     private static void handleHelpCommand() => Log.Message(
-    $$"""
-    Usage: command [options]
+        """
+        Usage: command [options]
 
-    Commands:
-        pipe                   Attempt to connect to the StoryBrew Editor pipe server.
-        new <file_path>        Creates a new configuration in the specified target.
-        run <file_path>        Run the specified target configurations.
-        help                   Displays this help message.
-        version                Shows the current version.
-    """);
+        Commands:
+            pipe                   Attempt to connect to the StoryBrew Editor pipe server.
+            new <file_path>        Creates a new configuration in the specified target.
+            run <file_path>        Run the specified target configurations.
+            help                   Displays this help message.
+            version                Shows the current version.
+        """
+    );
 }

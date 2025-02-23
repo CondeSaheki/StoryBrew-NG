@@ -12,7 +12,7 @@ internal static class BsonConverter
 
         JsonSerializer.CreateDefault().Serialize(bsonWriter, content);
 
-        return memoryStream.GetBuffer().AsMemory();
+        return memoryStream.GetBuffer().AsMemory(); // Note: Copy made
     }
 
     public static T Decode<T>(in byte[] data) where T : struct

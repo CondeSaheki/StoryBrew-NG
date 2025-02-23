@@ -5,91 +5,109 @@
 using System.IO.Pipes;
 using System.IO.Pipelines;
 using System.Buffers;
+using StoryBrew.Runtime.LogSystem;
 
-namespace StoryBrew.Pipe;
+namespace StoryBrew.Runtime.Pipe;
 
-internal class Client : IDisposable
+public class Client : IDisposable
 {
-    
-    private const string pipe_name = "MyBsonPipe";
+    private const string pipe_name = "storybrew_pipe";
     private readonly NamedPipeClientStream client;
     private readonly PipeReader reader;
     private readonly PipeWriter writer;
 
-    public bool? Connected = null;
+    private bool operating = false;
 
-    public Client()
+    public delegate Response RequestHandlerDelegate(Request request, ref bool working, CancellationToken cancellationToken = default);
+
+    private RequestHandlerDelegate requestHandler;
+
+    public Client(RequestHandlerDelegate requestHandler)
     {
         client = new(".", pipe_name, PipeDirection.InOut);
         reader = PipeReader.Create(client);
         writer = PipeWriter.Create(client);
+        this.requestHandler = requestHandler;
     }
 
-    private async Task connect(CancellationToken cancellationToken = default)
+    public async Task Initialize(CancellationToken cancellationToken = default)
     {
-        await client.ConnectAsync(cancellationToken)
-            .ContinueWith((_) =>
+        var working = true;
+        while (!cancellationToken.IsCancellationRequested && working)
+        {
+            try
             {
-                if (!client.IsConnected) throw new Exception("Failed to connect");
-                Connected = true;
-            }, cancellationToken)
-            .ConfigureAwait(false);
+                var request = await read(cancellationToken);
+                var response = requestHandler(request, ref working, cancellationToken);
+                await write(response, cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                // ignore
+            }
+            catch (Exception ex)
+            {
+                await write(new(ex.ToString(), Status.Failure), cancellationToken);
+            }
+        }
     }
-    public void Send(in Response response, CancellationToken cancellationToken = default)
+
+    private async Task connectionCheck(CancellationToken cancellationToken = default)
     {
+        if (operating)
+        {
+            if (client.IsConnected) return;
+            throw new IOException("Connection lost.");
+        }
+
+        await client.ConnectAsync(cancellationToken).ConfigureAwait(false);
+        operating = true;
+    }
+
+    private async Task write(Response response, CancellationToken cancellationToken = default)
+    {
+        await connectionCheck(cancellationToken).ConfigureAwait(false);
+
         var content = BsonConverter.Encode(response);
-        SendRaw(content, cancellationToken).ConfigureAwait(false).GetAwaiter().GetResult();
-    }
-
-    public async Task SendRaw(Memory<byte> content, CancellationToken cancellationToken)
-    {
-        if (!Connected ?? false) await connect(cancellationToken).ConfigureAwait(false);
-
         var header = BitConverter.GetBytes(content.Length).AsMemory();
-
-        var buffer = writer.GetMemory(header.Length + content.Length);
+        var responseLength = header.Length + content.Length;
+        var buffer = writer.GetMemory(responseLength);
 
         header.Span.CopyTo(buffer.Span);
         content.Span.CopyTo(buffer.Span[header.Length..]);
 
-        writer.Advance(header.Length + content.Length);
+        writer.Advance(responseLength);
         await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
-    }
-    public Request Receive(CancellationToken cancellationToken = default)
-    {
-        var memory = ReceiveRaw(cancellationToken).ConfigureAwait(false).GetAwaiter().GetResult();
-        return BsonConverter.Decode<Request>(memory.ToArray()); // Note: Copy made
+        Log.Debug($"response sent {response}");
     }
 
-    public async Task<Memory<byte>> ReceiveRaw(CancellationToken cancellationToken)
+    private async Task<Request> read(CancellationToken cancellationToken)
     {
-        if (!client.IsConnected) await connect(cancellationToken).ConfigureAwait(false);
+        await connectionCheck(cancellationToken).ConfigureAwait(false);
 
-        var taskResult = await reader.ReadAtLeastAsync(sizeof(int), cancellationToken).ConfigureAwait(false);
-        var lengthBuffer = taskResult.Buffer.Slice(0, sizeof(int));
+        const int header_length = sizeof(int);
+        var headerReadResult = await reader.ReadAtLeastAsync(header_length, cancellationToken).ConfigureAwait(false);
+        if (headerReadResult.Buffer.Length < header_length) throw new IOException("Incomplete read.");
+        var headerBuffer = headerReadResult.Buffer.Slice(0, header_length);
 
-        var contentLength = BitConverter.ToInt32(lengthBuffer.FirstSpan);
+        var contentLength = BitConverter.ToInt32(headerBuffer.FirstSpan);
+        reader.AdvanceTo(headerBuffer.End);
 
-        reader.AdvanceTo(lengthBuffer.End);
+        var contentReadResult = await reader.ReadAtLeastAsync(contentLength, cancellationToken).ConfigureAwait(false);
+        if (contentReadResult.Buffer.Length < contentLength) throw new IOException("Incomplete read.");
+        var contentBuffer = contentReadResult.Buffer.Slice(0, contentLength);
 
-        var taskResult2 = await reader.ReadAtLeastAsync(contentLength, cancellationToken).ConfigureAwait(false);
-        var data = taskResult2.Buffer.Slice(0, contentLength);
+        var request = BsonConverter.Decode<Request>(contentBuffer.ToArray()); // Note: Copy made
+        reader.AdvanceTo(contentBuffer.End);
 
-        var result = data.ToArray().AsMemory(); // Note: copy made
-
-        reader.AdvanceTo(data.End);
-
-        return result;
-    }
-
-    public void Disconnect()
-    {
-        Connected = false;
-        Dispose();
+        Log.Debug($"request received {request}");
+        return request;
     }
 
     public void Dispose()
     {
+        reader?.Complete();
+        writer?.Complete();
         client?.Dispose();
     }
 }

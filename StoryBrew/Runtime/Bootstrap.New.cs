@@ -23,11 +23,12 @@ public partial class Bootstrap
     }
 
     private static void handleNewHelpCommand() => Log.Message(
-    """
-    Avaliable templates:
-        project                project configuration json file
-        schema                 scripts schema json file
-    """);
+        """
+        Avaliable templates:
+            project                project configuration json file
+            schema                 scripts schema json file
+        """
+    );
 
     private void handleNewConfigurationCommand(in string directoryPath)
     {

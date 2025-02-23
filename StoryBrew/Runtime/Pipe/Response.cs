@@ -1,12 +1,14 @@
-namespace StoryBrew.Pipe;
+namespace StoryBrew.Runtime.Pipe;
 
-internal struct Response(string body, Status status = Status.Success)
+public struct Response(string body, Status status = Status.Success)
 {
     public Status Status = status;
     public string Body = body;
+
+    public override string ToString() => $"{Status} : {Body}";
 }
 
-internal enum Status
+public enum Status
 {
     Success,
     Failure

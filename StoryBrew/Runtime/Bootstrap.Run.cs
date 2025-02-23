@@ -17,13 +17,6 @@ public partial class Bootstrap
         processProject(ProjectData.FromFile(filePath));
     }
 
-    private Pipe.Response handleRunRequest(in string requestBody)
-    {
-        using Collector log = new();
-        processProject(ProjectData.FromString(requestBody));    
-        return new(log.Consume());
-    }
-
     private void processProject(ProjectData project)
     {
         Log.Message("Processing project...");

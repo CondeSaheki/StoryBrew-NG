@@ -1,12 +1,14 @@
-namespace StoryBrew.Pipe;
+namespace StoryBrew.Runtime.Pipe;
 
-internal struct Request(string body, Content type)
+public struct Request(Content type, string? body = null)
 {
     public Content Type = type;
-    public string Body = body;
+    public string Body = body ?? string.Empty;
+
+    public override string ToString() => $"Type: {Type} Body: {Body}";
 }
 
-internal enum Content
+public enum Content
 {
     Version,
     Schema,

@@ -62,7 +62,7 @@ public class EntryPoint : IIncrementalGenerator
 
                 public static void Main(string[] args)
                 {
-                    new StoryBrew.Bootstrap(getScripts, getScriptType, getBuildId).Arguments(args);
+                    new StoryBrew.Runtime.Bootstrap(getScripts, getScriptType, getBuildId).Arguments(args);
                 }
             }
             """;

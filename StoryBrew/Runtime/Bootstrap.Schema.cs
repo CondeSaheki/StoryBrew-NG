@@ -25,11 +25,4 @@ public partial class Bootstrap
         
         return stringWriter.ToString();
     }
-
-    private Pipe.Response handleSchemaRequest(ReadOnlySpan<char> requestBody)
-    {
-        if (requestBody.Length != 0) throw new InvalidOperationException("Unexpected request body");
-
-        return new(getSchema(false));
-    }
 }
