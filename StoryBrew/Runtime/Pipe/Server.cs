@@ -58,11 +58,11 @@ public class Server : IDisposable
                 content = response.Body;
                 return true;
             }
-            
+
             Log.Debug($"Request Failure: {response}.");
             Close();
         }
-        catch (OperationCanceledException) 
+        catch (OperationCanceledException)
         {
             // ignore
         }
@@ -127,7 +127,7 @@ public class Server : IDisposable
 
         writer.Advance(requestSize);
         await writer.FlushAsync(cancellationToken).ConfigureAwait(false);
-        
+
         Log.Debug($"request sent {request}");
     }
 

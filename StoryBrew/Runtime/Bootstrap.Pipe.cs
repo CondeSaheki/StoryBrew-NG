@@ -54,10 +54,10 @@ public partial class Bootstrap
     {
         // Note: The response is not correctly implemented
         using Collector collector = new();
-        processProject(ProjectData.FromString(requestBody));    
+        processProject(ProjectData.FromString(requestBody));
         return new(collector.Consume());
     }
-    
+
     private static Pipe.Response handleCloseRequest(ReadOnlySpan<char> requestBody, ref bool working)
     {
         if (requestBody.Length != 0) Log.Debug(requestBody.ToString());

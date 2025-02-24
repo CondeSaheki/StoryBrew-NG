@@ -4,7 +4,7 @@ using StoryBrew.Storyboard.Core;
 
 namespace StoryBrew.Storyboard.Element.Collections;
 
-public class Segment: Writable, IElement
+public class Segment : Writable, IElement
 {
     public IReadOnlyList<IElement> Elements => elements;
 

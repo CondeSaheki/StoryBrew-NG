@@ -11,7 +11,7 @@ public class Raw : Writable, IElement
 
     public Action<StringBuilder, Layer, uint> Writer { get; set; }
 
-    public Raw(string? content = null, Action<StringBuilder, Layer, uint>? action = null) 
+    public Raw(string? content = null, Action<StringBuilder, Layer, uint>? action = null)
     {
         Content = content ?? string.Empty;
         Writer = action ?? ((writer, layer, depth) => writer.AppendLine(content));

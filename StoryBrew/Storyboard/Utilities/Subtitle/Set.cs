@@ -2,7 +2,7 @@
 
 public class Set
 {
-    public IEnumerable<Line> Lines {get; private set; } = [];
+    public IEnumerable<Line> Lines { get; private set; } = [];
 
     public Set() { }
 

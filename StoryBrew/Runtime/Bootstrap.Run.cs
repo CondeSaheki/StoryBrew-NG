@@ -20,10 +20,10 @@ public partial class Bootstrap
     private void processProject(ProjectData project)
     {
         Log.Message("Processing project...");
-        
+
         var name = Path.GetFileName(project.MapsetDirectoryPath) ?? "";
-        var osbPath = Path.Combine(project.MapsetDirectoryPath, name + ".osb"); 
-        
+        var osbPath = Path.Combine(project.MapsetDirectoryPath, name + ".osb");
+
         StringBuilder builder = new();
         processLayers(builder, project, null);
         using var stream = new FileStream(osbPath, FileMode.Create, FileAccess.Write);
@@ -33,7 +33,7 @@ public partial class Bootstrap
         {
             StringBuilder beamapBuilder = new();
             processLayers(builder, project, beatmap);
-            
+
             Log.Warnning($"{path} Beatmap is not supported.");
             Log.Warnning(beamapBuilder.ToString());
 
@@ -48,7 +48,7 @@ public partial class Bootstrap
         foreach (var layer in Enum.GetValues<Layer>()) processLayer(layer, builder, project, beatmap);
     }
 
-    private void processLayer(Layer layer,StringBuilder builder, ProjectData project, Beatmap? beatmap)
+    private void processLayer(Layer layer, StringBuilder builder, ProjectData project, Beatmap? beatmap)
     {
         Log.Message($"Processing layer {layer}");
         var scripts = getLayerScriptDatas(layer, project);
@@ -62,11 +62,11 @@ public partial class Bootstrap
             ?? throw new Exception($"Project runInstance, FullName \"{script.FullName}\": Failed to determine script type");
 
         Script instance;
-        if (!string.IsNullOrEmpty(script.Json)) instance = JsonConvert.DeserializeObject(script.Json, type) as Script 
+        if (!string.IsNullOrEmpty(script.Json)) instance = JsonConvert.DeserializeObject(script.Json, type) as Script
             ?? throw new Exception($"Failed to deserialize script \"{script.FullName}\".");
-        else instance = Activator.CreateInstance(type) as Script 
+        else instance = Activator.CreateInstance(type) as Script
             ?? throw new Exception($"Failed to create instance of script \"{script.FullName}\".");
-        
+
         try
         {
             instance.Initialize(layer, project);
@@ -110,5 +110,5 @@ public partial class Bootstrap
         var filesPaths = Directory.GetFiles(directory, "*.osu", SearchOption.TopDirectoryOnly);
         Log.Warnning($"Beatmaps are supported, Found {filesPaths.Length} beatmaps.");
         return [];
-    } 
+    }
 }

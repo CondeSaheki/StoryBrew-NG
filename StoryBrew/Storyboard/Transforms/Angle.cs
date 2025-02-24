@@ -32,7 +32,7 @@ public class Angle : Transform<float>
         var endValue = ((float)EndValue).ToString(CultureInfo.InvariantCulture);
 
         string result = $"{indentation}{identifier},{easing},{startTime},{endTime},{startValue},{endValue}";
-        
+
         writer.AppendLine(result);
     }
 }

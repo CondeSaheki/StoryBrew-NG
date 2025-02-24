@@ -15,7 +15,7 @@ public partial class Bootstrap
 
         public override string ToString() => $"Version {Version}, BuildId {BuildId}, Hash {Hash}";
     }
-    
+
     private VersionInfo getVersionInfo()
     {
         var hash = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(getSchema())));
