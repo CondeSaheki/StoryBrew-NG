@@ -14,32 +14,36 @@ public partial class Bootstrap
     {
         if (!File.Exists(filePath)) throw new ArgumentException($"Project runCommand, filePath \"{filePath}\": File does not exist.");
 
-        processProject(ProjectData.FromFile(filePath));
-    }
-
-    private void processProject(ProjectData project)
-    {
-        Log.Message("Processing project...");
+        var project = ProjectData.FromFile(filePath);
 
         var name = Path.GetFileName(project.MapsetDirectoryPath) ?? "";
         var osbPath = Path.Combine(project.MapsetDirectoryPath, name + ".osb");
 
-        StringBuilder builder = new();
-        processLayers(builder, project, null);
+        var result = processProject(project);
         using var stream = new FileStream(osbPath, FileMode.Create, FileAccess.Write);
-        stream.Write(Encoding.UTF8.GetBytes(builder.ToString()));
+        stream.Write(Encoding.UTF8.GetBytes(result));
+    }
 
-        foreach (var (path, beatmap) in getBeatmaps(project.MapsetDirectoryPath))
-        {
-            StringBuilder beamapBuilder = new();
-            processLayers(builder, project, beatmap);
+    private string processProject(ProjectData project)
+    {
+        Log.Message("Processing project...");
 
-            Log.Warnning($"{path} Beatmap is not supported.");
-            Log.Warnning(beamapBuilder.ToString());
+        StringBuilder builder = new();
+        builder.AppendLine("[Events]");
+        processLayers(builder, project, null);
+        return builder.ToString();
 
-            // using var beamapFile = new FileStream(path, FileMode.Create, FileAccess.Write);
-            // beamapFile.Write(Encoding.UTF8.GetBytes(beamapBuilder.ToString()));
-        }
+        // foreach (var (path, beatmap) in getBeatmaps(project.MapsetDirectoryPath))
+        // {
+        //     StringBuilder beamapBuilder = new();
+        //     processLayers(builder, project, beatmap);
+
+        //     Log.Warnning($"{path} Beatmap is not supported.");
+        //     Log.Warnning(beamapBuilder.ToString());
+
+        //     // using var beamapFile = new FileStream(path, FileMode.Create, FileAccess.Write);
+        //     // beamapFile.Write(Encoding.UTF8.GetBytes(beamapBuilder.ToString()));
+        // }
     }
 
     private void processLayers(StringBuilder builder, ProjectData project, Beatmap? beatmap)
@@ -108,7 +112,7 @@ public partial class Bootstrap
         if (string.IsNullOrWhiteSpace(directory)) return [];
 
         var filesPaths = Directory.GetFiles(directory, "*.osu", SearchOption.TopDirectoryOnly);
-        Log.Warnning($"Beatmaps are supported, Found {filesPaths.Length} beatmaps.");
+        Log.Warnning($"Beatmaps are not yet supported, Found {filesPaths.Length} beatmaps.");
         return [];
     }
 }

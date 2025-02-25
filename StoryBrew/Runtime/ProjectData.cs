@@ -17,7 +17,7 @@
     public bool OptimiseSprites = true;
 
     public readonly NumberFormatInfo NumberFormat = new CultureInfo(@"en-US", false).NumberFormat;
-    
+
 */
 
 using Newtonsoft.Json;
@@ -66,6 +66,8 @@ public class ProjectData
 
         JsonSerializer.CreateDefault().Serialize(jsonWriter, this);
     }
+
+    public string ToJsonString() => JsonConvert.SerializeObject(this);
 }
 
 public struct ScriptData(string fullName, string json)

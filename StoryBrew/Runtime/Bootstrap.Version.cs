@@ -7,15 +7,6 @@ namespace StoryBrew.Runtime;
 
 public partial class Bootstrap
 {
-    private readonly struct VersionInfo
-    {
-        public Version Version { get; init; }
-        public string Hash { get; init; }
-        public string BuildId { get; init; }
-
-        public override string ToString() => $"Version {Version}, BuildId {BuildId}, Hash {Hash}";
-    }
-
     private VersionInfo getVersionInfo()
     {
         var hash = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(getSchema())));
@@ -28,4 +19,13 @@ public partial class Bootstrap
     }
 
     private void handleVersionCommand() => Log.Message($"StoryBrew {getVersionInfo()}");
+}
+
+public readonly struct VersionInfo
+{
+    public Version Version { get; init; }
+    public string Hash { get; init; }
+    public string BuildId { get; init; }
+
+    public override string ToString() => $"Version {Version}, BuildId {BuildId}, Hash {Hash}";
 }
