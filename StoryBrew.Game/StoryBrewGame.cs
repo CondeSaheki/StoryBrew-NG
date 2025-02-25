@@ -6,7 +6,7 @@ namespace StoryBrew.Game
 {
     public partial class StoryBrewGame : StoryBrewGameBase
     {
-        private ScreenStack screenStack;
+        private ScreenStack screenStack = null!;
 
         [BackgroundDependencyLoader]
         private void load()
