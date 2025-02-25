@@ -2,9 +2,11 @@
 
 # StoryBrew-NG
 
-**StoryBrew-NG** (Next Generation) is a complete refactor of the beloved StoryBrew project, rebuilt from the ground up for **cross-platform compatibility** and **enhanced flexibility**. We have as a GUI desktop application using **osu!Framework**, it empowers creators to manage osu! storyboards efficiently while offering script development libraries for script creation.
+**StoryBrew-NG** (Next Generation) is a complete refactor of the beloved StoryBrew project, rebuilt from the ground up for **improved performance** and **cross-platform** compatibility (including native Linux support). A key feature of this refactor is its enhanced **flexibility**, achieved by leveraging the standard .NET build process for compiling storyboards.
 
-**Documentation & Tutorials**: Explore the [StoryBrew Wiki] (placeholder) for detailed guides. While StoryBrew-NG introduces new features, much of the original documentation remains relevant.
+The new GUI desktop application, built on **osu!Framework**, empowers creators to efficiently manage osu! storyboards paired with enhanced libraries for script creation and development.
+
+**Documentation & Tutorials**: Explore the [StoryBrew Wiki] (placeholder) for detailed guides. Until StoryBrew-NG is ready and has introduced all new features, much of the original documentation remains relevant.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -20,7 +22,7 @@
 ## Overview
 
 StoryBrew-NG modernizes the original StoryBrew with:
-- **Cross-platform support** yes, it works on Linux
+- **Cross-platform support** making it compatible with Linux.
 - **Modular architecture** for easier maintenance and extensibility
 - **Improved performance** through optimized rendering and code generation
 - **Hybrid workflow** combining GUI editing and CLI scripting
@@ -64,7 +66,7 @@ Once created, customize your storyboard scripts using your preferred IDE (e.g., 
    ```
 2. View command options:
    ```bash
-   dotnet run --project MyStoryboardProject -- help
+   dotnet run -- help
    ```
 
 Iterate by editing scripts and rebuilding until you achieve your desired storyboard.
