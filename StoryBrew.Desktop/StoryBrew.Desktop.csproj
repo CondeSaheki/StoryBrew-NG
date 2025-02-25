@@ -2,7 +2,7 @@
   <PropertyGroup Label="Project">
     <TargetFramework>net9.0</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <AssemblyName>StoryBrew</AssemblyName>
+    <!-- <AssemblyName>StoryBrew</AssemblyName> -->
     <ApplicationIcon>game.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <Version>0.0.0</Version>
