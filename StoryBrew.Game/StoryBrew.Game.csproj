@@ -13,6 +13,9 @@
   <ItemGroup>
     <PackageReference Include="ppy.osu.Framework" Version="2025.220.1" />
     <PackageReference Include="ppy.osu.Game" Version="2025.221.0" />
+    <ProjectReference Include="..\StoryBrew\StoryBrew.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json.Schema" Version="4.0.1" />
   </ItemGroup>
 
 </Project>
