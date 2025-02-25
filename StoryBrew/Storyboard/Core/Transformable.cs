@@ -91,7 +91,7 @@ public abstract class Transformable : Writable
 
         foreach (var command in Commands)
         {
-            if (command is Loop || command is Trigger && !AllowCompound) throw new InvalidOperationException("Cannot write compound commands");
+            if ((command is Loop || command is Trigger) && !AllowCompound) throw new InvalidOperationException("Cannot write compound commands");
             if (command is not Writable writable) throw new InvalidOperationException($"Unhandled command type: {command.GetType()}");
 
             writable.Write(writer, layer, depth);
